@@ -1,0 +1,20 @@
+Package: brinton
+Type: Package
+Version: 0.1.0
+Title: A graphical EDA tool
+Description: This package includes functions to graphicaly explore 
+    a.) the structure of a dataset, 
+    b.) the relationship within the values of each variable in a dataset and 
+    c.) the relationship between the values of each variable and its row number. 
+    The package also includes a function to plot one specific graphic and to retrieve the code that 
+    the user should type to plot it. Future work will include graphics that relates the values of a 
+    limited number of selected variables. 
+Authors@R: c(person("Millán-Martínez", "Pere", email="info@sciencegraph.org", role = c("aut", "cre")), person("Oller", "Ramon", email="ramon.oller@uvic.cat", role = "ctb"))
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Depends: ggplot2
+Imports: dplyr, lubridate, grid, tibble, gridExtra, grDevices, pander, sm, RColorBrewer, rmarkdown, forcats
+RoxygenNote: 6.1.1
+Suggests: knitr
+VignetteBuilder: knitr
