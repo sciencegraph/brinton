@@ -628,7 +628,9 @@ ggplot(",
   }
   else if (diagram == "binned heatmap" &
     (is.factor(unlist(data[, vars])) == TRUE |
-     is.character(unlist(data[, vars])) == TRUE)) {
+     is.character(unlist(data[, vars])) == TRUE |
+     is.logical(unlist(data[, vars])) == TRUE |
+     is.ordered(unlist(data[, vars])) == TRUE)) {
     p <- paste0(theme, "\n", reorder_observ, "
 ggplot(",
   deparse(substitute(data)),
@@ -655,7 +657,9 @@ ggplot(",
   }
   else if (diagram == "bw binned heatmap" &
     (is.factor(unlist(data[, vars])) == TRUE |
-    is.character(unlist(data[, vars])) == TRUE)) {
+    is.character(unlist(data[, vars])) == TRUE |
+    is.logical(unlist(data[, vars])) == TRUE |
+    is.ordered(unlist(data[, vars])) == TRUE)) {
     p <- paste0(theme, "\n", reorder_observ, "
 ggplot(",
   deparse(substitute(data)),
@@ -684,7 +688,9 @@ ggplot(",
   }
   else if (diagram == "color binned heatmap" &
     (is.factor(unlist(data[, vars])) == TRUE |
-    is.character(unlist(data[, vars])) == TRUE)) {
+    is.character(unlist(data[, vars])) == TRUE |
+    is.logical(unlist(data[, vars])) == TRUE |
+    is.ordered(unlist(data[, vars])) == TRUE)) {
     p <- paste0(theme, "\n", reorder_observ, "
 ggplot(",
   deparse(substitute(data)),
@@ -794,7 +800,8 @@ ggplot(",
   ", theme_detail_z)
   }
   else if (diagram == "stepped line graph" &
-    is.numeric(unlist(data[, vars])) == TRUE
+    is.numeric(unlist(data[, vars])) == TRUE |
+    lubridate::is.Date(unlist(data[, vars])) == TRUE
   ) {
     p <- paste0(theme, "
 ggplot(",
@@ -805,6 +812,36 @@ ggplot(",
   as.character(substitute(vars)),
   ")) +
   geom_step(direction = 'hv') +
+  labs(x='seq') +
+  ", theme_detail)
+  }
+  else if (diagram == "area graph" &
+           is.numeric(unlist(data[, vars])) == TRUE
+  ) {
+    p <- paste0(theme, "
+ggplot(",
+  deparse(substitute(data)),
+  ", aes(x=seq_along(",
+  as.character(substitute(vars)),
+  "), y=",
+  as.character(substitute(vars)),
+  ")) +
+  geom_area(, fill = 'black') +
+  labs(x='seq') +
+  ", theme_detail)
+  }
+  else if (diagram == "stepped area graph" &
+           is.numeric(unlist(data[, vars])) == TRUE
+  ) {
+    p <- paste0(theme, "
+ggplot(",
+  deparse(substitute(data)),
+  ", aes(x=seq_along(",
+  as.character(substitute(vars)),
+  "), y=",
+  as.character(substitute(vars)),
+  ")) +
+  geom_bar(fill = 'black', width = 1, stat = 'identity') +
   labs(x='seq') +
   ", theme_detail)
   }

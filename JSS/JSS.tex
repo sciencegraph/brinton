@@ -1,0 +1,201 @@
+\documentclass[jss]{jss}
+\usepackage[utf8]{inputenc}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\author{
+Pere Millán-Martínez\\UVic-UCC Servei Català de Trànsit \And Ramon Oller-Piqué\\UVic-UCC
+}
+\title{A Functional System for Statistical Graphics Presentation: \pkg{brinton}}
+
+\Plainauthor{Pere Millán-Martínez, Ramon Oller-Piqué}
+\Plaintitle{A Functional System for Statistical Graphics Presentation: \pkg{brinton}}
+\Shorttitle{\pkg{brinton}: A Functional System for Statistical Graphics Presentation}
+
+\Abstract{
+Este artículo presenta el paquete \pkg{brinton} de \proglang{R}
+desarrollado para el análisis gráfico exploratorio de datos y la
+selección de una representación gráfica estadística en particular. Sobre
+la base de \pkg{ggplot2} y \pkg{gridExtra} el paquete \pkg{brinton}
+introduce las funciones \code{wideplot()} y \code{longplot()} que
+presentan abanicos de gráficas estadísticas posibles a partir de una
+selección de variables. Complementaria a estas dos funciones, también
+introduce la función \code{showplot()} que permite seleccionar una
+gráfica específica y ajustar sus propiedades. Este conjunto de funciones
+se demuestra útil para entender la estructura de un conjunto rectangular
+de datos, dejarse sorprender por propiedades no esperadas en los datos,
+evaluar diferentes representaciones gráficas de éstos y seleccionar una
+gráfica en particular.
+}
+
+\Keywords{Automated design, graphic design, statistical graphics, information visualization, exploratory data analysis}
+\Plainkeywords{automated design, graphic design, statistical graphics, information visualization, exploratory data analysis}
+
+%% publication information
+%% \Volume{50}
+%% \Issue{9}
+%% \Month{June}
+%% \Year{2012}
+%% \Submitdate{}
+%% \Acceptdate{2012-06-04}
+
+\Address{
+    Pere Millán-Martínez\\
+  UVic-UCC Servei Català de Trànsit\\
+  Carrer Diputació, 355 08009 Barcelona\\
+  E-mail: \email{info@sciencegraph.org}\\
+  URL: \url{http://sciencegraph.org}\\~\\
+    }
+
+% Pandoc header
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+En 1977 R.L. Oliver \citeyearpar{Oliver1977} vinculó la satisfacción a
+la expectativa en su ``Expectation disconfirmation theory'' (EDT). J.W.
+Tukey señaló que ``The greatest value of a picture is when it
+\emph{forces} us to notice what we never expected to see''
+\citep[p.iv]{Tukey1977} lo que atribuye un valor a la gráfica relativo a
+la expectativa. En el campo del análisis exploratorio de datos la
+expectativa juega un papel especial generalmente debido a su ausencia
+porque las hipótesis no estan preestablecidas sinó que provienen de la
+observación de los datos. Las hipótesis o la definición del problema,
+como señaló J. Bertin ese mismo preciso año \citep[p.2]{Bertin1977}, no
+son automatizables y aquí nace el reto de presentar gráficas a un
+usuario para que éste observe los datos, pueda plantear una hipótesis y
+afinar la selección de la gráfica estadística que dé respuesta a estas
+hipótesis.
+
+Puestos a elegir una estrategia para presentar gráficas a un usuario,
+Millán-Martínez y Valero-Mora \citeyearpar{Millan2018}, por ejemplo,
+diferencian las estrategias según si éstas se basan en las
+características de los datos -- \emph{functional design}--
+\citep[\citet{Gnanamgari1981}, \citet{Kamps1999},
+\citet{ValeroMora2012}]{Benson1977}, en los hábitos de un usuario --
+\emph{content-based filtering} --, en los hábitos de un grup de usuarios
+-- \emph{collaborative filtering} -- \citep{Mutlu2015}, en las tareas a
+realizar por los usuarios -- \emph{task design} --
+\citep[\citet{Casner1991}]{Bowman1967}, en las características de la
+percepción humana -- \emph{perceptual design} --
+\citep[\citet{Mackinlay1986}]{Cleveland1984}, en las limitaciones del
+canal de comunicación o la pantalla en la que se proyectan las gráficas
+-- \emph{responsive design} -- \citep{Gnanamgari1981} y, finalmente, en
+la selección de carácterísticas de la gráfica deseada o modelos de
+representación -- \emph{this could be called model design} --
+\citep{Roth1994}. Si, como hemos dicho anteriormente, carecemos de
+hipótesis, si obviamos las limitaciones del hardware y el recuerdo en la
+selección de gráficas realizado en otras ocasiones, queda la posibilidad
+de acotar las gráficas a presentar según las características de los
+datos, las características de la percepción humana y la selección de
+modelos de representación.
+
+En el entorno de programación \proglang{R}, hay implementadas diferentes
+de las estrategias antes citadas. El \emph{functional design} se
+encuentra, por ejemplo, implementada en la función \code{plot()} que, si
+la aplicamos al dataset \texttt{cars} produce un diagrama de dispersión
+(\emph{scatterplot}) dado que éste contiene dos variables numéricas y es
+de classe \code{data.frame} mientras que, si lo aplicamos al dataset
+\texttt{airmiles} produce un diagrama de línea (\emph{line graph})
+porque éste contiene una única variable numérica y es de clase
+\code{ts}. El \emph{task design} se encuentra implementado en multitud
+de librerías como por ejemplo \pkg{survminer} \citep{Therneau2015} que
+incluye la función \code{ggsurvplot()} para componer gráficas
+específicas para el análisis de supervivencia (\emph{survival
+analysis}). El \emph{model design} lo encontramos en funciones básicas
+como por ejemplo \code{barplot()} que produce un diagrama de barras
+(\emph{bar graph}), \code{hist()} que produce un
+histograma(\emph{histogram}) o \code{pie()} que produce un diagramas de
+pastel (\emph{pie charts}). El \emph{perceptual design} también se
+encuentra implementado en librerías como por ejemplo \pkg{ggplot2}
+\citep{Wickham2016} en aspectos como el tamaño, forma o el color de los
+puntos que asigna por defecto, las líneas de ayuda (\emph{grid lines}) o
+el color del fondo del panel (\emph{panel background color}).
+
+Este artículo presenta el paquete \pkg{brinton} que explora una nueva
+estrategia implementada sobre en el entorno de programación \proglang{R}
+y las librerías \pkg{ggplot2} y \pkg{gridExtra} entre otras. Esta
+estrategia consiste en presentar al usuario un abanico de gráficas
+posibles a partir de las características de los datos para que, una vez
+observados, el usuario pueda plantearse preguntas y explorar nuevos
+catálogos de gráficas o una gráfica en particular.
+
+\hypertarget{multipanel-graphics}{%
+\section{Multipanel graphics}\label{multipanel-graphics}}
+
+Existen diferentes tipos de gráficas multipanel según la variadad de
+gráficas y el origen de los datos que éstas muestran. Por un lado
+tenemos los cuadros de mando (\emph{dashboards}) que generalmente
+combinan en un espacio limitado, diferentes tipos de gráficas en
+diferentes paneles, cada una de las cuales puede representar datos de
+diferentes orígines y cuya utilidad es monitorizar procesos complejos.
+Por otro lado tenemos las gráficas condicionadas (\emph{conditioning
+plots})\footnote{La terminología de las gráficas condicionadas no és
+  unánime. Primero fueron primero descritas por J. Bertin como
+  \emph{séries homogènes} \citep[p.?]{Bertin1967}, luego E.Tufte las dio
+  a conocer como \emph{small multiples} \citep{Tufte1983}, W.S.
+  Cleveland se refirió a ellas como \emph{juxtaposed panels}
+  \citep[p.200]{Cleveland1985} y también como \emph{trellis graphics}
+  \citep{Becker1996}, en el entorno de \proglang{R} de conocen
+  básicamente como \emph{lattice graphics} \citep{Sarkar2008}.} que
+muestran un mismo tipo de gráfica que se repite en diferentes paneles
+que generalmente conservan la misma escala y que representan diferentes
+subconjuntos de unos datos según una o dos variables. Otro ejemplo de
+gráficas multipanel lo tenemos las matrices de gráficas (\emph{matrix of
+plots}) que relacionan pares de variables de un conjunto de datos, como
+por ejemplo las matrices de diagramas de dispersión (\emph{scatterplot
+matrix}) \citep{Hartigan1975} o las matrices de gráficas de elipse HE
+(\emph{HE plots}) \citep{Friendly2007}.
+
+Existen básicamente tres vías para graphicar datos en \proglang{R}. La
+primera es utilizar \emph{base graphics} y, si se pretende componer
+gráficas multipanel
+
+y por consiguiente cuesta solicitar a un sistema la presentación de una
+gráfica u otra. Esto genera la conveniencia de utilizar métodos gráficos
+que, por un lado, relacionen los valores de las diferentes variables y,
+por otro lado, que estos métodos gráficos incluyan una variedad de tipos
+de gráficas que permitan responder a diferentes preguntas que se puedan
+formular.
+
+\hypertarget{code-formatting}{%
+\subsection{Code formatting}\label{code-formatting}}
+
+Don't use markdown, instead use the more precise latex commands:
+
+\begin{itemize}
+\item
+  \proglang{R}
+\item
+  \pkg{brinton}
+\item
+  \code{print("abc")}
+\end{itemize}
+
+\hypertarget{r-code}{%
+\section{R code}\label{r-code}}
+
+Can be inserted in regular R markdown blocks.
+
+\begin{CodeChunk}
+
+\begin{CodeInput}
+R> x <- 1:10
+R> x
+\end{CodeInput}
+
+\begin{CodeOutput}
+ [1]  1  2  3  4  5  6  7  8  9 10
+\end{CodeOutput}
+\end{CodeChunk}
+
+\bibliography{JSS.bib}
+
+
+\end{document}
+

@@ -34,13 +34,3 @@ add_density_1D <- function(a, b) {
   }
   return(dens)
 }
-
-# add_density_1D(mental, "Y.t1")
-
-# any(is.na(mental$Y.t1))
-# dens <- sm::sm.density(na.omit(mental$Y.t1), eval.points=na.omit(mental$Y.t1), display='none')$estimate
-# ind <- c(1,2,3, 5)
-#
-# for(i in 1:(length(ind))) dens <- append(dens, NA, after=(ind[i]+1)-2)
-# dens
-

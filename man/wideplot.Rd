@@ -4,20 +4,20 @@
 \alias{wideplot}
 \title{Presents a wideplot in a html output.}
 \usage{
-wideplot(data, dataclass = c("datetime", "logical", "ordered", "factor",
-  "character", "numeric"), datetime = c("line graph",
-  "point-to-point graph", "point graph", "binned heatmap"),
-  logical = c("line graph", "point-to-point graph", "point graph",
-  "tile plot", "bar graph"), ordered = c("line graph",
+wideplot(data, dataclass = c("logical", "ordered", "factor", "character",
+  "datetime", "numeric"), logical = c("line graph",
   "point-to-point graph", "point graph", "tile plot", "bar graph"),
-  factor = c("line graph", "point-to-point graph", "point graph",
-  "tile plot", "bar graph", "freq. reordered bar graph",
-  "alphab. reordered bar graph"), numeric = c("line graph",
-  "stepped line graph", "point graph", "color point graph", "histogram",
-  "color bar graph", "normal qq plot"), character = c("line graph",
+  ordered = c("line graph", "point-to-point graph", "point graph",
+  "tile plot", "bar graph"), factor = c("line graph",
   "point-to-point graph", "point graph", "tile plot", "bar graph",
-  "freq. reordered bar graph", "alphab. reordered bar graph"), ncol = 7,
-  label = "FALSE")
+  "freq. reordered bar graph", "alphab. reordered bar graph"),
+  character = c("line graph", "point-to-point graph", "point graph",
+  "tile plot", "bar graph", "freq. reordered bar graph",
+  "alphab. reordered bar graph"), datetime = c("line graph",
+  "point-to-point graph", "point graph", "binned heatmap"),
+  numeric = c("line graph", "stepped line graph", "point graph",
+  "color point graph", "histogram", "color bar graph", "normal qq plot"),
+  group = "overview", ncol = 7, label = "FALSE")
 }
 \arguments{
 \item{data}{Data.frame. Default dataset to use for plot. If not already
@@ -25,17 +25,19 @@ a data.frame, it should be first coerced to by [as.data.frame()].}
 
 \item{dataclass}{Character. Types of data to be considered.}
 
-\item{datetime}{Character. Graphics for datetime variables.}
-
 \item{logical}{Character. Graphics for logical variables.}
 
 \item{ordered}{Character. Graphics for ordered factor variables.}
 
 \item{factor}{Character. Graphics for factor variables.}
 
+\item{character}{Character. Graphics for character variables.}
+
+\item{datetime}{Character. Graphics for datetime variables.}
+
 \item{numeric}{Character. Graphics for numeric variables.}
 
-\item{character}{Character. Graphics for character variables.}
+\item{group}{Character. Group of prestablished graphics.}
 
 \item{ncol}{Numeric. Number of columns A number between 3 and 10.}
 

@@ -1,0 +1,71 @@
+---
+author:
+  - name: Pere Millán-Martínez
+    affiliation: 
+      UVic-UCC
+      Servei Català de Trànsit
+    address: >
+      Carrer Diputació, 355 
+      08009 Barcelona 
+    email: \email{info@sciencegraph.org}
+    url: http://sciencegraph.org
+  - name: Ramon Oller-Piqué
+    affiliation:  UVic-UCC
+title:
+  formatted: "A Functional System for Statistical Graphics Presentation: \\pkg{brinton}"
+  # If you use tex in the formatted title, also supply version without
+  plain:     "A Functional System for Statistical Graphics Presentation: \\pkg{brinton}"
+  # For running headers, if needed
+  short:     "\\pkg{brinton}: A Functional System for Statistical Graphics Presentation"
+abstract: >
+  Este artículo presenta el paquete \pkg{brinton} de \proglang{R} desarrollado para el análisis gráfico exploratorio de datos y la selección de una representación gráfica estadística en particular. Sobre la base de \pkg{ggplot2} y \pkg{gridExtra} el paquete \pkg{brinton} introduce las funciones \code{wideplot()} y \code{longplot()} que presentan abanicos de gráficas estadísticas posibles a partir de una selección de variables. Complementaria a estas dos funciones, también introduce la función  \code{showplot()} que permite seleccionar una gráfica específica y ajustar sus propiedades. Este conjunto de funciones se demuestra útil para entender la estructura de un conjunto rectangular de datos, dejarse sorprender por propiedades no esperadas en los datos, evaluar diferentes representaciones gráficas de éstos y seleccionar una gráfica en particular.
+keywords:
+  # at least one keyword must be supplied
+  formatted: [Automated design, graphic design, statistical graphics, information visualization, exploratory data analysis]
+  plain:     [automated design, graphic design, statistical graphics, information visualization, exploratory data analysis]
+preamble: >
+  \usepackage{amsmath}
+output: rticles::jss_article
+bibliography: "JSS.bib"
+---
+
+# Introduction
+
+En 1977 R.L. Oliver [-@Oliver1977] vinculó la satisfacción a la expectativa en su "Expectation disconfirmation theory" (EDT). J.W. Tukey señaló que "The greatest value of a picture is when it *forces* us to notice what we never expected to see" [@Tukey1977, p.iv] lo que atribuye un valor a la gráfica relativo a la expectativa. En el campo del análisis exploratorio de datos la expectativa juega un papel especial generalmente debido a su ausencia porque las hipótesis no estan preestablecidas sinó que provienen de la observación de los datos. Las hipótesis o la definición del problema, como señaló J. Bertin ese mismo preciso año [@Bertin1977, p.2], no son automatizables y aquí nace el reto de presentar gráficas a un usuario para que éste observe los datos, pueda plantear una hipótesis y afinar la selección de la gráfica estadística que dé respuesta a estas hipótesis.
+
+Puestos a elegir una estrategia para presentar gráficas a un usuario, Millán-Martínez y Valero-Mora [-@Millan2018], por ejemplo, diferencian las estrategias según si éstas se basan en las características de los datos -- *functional design*-- [@Benson1977, @Gnanamgari1981, @Kamps1999, @ValeroMora2012], en los hábitos de un usuario -- *content-based filtering* --, en los hábitos de un grup de usuarios -- *collaborative filtering* -- [@Mutlu2015], en las tareas a realizar por los usuarios -- *task design* -- [@Bowman1967, @Casner1991], en las características de la percepción humana -- *perceptual design* -- [@Cleveland1984, @Mackinlay1986], en las limitaciones del canal de comunicación o la pantalla en la que se proyectan las gráficas -- *responsive design* -- [@Gnanamgari1981] y, finalmente, en la selección de carácterísticas de la gráfica deseada o modelos de representación -- *this could be called model design* -- [@Roth1994]. Si, como hemos dicho anteriormente, carecemos de hipótesis, si obviamos las limitaciones del hardware y el recuerdo en la selección de gráficas realizado en otras ocasiones, queda la posibilidad de acotar las gráficas a presentar según las características de los datos, las características de la percepción humana y la selección de modelos de representación.
+
+En el entorno de programación \proglang{R}, hay implementadas diferentes de las estrategias antes citadas. El *functional design* se encuentra, por ejemplo, implementada en la función \code{plot()} que, si la aplicamos al dataset `cars` produce un diagrama de dispersión (*scatterplot*) dado que éste contiene dos variables numéricas y es de classe \code{data.frame} mientras que, si lo aplicamos al dataset `airmiles` produce un diagrama de línea (*line graph*) porque éste contiene una única variable numérica y es de clase \code{ts}. El *task design* se encuentra implementado en multitud de librerías como por ejemplo \pkg{survminer} [@Therneau2015] que incluye la función \code{ggsurvplot()} para componer gráficas específicas para el análisis de supervivencia (*survival analysis*). El *model design* lo encontramos en funciones básicas como por ejemplo \code{barplot()} que produce un diagrama de barras (*bar graph*), \code{hist()} que produce un histograma(*histogram*) o \code{pie()} que produce un diagramas de pastel (*pie charts*). El *perceptual design* también se encuentra implementado en librerías como por ejemplo \pkg{ggplot2} [@Wickham2016] en aspectos como el tamaño, forma o el color de los puntos que asigna por defecto, las líneas de ayuda (*grid lines*) o el color del fondo del panel (*panel background color*).
+
+Este artículo presenta el paquete \pkg{brinton} que explora una nueva estrategia implementada sobre en el entorno de programación \proglang{R} y las librerías \pkg{ggplot2} y \pkg{gridExtra} entre otras. Esta estrategia consiste en presentar al usuario un abanico de gráficas posibles a partir de las características de los datos para que, una vez observados, el usuario pueda plantearse preguntas y explorar nuevos catálogos de gráficas o una gráfica en particular.
+
+# Multipanel graphics
+
+Existen diferentes tipos de gráficas multipanel según la variadad de gráficas y el origen de los datos que éstas muestran. Por un lado tenemos los cuadros de mando (*dashboards*) que generalmente combinan en un espacio limitado, diferentes tipos de gráficas en diferentes paneles, cada una de las cuales puede representar datos de diferentes orígines y cuya utilidad es monitorizar procesos complejos. Por otro lado tenemos las gráficas condicionadas (*conditioning plots*)^[La terminología de las gráficas condicionadas no és unánime. Primero fueron primero descritas por J. Bertin como *séries homogènes* [@Bertin1967, p.?], luego E.Tufte las dio a conocer como *small multiples* [@Tufte1983], W.S. Cleveland se refirió a ellas como *juxtaposed panels* [@Cleveland1985, p.200] y también como *trellis graphics* [@Becker1996], en el entorno de \proglang{R} de conocen básicamente como *lattice graphics* [@Sarkar2008].] que muestran un mismo tipo de gráfica que se repite en diferentes paneles que generalmente conservan la misma escala y que representan diferentes subconjuntos de unos datos según una o dos variables. Otro ejemplo de gráficas multipanel lo tenemos las matrices de gráficas (*matrix of plots*) que relacionan pares de variables de un conjunto de datos, como por ejemplo las matrices de diagramas de dispersión (*scatterplot matrix*) [@Hartigan1975] o las matrices de gráficas de elipse HE (*HE plots*) [@Friendly2007]. 
+
+
+
+Existen básicamente tres vías para graphicar datos en \proglang{R}. La primera es utilizar *base graphics* y, si se pretende componer gráficas multipanel 
+
+y por consiguiente cuesta solicitar a un sistema la presentación de una gráfica u otra. Esto genera la conveniencia de utilizar métodos gráficos que, por un lado, relacionen los valores de las diferentes variables y, por otro lado, que estos métodos gráficos incluyan una variedad de tipos de gráficas que permitan responder a diferentes preguntas que se puedan formular.
+
+
+
+
+
+## Code formatting
+
+Don't use markdown, instead use the more precise latex commands:
+
+* \proglang{R}
+* \pkg{brinton}
+* \code{print("abc")}
+
+# R code
+
+Can be inserted in regular R markdown blocks.
+
+```{r}
+x <- 1:10
+x
+```

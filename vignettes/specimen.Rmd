@@ -26,38 +26,6 @@ library(lubridate)
 ```
 
 
-# Datetime variables:
-
-```{r}
-flights_dt <- nycflights13::flights %>% 
-  transmute(departure = make_datetime(
-    year, 
-    month, 
-    day, 
-    hour, 
-    minute)
-    )
-```
-
-```{r, fig.width=12, fig.height=2.4}
-gridExtra::grid.arrange(showplot(flights_dt[1:50,], "departure", "line graph", output = 'plots pane'),
-                        showplot(flights_dt[1:50,], "departure", "point graph", output = 'plots pane'),
-                        showplot(flights_dt[1:50,], "departure", "point-to-point graph", output = 'plots pane'),
-                        heights=unit(c(2.4), c("in")),
-                        ncol=5)
-cat("datetime = c('line graph', 'point graph', 'point-to-point graph')")
-```
-
-```{r, fig.width=12, fig.height=2.4}
-
-gridExtra::grid.arrange(showplot(flights_dt[1:50,], "departure", "binned heatmap", output = 'plots pane'), 
-                        showplot(flights_dt[1:50,], "departure", "bw binned heatmap", output = 'plots pane'), 
-                        showplot(flights_dt[1:50,], "departure", "color binned heatmap", output = 'plots pane'), 
-                        heights=unit(c(2.4), c("in")),
-                        ncol=5)
-cat("datetime = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
-```
-
 # Logical variables:
 
 ```{r, fig.width=12, fig.height=0.83}
@@ -76,6 +44,15 @@ gridExtra::grid.arrange(showplot(ca2006, "open", "tile plot", output = 'plots pa
                         heights=unit(c(0.83), c("in")),
                         ncol=5)
 cat("logical = c('tile plot', 'linerange graph')")
+```
+
+```{r, fig.width=12, fig.height=0.83}
+gridExtra::grid.arrange(showplot(ca2006, "open", "binned heatmap", output = 'plots pane'), 
+                        showplot(ca2006, "open", "bw binned heatmap", output = 'plots pane'),
+                        showplot(ca2006, "open", "color binned heatmap", output = 'plots pane'),
+                        heights=unit(c(0.83), c("in")),
+                        ncol=5)
+cat("logical = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
 ```
 
 ```{r, fig.width=12, fig.height=0.83}
@@ -104,6 +81,15 @@ gridExtra::grid.arrange(showplot(esoph, "agegp", "tile plot", output = 'plots pa
                         heights=unit(c(1.5), c("in")),
                         ncol=5)
 cat("ordered = c('tile plot', 'linerange graph')")
+```
+
+```{r, fig.width=12, fig.height=0.83}
+gridExtra::grid.arrange(showplot(esoph, "agegp", "binned heatmap", output = 'plots pane'), 
+                        showplot(esoph, "agegp", "bw binned heatmap", output = 'plots pane'),
+                        showplot(esoph, "agegp", "color binned heatmap", output = 'plots pane'),
+                        heights=unit(c(0.83), c("in")),
+                        ncol=5)
+cat("logical = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
 ```
 
 ```{r, fig.width=12, fig.height=1.5}
@@ -179,7 +165,9 @@ gridExtra::grid.arrange(showplot(monica_mod, "smstat", "freq. reordered binned h
                         showplot(monica_mod, "smstat", "color freq. reordered binned heatmap", output = 'plots pane'),
                         heights=unit(c(1.17), c("in")),
                         ncol=5)
-cat("factor = c('freq. reordered binned heatmap', 'bw freq. reordered binned heatmap', 'color freq. reordered binned heatmap')")
+cat("factor = c('freq. reordered binned heatmap', 
+    'bw freq. reordered binned heatmap', 
+    'color freq. reordered binned heatmap')")
 ```
 
 ```{r, fig.width=12, fig.height=1.17}
@@ -188,7 +176,9 @@ gridExtra::grid.arrange(showplot(monica_mod, "smstat", "alphab. reordered binned
                         showplot(monica_mod, "smstat", "color alphab. reordered binned heatmap", output = 'plots pane'),
                         heights=unit(c(1.17), c("in")),
                         ncol=5)
-cat("factor = c('alphab. reordered binned heatmap', 'bw alphab. reordered binned heatmap', 'color alphab. reordered binned heatmap')")
+cat("factor = c('alphab. reordered binned heatmap', 
+    'bw alphab. reordered binned heatmap', 
+    'color alphab. reordered binned heatmap')")
 ```
 
 ```{r, fig.width=12, fig.height=1.17}
@@ -218,7 +208,160 @@ gridExtra::grid.arrange(showplot(monica_mod, "smstat", "alphab. reordered bar gr
 cat("datetime = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')")
 ```
 
+# Character variables:
+
+```{r, fig.width=12, fig.height=3}
+data(rockArt, package = "DAAG")
+gridExtra::grid.arrange(showplot(rockArt, "District", "line graph", output = 'plots pane'), 
+                        showplot(rockArt, "District", "freq. reordered line graph", output = 'plots pane'),
+                        showplot(rockArt, "District", "alphab. reordered line graph", output = 'plots pane'),
+                        heights=unit(c(3), c("in")),
+                        ncol=4)
+cat("factor = c('line graph', 'freq. reordered line graph', 'alphab. reordered line graph')")
+```
+
+```{r, fig.width=12, fig.height=3}
+gridExtra::grid.arrange(showplot(rockArt, "District", "point-to-point graph", output = 'plots pane'), 
+                        showplot(rockArt, "District", "freq. reordered point-to-point graph", output = 'plots pane'),
+                        showplot(rockArt, "District", "alphab. reordered point-to-point graph", output = 'plots pane'),
+                        heights=unit(c(3), c("in")),
+                        ncol=4)
+cat("factor = c('point-to-point graph', 'freq. reordered point-to-point graph', 'alphab. reordered point-to-point graph')")
+```
+
+```{r, fig.width=12, fig.height=3}
+gridExtra::grid.arrange(showplot(rockArt, "District", "linerange graph", output = 'plots pane'), 
+                        showplot(rockArt, "District", "freq. reordered linerange graph", output = 'plots pane'),
+                        showplot(rockArt, "District", "alphab. reordered linerange graph", output = 'plots pane'),
+                        heights=unit(c(3), c("in")),
+                        ncol=4)
+cat("factor = c('linerange graph', 'freq. reordered linerange graph', 'alphab. reordered linerange graph')")
+```
+
+```{r, fig.width=12, fig.height=3}
+gridExtra::grid.arrange(showplot(rockArt, "District", "point graph", output = 'plots pane'), 
+                        showplot(rockArt, "District", "freq. reordered point graph", output = 'plots pane'),
+                        showplot(rockArt, "District", "alphab. reordered point graph", output = 'plots pane'),
+                        heights=unit(c(3), c("in")),
+                        ncol=4)
+cat("factor = c('point graph', 'freq. reordered point graph', 'alphab. reordered point graph')")
+```
+
+```{r, fig.width=12, fig.height=3}
+gridExtra::grid.arrange(showplot(rockArt, "District", "tile plot", output = 'plots pane'), 
+                        showplot(rockArt, "District", "freq. reordered tile plot", output = 'plots pane'),
+                        showplot(rockArt, "District", "alphab. reordered tile plot", output = 'plots pane'),
+                        heights=unit(c(3), c("in")),
+                        ncol=4)
+cat("factor = c('tile plot', 'freq. reordered tile plot', 'alphab. reordered tile plot')")
+```
+
+```{r, fig.width=12, fig.height=3}
+gridExtra::grid.arrange(showplot(rockArt, "District", "binned heatmap", output = 'plots pane'), 
+                        showplot(rockArt, "District", "bw binned heatmap", output = 'plots pane'), 
+                        showplot(rockArt, "District", "color binned heatmap", output = 'plots pane'), 
+                        heights=unit(c(3), c("in")),
+                        ncol=4)
+cat("factor = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
+```
+
+```{r, fig.width=12, fig.height=3}
+gridExtra::grid.arrange(showplot(rockArt, "District", "freq. reordered binned heatmap", output = 'plots pane'), 
+                        showplot(rockArt, "District", "bw freq. reordered binned heatmap", output = 'plots pane'),
+                        showplot(rockArt, "District", "color freq. reordered binned heatmap", output = 'plots pane'),
+                        heights=unit(c(3), c("in")),
+                        ncol=4)
+cat("factor = c('freq. reordered binned heatmap', 
+    'bw freq. reordered binned heatmap', 
+    'color freq. reordered binned heatmap')")
+```
+
+```{r, fig.width=12, fig.height=3}
+gridExtra::grid.arrange(showplot(rockArt, "District", "alphab. reordered binned heatmap", output = 'plots pane'), 
+                        showplot(rockArt, "District", "bw alphab. reordered binned heatmap", output = 'plots pane'),
+                        showplot(rockArt, "District", "color alphab. reordered binned heatmap", output = 'plots pane'),
+                        heights=unit(c(3), c("in")),
+                        ncol=4)
+cat("factor = c('alphab. reordered binned heatmap', 
+    'bw alphab. reordered binned heatmap', 
+    'color alphab. reordered binned heatmap')")
+```
+
+```{r, fig.width=12, fig.height=3}
+gridExtra::grid.arrange(showplot(rockArt, "District", "bar graph", output = 'plots pane'), 
+                        showplot(rockArt, "District", "bw bar graph", output = 'plots pane'), 
+                        showplot(rockArt, "District", "color bar graph", output = 'plots pane'), 
+                        heights=unit(c(3), c("in")),
+                        ncol=4)
+cat("factor = c('bar graph', 'bw bar graph', 'color bar graph')")
+```
+
+```{r, fig.width=12, fig.height=3}
+gridExtra::grid.arrange(showplot(rockArt, "District", "freq. reordered bar graph", output = 'plots pane'),
+                        showplot(rockArt, "District", "bw freq. reordered bar graph", output = 'plots pane'),
+                        showplot(rockArt, "District", "color freq. reordered bar graph", output = 'plots pane'),
+                        heights=unit(c(3), c("in")),
+                        ncol=4)
+cat("datetime = c('freq. reordered bar graph', 'bw freq. reordered bar graph', 'color freq. reordered bar graph')")
+```
+
+```{r, fig.width=12, fig.height=3}
+gridExtra::grid.arrange(showplot(rockArt, "District", "alphab. reordered bar graph", output = 'plots pane'),
+                        showplot(rockArt, "District", "bw alphab. reordered bar graph", output = 'plots pane'),
+                        showplot(rockArt, "District", "color alphab. reordered bar graph", output = 'plots pane'),
+                        heights=unit(c(3), c("in")),
+                        ncol=4)
+cat("datetime = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')")
+```
+
+# Datetime variables:
+
+```{r}
+flights_dt <- nycflights13::flights %>% 
+  transmute(departure = make_datetime(
+    year, 
+    month, 
+    day, 
+    hour, 
+    minute)
+    )
+```
+
+```{r, fig.width=12, fig.height=2.4}
+gridExtra::grid.arrange(showplot(flights_dt[1:50,], "departure", "line graph", output = 'plots pane'),
+                        showplot(flights_dt[1:50,], "departure", "stepped line graph", output = 'plots pane'),
+                        heights=unit(c(2.4), c("in")),
+                        ncol=5)
+cat("datetime = c('line graph', 'stepped line graph')")
+```
+
+```{r, fig.width=12, fig.height=2.4}
+gridExtra::grid.arrange(showplot(flights_dt[1:50,], "departure", "point graph", output = 'plots pane'),
+                        showplot(flights_dt[1:50,], "departure", "point-to-point graph", output = 'plots pane'),
+                        heights=unit(c(2.4), c("in")),
+                        ncol=5)
+cat("datetime = c('point graph', 'point-to-point graph')")
+```
+
+```{r, fig.width=12, fig.height=2.4}
+
+gridExtra::grid.arrange(showplot(flights_dt[1:50,], "departure", "binned heatmap", output = 'plots pane'), 
+                        showplot(flights_dt[1:50,], "departure", "bw binned heatmap", output = 'plots pane'), 
+                        showplot(flights_dt[1:50,], "departure", "color binned heatmap", output = 'plots pane'), 
+                        heights=unit(c(2.4), c("in")),
+                        ncol=5)
+cat("datetime = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
+```
+
 # Numeric variables:
+
+```{r, fig.width=12, fig.height=2.4}
+gridExtra::grid.arrange(showplot(midwest[1:200,], "area", "area graph", output = 'plots pane'), 
+                        showplot(midwest[1:200,], "area", "stepped area graph", output = 'plots pane'), 
+                        heights=unit(c(2.4), c("in")),
+                        ncol=5)
+cat("numeric = c('area graph', 'stepped area graph')")
+```
 
 ```{r, fig.width=12, fig.height=2.4}
 gridExtra::grid.arrange(showplot(midwest[1:200,], "area", "line graph", output = 'plots pane'), 
@@ -326,104 +469,3 @@ gridExtra::grid.arrange(showplot(midwest, "area", "box plot", output = 'plots pa
 cat("numeric = c('box plot', '3 uniaxial', 'qq plot')")
 ```
 
-# Character variables:
-
-```{r, fig.width=12, fig.height=3}
-data(rockArt, package = "DAAG")
-gridExtra::grid.arrange(showplot(rockArt, "District", "line graph", output = 'plots pane'), 
-                        showplot(rockArt, "District", "freq. reordered line graph", output = 'plots pane'),
-                        showplot(rockArt, "District", "alphab. reordered line graph", output = 'plots pane'),
-                        heights=unit(c(3), c("in")),
-                        ncol=4)
-cat("factor = c('line graph', 'freq. reordered line graph', 'alphab. reordered line graph')")
-```
-
-```{r, fig.width=12, fig.height=3}
-gridExtra::grid.arrange(showplot(rockArt, "District", "point-to-point graph", output = 'plots pane'), 
-                        showplot(rockArt, "District", "freq. reordered point-to-point graph", output = 'plots pane'),
-                        showplot(rockArt, "District", "alphab. reordered point-to-point graph", output = 'plots pane'),
-                        heights=unit(c(3), c("in")),
-                        ncol=4)
-cat("factor = c('point-to-point graph', 'freq. reordered point-to-point graph', 'alphab. reordered point-to-point graph')")
-```
-
-```{r, fig.width=12, fig.height=3}
-gridExtra::grid.arrange(showplot(rockArt, "District", "linerange graph", output = 'plots pane'), 
-                        showplot(rockArt, "District", "freq. reordered linerange graph", output = 'plots pane'),
-                        showplot(rockArt, "District", "alphab. reordered linerange graph", output = 'plots pane'),
-                        heights=unit(c(3), c("in")),
-                        ncol=4)
-cat("factor = c('linerange graph', 'freq. reordered linerange graph', 'alphab. reordered linerange graph')")
-```
-
-```{r, fig.width=12, fig.height=3}
-gridExtra::grid.arrange(showplot(rockArt, "District", "point graph", output = 'plots pane'), 
-                        showplot(rockArt, "District", "freq. reordered point graph", output = 'plots pane'),
-                        showplot(rockArt, "District", "alphab. reordered point graph", output = 'plots pane'),
-                        heights=unit(c(3), c("in")),
-                        ncol=4)
-cat("factor = c('point graph', 'freq. reordered point graph', 'alphab. reordered point graph')")
-```
-
-```{r, fig.width=12, fig.height=3}
-gridExtra::grid.arrange(showplot(rockArt, "District", "tile plot", output = 'plots pane'), 
-                        showplot(rockArt, "District", "freq. reordered tile plot", output = 'plots pane'),
-                        showplot(rockArt, "District", "alphab. reordered tile plot", output = 'plots pane'),
-                        heights=unit(c(3), c("in")),
-                        ncol=4)
-cat("factor = c('tile plot', 'linerange graph')")
-```
-
-```{r, fig.width=12, fig.height=3}
-gridExtra::grid.arrange(showplot(rockArt, "District", "binned heatmap", output = 'plots pane'), 
-                        showplot(rockArt, "District", "bw binned heatmap", output = 'plots pane'), 
-                        showplot(rockArt, "District", "color binned heatmap", output = 'plots pane'), 
-                        heights=unit(c(3), c("in")),
-                        ncol=4)
-cat("factor = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
-```
-
-```{r, fig.width=12, fig.height=3}
-gridExtra::grid.arrange(showplot(rockArt, "District", "freq. reordered binned heatmap", output = 'plots pane'), 
-                        showplot(rockArt, "District", "bw freq. reordered binned heatmap", output = 'plots pane'),
-                        showplot(rockArt, "District", "color freq. reordered binned heatmap", output = 'plots pane'),
-                        heights=unit(c(3), c("in")),
-                        ncol=4)
-cat("factor = c('freq. reordered binned heatmap', 'bw freq. reordered binned heatmap', 'color freq. reordered binned heatmap')")
-```
-
-```{r, fig.width=12, fig.height=3}
-gridExtra::grid.arrange(showplot(rockArt, "District", "alphab. reordered binned heatmap", output = 'plots pane'), 
-                        showplot(rockArt, "District", "bw alphab. reordered binned heatmap", output = 'plots pane'),
-                        showplot(rockArt, "District", "color alphab. reordered binned heatmap", output = 'plots pane'),
-                        heights=unit(c(3), c("in")),
-                        ncol=4)
-cat("factor = c('alphab. reordered binned heatmap', 'bw alphab. reordered binned heatmap', 'color alphab. reordered binned heatmap')")
-```
-
-```{r, fig.width=12, fig.height=3}
-gridExtra::grid.arrange(showplot(rockArt, "District", "bar graph", output = 'plots pane'), 
-                        showplot(rockArt, "District", "bw bar graph", output = 'plots pane'), 
-                        showplot(rockArt, "District", "color bar graph", output = 'plots pane'), 
-                        heights=unit(c(3), c("in")),
-                        ncol=4)
-cat("factor = c('bar graph', 'bw bar graph', 'color bar graph')")
-```
-
-```{r, fig.width=12, fig.height=3}
-gridExtra::grid.arrange(showplot(rockArt, "District", "freq. reordered bar graph", output = 'plots pane'),
-                        showplot(rockArt, "District", "bw freq. reordered bar graph", output = 'plots pane'),
-                        showplot(rockArt, "District", "color freq. reordered bar graph", output = 'plots pane'),
-                        heights=unit(c(3), c("in")),
-                        ncol=4)
-cat("datetime = c('freq. reordered bar graph', 'bw freq. reordered bar graph', 'color freq. reordered bar graph')")
-```
-
-```{r, fig.width=12, fig.height=3}
-gridExtra::grid.arrange(showplot(rockArt, "District", "alphab. reordered bar graph", output = 'plots pane'),
-                        showplot(rockArt, "District", "bw alphab. reordered bar graph", output = 'plots pane'),
-                        showplot(rockArt, "District", "color alphab. reordered bar graph", output = 'plots pane'),
-                        heights=unit(c(3), c("in")),
-                        ncol=4)
-cat("datetime = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')")
-```

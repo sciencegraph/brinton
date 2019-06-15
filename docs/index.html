@@ -108,48 +108,48 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the released version of brinton from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("brinton")</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># install.packages("brinton")</span></a></code></pre></div>
 <p>And then load the functions included in the package:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(brinton)
-<span class="co">#&gt; Loading required package: ggplot2</span>
-<span class="co">#&gt; M a G i C i N G R a P H S</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(brinton)</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="co">#&gt; Loading required package: ggplot2</span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="co">#&gt; M a G i C i N G R a P H S</span></a></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>When a new dataset comes up, R users use to call the <code><a href="https://www.rdocumentation.org/packages/utils/topics/str">str()</a></code> function that describes textually the main characteristics of this dataset. The new <code><a href="reference/wideplot.html">wideplot()</a></code> function does the same but graphically. As an example, just uncomment and run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># wideplot(infert)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># wideplot(infert)</span></a></code></pre></div>
 <p>This function includes the argument <code>dataclass</code> that sets the types of variables to be included in the matrix as well as the order in which they are listed. As an example, the following line should plot only the numeric variables included in the iris dataset:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># wideplot(infert, dataclass = c("numeric"))</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="co"># wideplot(infert, dataclass = c("numeric"))</span></a></code></pre></div>
 <p>Although, the <code><a href="reference/wideplot.html">wideplot()</a></code> function shows only a small set of the graphics suitable for each type of data. If the user wants to see all the available graphics for some specific variable included in the dataset, then the <code><a href="reference/longplot.html">longplot()</a></code> is useful. As an example, just uncomment and run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># longplot(infert, "pooled.stratum")</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="co"># longplot(infert, "pooled.stratum")</span></a></code></pre></div>
 <p>Any of the graphics presented in the <code><a href="reference/longplot.html">longplot()</a></code> output can also be presented. If one wants to compare the output of some other specific graphics one can, for instance, run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># wideplot(infert, </span>
-<span class="co">#          dataclass = c("numeric"), </span>
-<span class="co">#          numeric = c("point graph", "binned point graph", "binned heatmap"), </span>
-<span class="co">#          label = TRUE)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="co"># wideplot(infert, </span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="co">#          dataclass = c("numeric"), </span></a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="co">#          numeric = c("point graph", "binned point graph", "binned heatmap"), </span></a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="co">#          label = TRUE)</span></a></code></pre></div>
 <p>Sometimes, specially with character variables, there is not enought space for the graphic area, and the user may want to increase the width of the columns in the matrix. The user can then modify the defalut value of the <code>ncol</code> argument:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># wideplot(infert,</span>
-<span class="co">#          dataclass = c("numeric"),</span>
-<span class="co">#          numeric = c("point graph", "binned point graph", "binned heatmap"),</span>
-<span class="co">#          label = TRUE,</span>
-<span class="co">#          ncol = 3)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co"># wideplot(infert,</span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="co">#          dataclass = c("numeric"),</span></a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="co">#          numeric = c("point graph", "binned point graph", "binned heatmap"),</span></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="co">#          label = TRUE,</span></a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="co">#          ncol = 3)</span></a></code></pre></div>
 <p>If the user is interested in one particular graphic, then the function <code><a href="reference/showplot.html">showplot()</a></code> is useful.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># showplot(infert, "pooled.stratum", "color binned stripe graph")</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="co"># showplot(infert, "pooled.stratum", "color binned stripe graph")</span></a></code></pre></div>
 <p>The default output is still a html file but, the <code><a href="reference/showplot.html">showplot()</a></code> function allows also to plot the graphic in the plots pane or the console:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/showplot.html">showplot</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"plots pane"</span>)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="reference/showplot.html">showplot</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"plots pane"</span>)</a></code></pre></div>
 <p><img src="reference/figures/README-plotspane-1.png" width="40%"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/showplot.html">showplot</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"console"</span>)
-<span class="co">#&gt; theme_set(theme_minimal())</span>
-<span class="co">#&gt; binwidth &lt;- (max(infert['pooled.stratum'], na.rm=TRUE)-min(infert['pooled.stratum'], na.rm=TRUE))/20</span>
-<span class="co">#&gt; ggplot(infert, aes(x=pooled.stratum)) +</span>
-<span class="co">#&gt;   geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +</span>
-<span class="co">#&gt;   scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3)) +</span>
-<span class="co">#&gt;   theme(panel.grid = element_line(colour = NA),</span>
-<span class="co">#&gt;     axis.text.y=element_text(color=NA),</span>
-<span class="co">#&gt;     axis.title.y=element_text(color=NA),</span>
-<span class="co">#&gt;     axis.ticks.x=element_line(color='black'),</span>
-<span class="co">#&gt;     legend.position='none')</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="reference/showplot.html">showplot</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"console"</span>)</a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="co">#&gt; theme_set(theme_minimal())</span></a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="co">#&gt; binwidth &lt;- (max(infert['pooled.stratum'], na.rm=TRUE)-min(infert['pooled.stratum'], na.rm=TRUE))/20</span></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="co">#&gt; ggplot(infert, aes(x=pooled.stratum)) +</span></a>
+<a class="sourceLine" id="cb10-5" title="5"><span class="co">#&gt;   geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +</span></a>
+<a class="sourceLine" id="cb10-6" title="6"><span class="co">#&gt;   scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3)) +</span></a>
+<a class="sourceLine" id="cb10-7" title="7"><span class="co">#&gt;   theme(panel.grid = element_line(colour = NA),</span></a>
+<a class="sourceLine" id="cb10-8" title="8"><span class="co">#&gt;     axis.text.y=element_text(color=NA),</span></a>
+<a class="sourceLine" id="cb10-9" title="9"><span class="co">#&gt;     axis.title.y=element_text(color=NA),</span></a>
+<a class="sourceLine" id="cb10-10" title="10"><span class="co">#&gt;     axis.ticks.x=element_line(color='black'),</span></a>
+<a class="sourceLine" id="cb10-11" title="11"><span class="co">#&gt;     legend.position='none')</span></a></code></pre></div>
 </div>
 </div>
   </div>

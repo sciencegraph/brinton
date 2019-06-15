@@ -15,8 +15,9 @@ my_env <- new.env(parent = emptyenv())
 #' @param factor    Character. Graphics for factor variables.
 #' @param numeric   Character. Graphics for numeric variables.
 #' @param character Character. Graphics for character variables.
-#' @param ncol Numeric. Number of columns A number between 3 and 10.
-#' @param label Logical. If `TRUE` the output includes labels that show the
+#' @param group     Character. Group of prestablished graphics.
+#' @param ncol      Numeric. Number of columns A number between 3 and 10.
+#' @param label     Logical. If `TRUE` the output includes labels that show the
 #' names of the graphics that are being displayed.
 #' @return A html file that includes a matrix of graphics. The variables of a
 #' the dataset are first grouped by the type of data, then, each variable is
@@ -28,54 +29,17 @@ my_env <- new.env(parent = emptyenv())
 #' \dontrun{wideplot(iris)}
 #' \dontrun{wideplot(as.data.frame(HairEyeColor))}
 wideplot <- function(data,
-                     dataclass = c("datetime"
-                                   ,"logical"
-                                   ,"ordered"
-                                   ,"factor"
-                                   ,"character"
-                                   ,"numeric"
-                                   ),
-                     datetime =  c('line graph'
-                                   ,'point-to-point graph'
-                                   ,'point graph'
-                                   ,'binned heatmap'
-                                   ),
-                     logical  =  c('line graph'
-                                   ,'point-to-point graph'
-                                   ,'point graph'
-                                   ,'tile plot'
-                                   ,'bar graph'
-                                   ),
-                     ordered  =  c('line graph'
-                                   ,'point-to-point graph'
-                                   ,'point graph'
-                                   ,'tile plot'
-                                   ,'bar graph'
-                                   ),
-                     factor  =   c('line graph'
-                                   ,'point-to-point graph'
-                                   ,'point graph'
-                                   ,'tile plot'
-                                   ,'bar graph'
-                                   ,'freq. reordered bar graph'
-                                   ,'alphab. reordered bar graph'
-                                   ),
-                     numeric   = c('line graph'
-                                   ,'stepped line graph'
-                                   ,'point graph'
-                                   ,'color point graph'
-                                   ,'histogram'
-                                   ,'color bar graph'
-                                   ,'normal qq plot'
-                                   ),
-                     character = c('line graph'
-                                   ,'point-to-point graph'
-                                   ,'point graph'
-                                   ,'tile plot'
-                                   ,'bar graph'
-                                   ,'freq. reordered bar graph'
-                                   ,'alphab. reordered bar graph'
-                                   ),
+                     dataclass = c("logical" ,"ordered", "factor", "character", "datetime", "numeric"),
+                     logical  =  c("line graph", "point-to-point graph", "point graph", "tile plot", "bar graph"),
+                     ordered  =  c("line graph", "point-to-point graph", "point graph", "tile plot", "bar graph"),
+                     factor  =   c("line graph", "point-to-point graph", "point graph", "tile plot", "bar graph",
+                                   "freq. reordered bar graph", "alphab. reordered bar graph"),
+                     character = c("line graph", "point-to-point graph", "point graph", "tile plot", "bar graph",
+                                   "freq. reordered bar graph", "alphab. reordered bar graph"),
+                     datetime =  c("line graph", "point-to-point graph", "point graph", "binned heatmap"),
+                     numeric   = c("line graph", "stepped line graph", "point graph", "color point graph",
+                                   "histogram", "color bar graph", "normal qq plot"),
+                     group = 'overview',
                      ncol = 7,
                      label = "FALSE"
                      )
@@ -136,6 +100,58 @@ if(length(label) != sum(label %in% label_v, na.rm = TRUE))
 {stop(paste0("The 'label' argument expects a logical: '",
              paste0(label_v, collapse = "', '"), "'"))
 }
+if(length(group) != sum(group %in% group_v, na.rm = TRUE))
+{stop(paste0("The 'group' argument expects a character which values can be : '",
+             paste0(group_v, collapse = "', '"), "'"))
+}
+
+## Selection of a prestablished group of graphics
+
+if (group == "overview") {
+  logical  =  c("line graph", "point-to-point graph", "point graph", "tile plot", "bar graph")
+  ordered  =  c("line graph", "point-to-point graph", "point graph", "tile plot", "bar graph")
+  factor  =   c("line graph", "point-to-point graph", "point graph", "tile plot", "bar graph",
+                "freq. reordered bar graph", "alphab. reordered bar graph")
+  character = c("line graph", "point-to-point graph", "point graph", "tile plot", "bar graph",
+                "freq. reordered bar graph", "alphab. reordered bar graph")
+  datetime =  c("line graph", "point-to-point graph", "point graph", "binned heatmap")
+  numeric   = c("line graph", "stepped line graph", "point graph", "color point graph",
+                "histogram", "color bar graph", "normal qq plot")
+
+  } else if (group == "sequential") {
+  logical   <- c("point graph", "line graph", "tile plot", "point-to-point graph")
+  ordered   <- c("point graph", "line graph", "tile plot", "point-to-point graph")
+  factor    <- c("point graph", "line graph", "tile plot", "point-to-point graph")
+  character <- c("point graph", "line graph", "tile plot", "point-to-point graph")
+  datetime  <- c("point graph", "line graph", "stepped line graph", "point-to-point graph")
+  numeric   <- c("point graph", "line graph", "stepped line graph", "point-to-point graph",
+                 "area graph", "stepped area graph")
+  } else if (group == "scattered") {
+    logical   <- c("point graph", "blank", "blank", "tile plot")
+    ordered   <- c("point graph", "blank", "blank", "tile plot")
+    factor    <- c('point graph', 'freq. reordered point graph', 'alphab. reordered point graph',
+                   'tile plot', 'freq. reordered tile plot', 'alphab. reordered tile plot')
+    character <- c('point graph', 'freq. reordered point graph', 'alphab. reordered point graph',
+                   'tile plot', 'freq. reordered tile plot', 'alphab. reordered tile plot')
+    datetime  <- c("point graph")
+    numeric   <- c("point graph", "bw point graph", "color point graph",
+                   "stripe graph", "bw stripe graph", "color stripe graph")
+  } else if (group == "binned") {
+    logical   <- c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')
+    ordered   <- c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')
+    factor    <- c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')
+    character <- c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')
+    datetime  <- c("binned heatmap", "bw binned heatmap", "color binned heatmap")
+    numeric   <- c("binned heatmap", "bw binned heatmap", "color binned heatmap",
+                   "color binned heatmap", "binned stripe graph", "histogram")
+  } else if (group == "modeled") {
+    numeric <- c("density plot", "violin plot", "box plot")
+  } else if (group == "comparison") {
+    numeric <- c("normal qq plot")
+  } else if (group == "methods") {
+    numeric <- c("normal qq plot")
+  } else if (group == "tuned") {
+  }
 
 ## Adds up to 10 columns to the graphic matrix source
 datetime    <- add_blank(datetime)
@@ -171,6 +187,9 @@ if (length(data[sapply(data, lubridate::is.Date)])>0)
                                              if (datetime[", j, "] == 'line graph') {
                                              assign(dti", letters[j], ",
                                              pp_1DD_linegraph(pp, colnames(pp[i]), pp_size = 1/ncol), envir=my_env)
+                                             } else if (datetime[", j, "] == 'stepped line graph') {
+                                             assign(dti", letters[j], ",
+                                             pp_1DD_linegraph(pp, colnames(pp[i]), 'yx', pp_size = 1/ncol, pp_trans = 'step'), envir=my_env)
                                              } else if (datetime[", j, "] == 'point graph') {
                                              assign(dti", letters[j], ",
                                              pp_1DD_pointgraph(pp, colnames(pp[i]), pp_size = 1/ncol), envir=my_env)
@@ -243,6 +262,15 @@ if (length(data[sapply(data, is.logical)])>0)
                                              } else if (logical[", j, "] == 'color bar graph') {
                                              assign(lgi", letters[j], ",
                                              pp_bargraph(pp, colnames(pp[i]), 'color'), envir=my_env)
+                                             } else if (logical[", j, "] == 'binned heatmap') {
+                                             assign(lgi", letters[j], ",
+                                             pp_1DD_heatmap(pp, colnames(pp[i]), 'yx', 'black'), envir=my_env)
+                                             } else if (logical[", j, "] == 'bw binned heatmap') {
+                                             assign(lgi", letters[j], ",
+                                             pp_1DD_heatmap(pp, colnames(pp[i]), 'yx', 'bw'), envir=my_env)
+                                             } else if (logical[", j, "] == 'color binned heatmap') {
+                                             assign(lgi", letters[j], ",
+                                             pp_1DD_heatmap(pp, colnames(pp[i]), 'yx', 'color'), envir=my_env)
                                              } else if (logical[", j, "] == 'blank') {
                                              assign(lgi", letters[j], ",
                                              blank(pp, colnames(pp[i])), envir=my_env)
@@ -301,6 +329,15 @@ if (length(data[sapply(data, is.ordered)])>0)
                                              } else if (ordered[", j, "] == 'color bar graph') {
                                              assign(ofi", letters[j], ",
                                              pp_bargraph(pp, colnames(pp[i]), 'color'), envir=my_env)
+                                             } else if (ordered[", j, "] == 'binned heatmap') {
+                                             assign(ofi", letters[j], ",
+                                             pp_1DD_heatmap(pp, colnames(pp[i]), 'yx', 'black'), envir=my_env)
+                                             } else if (ordered[", j, "] == 'bw binned heatmap') {
+                                             assign(ofi", letters[j], ",
+                                             pp_1DD_heatmap(pp, colnames(pp[i]), 'yx', 'bw'), envir=my_env)
+                                             } else if (ordered[", j, "] == 'color binned heatmap') {
+                                             assign(ofi", letters[j], ",
+                                             pp_1DD_heatmap(pp, colnames(pp[i]), 'yx', 'color'), envir=my_env)
                                              } else if (ordered[", j, "] == 'blank') {
                                              assign(ofi", letters[j], ",
                                              blank(pp, colnames(pp[i])), envir=my_env)
@@ -513,6 +550,12 @@ if (length(data[sapply(data, is.numeric)])>0)
                                              } else if (numeric[", j, "] == 'point-to-point graph') {
                                              assign(nui", letters[j], ",
                                              pp_1DD_linegraph(pp, colnames(pp[i]), 'yx', pp_size = 1/ncol, pp_points = TRUE), envir=my_env)
+                                             } else if (numeric[", j, "] == 'area graph') {
+                                             assign(nui", letters[j], ",
+                                             pp_1DD_areagraph(pp, colnames(pp[i])), envir=my_env)
+                                             } else if (numeric[", j, "] == 'stepped area graph') {
+                                             assign(nui", letters[j], ",
+                                             pp_1DD_areagraph(pp, colnames(pp[i]), pp_trans = 'step'), envir=my_env)
                                              } else if (numeric[", j, "] == 'stripe graph') {
                                              assign(nui", letters[j], ",
                                              pp_stripegraph(pp, colnames(pp[i])), envir=my_env)
@@ -797,15 +840,4 @@ pander::openFileInOS("output.html")
 
 }
 
-# devtools::build()
-# install.packages("C:/Users/34601/Documents/brinton_0.1.0.tar.gz", repos = NULL, type="source")
-## install.packages("D:/Usuaris/pmillan/Documents/ALTRES/brinton_0.1.0.tar.gz", repos = NULL, type="source")
-# library("brinton", lib.loc="~/R/win-library/3.4")
-# wideplot(iris)
-# 1er stagget
-# 2on commit
-# git push -f origin master
 
-# pp[[i]] <- factor(pp[[i]], levels = unique(pp[[i]]))
-# pp[[i]] <- forcats::fct_infreq(pp[[i]], ordered = TRUE)
-# pp[[i]] <- as.character(pp[[i]])

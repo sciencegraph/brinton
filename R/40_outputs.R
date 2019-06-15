@@ -11,15 +11,16 @@ dataclass_v <- c('logical',
                  'numeric',
                  'datetime',
                  'character'
-)
+                 )
 datetime_v  <- c('blank',
                  'line graph',
+                 'stepped line graph',
                  'point graph',
                  'point-to-point graph',
                  'binned heatmap',
                  'bw binned heatmap',
                  'color binned heatmap'
-)
+                 )
 logical_v   <- c('blank',
                  'line graph',
                  'tile plot',
@@ -28,8 +29,11 @@ logical_v   <- c('blank',
                  'linerange graph',
                  'bar graph',
                  'bw bar graph',
-                 'color bar graph'
-)
+                 'color bar graph',
+                 'binned heatmap',
+                 'bw binned heatmap',
+                 'color binned heatmap'
+                 )
 ordered_v   <- c('blank',
                  'line graph',
                  'tile plot',
@@ -38,8 +42,11 @@ ordered_v   <- c('blank',
                  'linerange graph',
                  'bar graph',
                  'bw bar graph',
-                 'color bar graph'
-)
+                 'color bar graph',
+                 'binned heatmap',
+                 'bw binned heatmap',
+                 'color binned heatmap'
+                 )
 factor_v    <- c('blank',
                  'line graph',
                  'freq. reordered line graph',
@@ -74,8 +81,10 @@ factor_v    <- c('blank',
                  'alphab. reordered bar graph',
                  'bw alphab. reordered bar graph',
                  'color alphab. reordered bar graph'
-)
+                 )
 numeric_v   <- c('blank',
+                 'area graph',
+                 'stepped area graph',
                  'line graph',
                  'stepped line graph',
                  'stripe graph',
@@ -110,7 +119,7 @@ numeric_v   <- c('blank',
                  'box plot',
                  '3 uniaxial',
                  'normal qq plot'
-)
+                 )
 character_v <- c('blank',
                  'line graph',
                  'freq. reordered line graph',
@@ -145,14 +154,22 @@ character_v <- c('blank',
                  'alphab. reordered bar graph',
                  'bw alphab. reordered bar graph',
                  'color alphab. reordered bar graph'
-)
+                 )
+group_v     <- c('overview',
+                 'sequential',
+                 'scattered',
+                 'binned',
+                 'modeled',
+                 'methods',
+                 'tuned'
+                 )
 label_v     <- c('TRUE',
                  'FALSE',
                  'T',
                  'F',
                  0,
                  1
-)
+                 )
 
 #' @noRd
 output_show <- "

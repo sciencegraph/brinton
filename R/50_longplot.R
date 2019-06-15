@@ -60,20 +60,24 @@ longplot <- function(data,
   if (lubridate::is.Date(unlist(data[, vars])) == TRUE) {
     write(paste0("#+ datetime, fig.width=12, fig.height=", long), file="output.R", append=TRUE)  # gridExtra
     stripe <- c('line graph',
-                'point graph',
-                'point-to-point graph')
+                'stepped line graph')
     dt11 <- pp_1DD_linegraph(data, colnames(data[vars]), pp_size = 1/ncol)
-    dt12 <- pp_1DD_pointgraph(data, colnames(data[vars]), pp_size = 1/ncol)
-    dt13 <- pp_1DD_linegraph(data, colnames(data[vars]), pp_size = 1/ncol, pp_points = TRUE)
-    add_plots("dt1", 3)
+    dt12 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_trans = 'step')
+    add_plots("dt1", 2)
+    if (label == TRUE) {add_label("datetime", stripe)}
+    stripe <- c('point graph',
+                'point-to-point graph')
+    dt21 <- pp_1DD_pointgraph(data, colnames(data[vars]), pp_size = 1/ncol)
+    dt22 <- pp_1DD_linegraph(data, colnames(data[vars]), pp_size = 1/ncol, pp_points = TRUE)
+    add_plots("dt2", 2)
     if (label == TRUE) {add_label("datetime", stripe)}
     stripe <- c('binned heatmap',
                 'bw binned heatmap',
                 'color binned heatmap')
-    dt21 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'black')
-    dt22 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
-    dt23 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
-    add_plots("dt2", 3)
+    dt31 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'black')
+    dt32 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
+    dt33 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
+    add_plots("dt3", 3)
     if (label == TRUE) {add_label("datetime", stripe)}
     rmarkdown::render("output.R","html_document")
     pander::openFileInOS("output.html")
@@ -92,13 +96,21 @@ longplot <- function(data,
     lg15 <- pp_1DD_linerange(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     add_plots("lg1", 5)
     if (label == TRUE) {add_label("logical", stripe)}
+    stripe <- c('binned heatmap',
+                'bw binned heatmap',
+                'color binned heatmap')
+    lg21 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'black')
+    lg22 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
+    lg23 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
+    add_plots("lg2", 3)
+    if (label == TRUE) {add_label("logical", stripe)}
     stripe <- c('bar graph',
                 'bw bar graph',
                 'color bar graph')
-    lg21 <- pp_bargraph(data, colnames(data[vars]), 'black')
-    lg22 <- pp_bargraph(data, colnames(data[vars]), 'bw')
-    lg23 <- pp_bargraph(data, colnames(data[vars]), 'color')
-    add_plots("lg2", 3)
+    lg31 <- pp_bargraph(data, colnames(data[vars]), 'black')
+    lg32 <- pp_bargraph(data, colnames(data[vars]), 'bw')
+    lg33 <- pp_bargraph(data, colnames(data[vars]), 'color')
+    add_plots("lg3", 3)
     if (label == TRUE) {add_label("logical", stripe)}
     rmarkdown::render("output.R","html_document")
     pander::openFileInOS("output.html")
@@ -116,13 +128,21 @@ longplot <- function(data,
     of15 <- pp_1DD_linerange(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     add_plots("of1", 5)
     if (label == TRUE) {add_label("ordered", stripe)}
+    stripe <- c('binned heatmap',
+                'bw binned heatmap',
+                'color binned heatmap')
+    of21 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'black')
+    of22 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
+    of23 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
+    add_plots("of2", 3)
+    if (label == TRUE) {add_label("logical", stripe)}
     stripe <- c('bar graph',
                 'bw bar graph',
                 'color bar graph')
-    of21 <- pp_bargraph(data, colnames(data[vars]), 'black')
-    of22 <- pp_bargraph(data, colnames(data[vars]), 'bw')
-    of23 <- pp_bargraph(data, colnames(data[vars]), 'color')
-    add_plots("of2", 3)
+    of31 <- pp_bargraph(data, colnames(data[vars]), 'black')
+    of32 <- pp_bargraph(data, colnames(data[vars]), 'bw')
+    of33 <- pp_bargraph(data, colnames(data[vars]), 'color')
+    add_plots("of3", 3)
     if (label == TRUE) {add_label("ordered", stripe)}
     rmarkdown::render("output.R","html_document")
     pander::openFileInOS("output.html")
@@ -330,6 +350,12 @@ longplot <- function(data,
     p012 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_trans = 'step')
     p013 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_points = TRUE)
     add_plots("p01", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('area graph',
+                'stepped area graph')
+    p131 <- pp_1DD_areagraph(data, colnames(data[vars]), 'yx')
+    p132 <- pp_1DD_areagraph(data, colnames(data[vars]), 'yx', pp_trans = 'step')
+    add_plots("p13", 2)
     if (label == TRUE) {add_label("numeric", stripe)}
     stripe <- c('stripe graph', 'bw stripe graph', 'color stripe graph')
     p021 <- pp_stripegraph(data, colnames(data[vars]), 'black')

@@ -218,6 +218,30 @@ pp_1DD_binnedpointgraph <- function(pp_df,
   } else {stop(warning_general)}
 }
 
+pp_1DD_areagraph <- function(pp_df,
+                             pp_var,
+                             ...,
+                             pp_size = 1,
+                             pp_trans = "rect",
+                             pp_coord = "xy")
+{
+  pp_df$pp_var <- unlist(pp_df[, pp_var])
+
+  p_labs <- labs(y=names(pp_df[pp_var]), x="seq")
+  p_plot <- ggplot(pp_df, aes_string(y=pp_var), environment = environment()) + p_labs + pp_theme()
+  p_area <- geom_area(aes(x=seq_along(pp_var)), fill = "black")
+  p_areastep <- geom_bar(aes(x=seq_along(pp_var)), fill = "black", width = 1, stat = "identity")
+
+  if (pp_coord == "xy" & pp_trans == "rect") {
+    p_plot + p_area
+  } else if (pp_coord == "yx" & pp_trans == "rect") {
+    p_plot + p_area + coord_flip()
+  } else if (pp_coord == "xy" & pp_trans == "step") {
+    p_plot + p_areastep
+  } else if (pp_coord == "yx" & pp_trans == "step") {
+    p_plot + p_areastep + coord_flip()
+  } else {stop(warning_general)}
+}
 
 pp_1DD_linegraph <- function(pp_df,
                              pp_var,
@@ -263,7 +287,7 @@ pp_1DD_linerange <- function(pp_df,
   pp_df$pp_var <- unlist(pp_df[, pp_var])
 
   p_labs      <- labs(y=names(pp_df[pp_var]), x="seq")
-  p_plot      <- ggplot(pp_df, aes_string(y=pp_var), environment = environment()) + pp_theme()
+  p_plot      <- ggplot(pp_df, aes_string(y=pp_var), environment = environment()) + p_labs + pp_theme()
   p_path      <- geom_path(aes(x=seq_along(pp_var)), size=0.2*pp_size)
   p_point     <- geom_point(data = pp_df, aes(x=seq_along(pp_var)), size=3*pp_size)
 
@@ -321,7 +345,7 @@ pp_1DD_heatmap <- function(pp_df,
   pp_df$pp_var <- unlist(pp_df[, pp_var])
 
   p_labs    <- labs(y=names(pp_df[pp_var]), x="seq")
-  p_plot    <- ggplot(pp_df, aes_string(y=pp_var), environment = environment()) + pp_theme() + amb.z
+  p_plot    <- ggplot(pp_df, aes_string(y=pp_var), environment = environment()) + p_labs + pp_theme() + amb.z
   p_bin2d   <- geom_bin2d(data = pp_df, aes(x=seq_along(pp_var)), fill = "black")
   p_bin2d_c <- geom_bin2d(data = pp_df, aes(x=seq_along(pp_var)))
 
