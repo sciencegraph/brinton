@@ -3,3 +3,5 @@
 ^\.Rproj\.user$
 output.html
 output.R
+^doc$
+^Meta$

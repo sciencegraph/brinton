@@ -1,20 +1,11 @@
 #' @import ggplot2
+#' @importFrom gridExtra grid.arrange
+#' @importFrom rmarkdown render
 #' @importFrom RColorBrewer brewer.pal
-
-# custom themes
-
-# theme_set(theme_bw())
-
-# pp_theme <- theme(
-#   legend.position="right",
-#   text = element_text(size=11),
-#   legend.key.size = unit(0.8, "lines"),
-#   panel.border = element_rect(colour = NA),
-#   panel.grid.major = element_line(colour = NA),
-#   panel.grid.minor = element_line(colour = NA),
-#   legend.key = element_rect(fill = NA,colour = NA),
-#   strip.background = element_rect(colour = NA, fill = NA)
-#   )
+#' @importFrom stats density
+#' @importFrom forcats fct_infreq
+#' @importFrom lubridate is.instant
+#' @importFrom pander openFileInOS
 
 pp_theme <- function(base_size = 11,
                       base_family = "",

@@ -1,7 +1,6 @@
 
 # basic plots
 
-
 blank <- function(pp_df,
                   pp_var)  {
   pp_df$pp_var <- unlist(pp_df[, pp_var])
@@ -86,17 +85,20 @@ pp_boxplot <- function(pp_df,
 }
 
 
-qqplot <- function (vec,
+qqplot <- function (pp_df,
+                    pp_var,
                     pp_size = 0.5) {
-  y <- stats::quantile(vec[!is.na(vec)], c(0.25, 0.75))
+  pp_df$pp_var <- unlist(pp_df[, pp_var])
+  y <- stats::quantile(pp_df$pp_var[!is.na(pp_df$pp_var)], c(0.25, 0.75))
   x <- stats::qnorm(c(0.25, 0.75))
   slope <- diff(y)/diff(x)
   int <- y[1L] - slope * x[1L]
-  d <- data.frame(resids = vec)
+  d <- data.frame(resids = pp_df$pp_var)
 
   ggplot(d, aes_(sample = ~resids)) +
     stat_qq(size=pp_size) +
     geom_abline(slope = slope, intercept = int, size=pp_size) +
+    labs(y=names(pp_df[pp_var]), x="theoretical") +
     pp_theme()
 }
 
@@ -141,20 +143,28 @@ pp_1DD_scatterplot <- function(pp_df,
 pp_histogram <- function(pp_df,
                          pp_var,
                          pp_color = "black",
+                         pp_size = 1,
+                         pp_geom = "bar",
                          pp_binwidth = 1)  {
   pp_df$pp_var <- unlist(pp_df[, pp_var])
 
   p_labs   <- labs(x=names(pp_df[pp_var]))
   p_plot   <- ggplot(pp_df, aes_string(x=pp_var), environment = environment()) + p_labs + pp_theme()
-  p_hist   <- geom_histogram(fill="black", binwidth = pp_binwidth, center = 0)
-  p_hist_c <- geom_histogram(aes_(fill=~..count..), binwidth = pp_binwidth, center = 0)
+  p_freq   <- geom_line(stat = "bin", binwidth = pp_binwidth, center = 0, size = 0.5*pp_size)
+  p_dots   <- geom_dotplot(binwidth = pp_binwidth, dotsize = 0.85, stackratio = 1/0.85)
+  p_hist   <- geom_histogram(fill="black", color="black", binwidth = pp_binwidth, center = 0)
+  p_hist_c <- geom_histogram(aes_(fill=~..count.., color=~..count..), binwidth = pp_binwidth, center = 0)
 
-  if (pp_color == "black") {
+  if (pp_color == "black" & pp_geom == "bar") {
     p_plot + p_hist
-  } else if (pp_color == "bw") {
-    p_plot + p_hist_c + p_scale_gray_a + amb.z
-  } else if (pp_color == "color") {
-    p_plot + p_hist_c + p_scale_color_a + amb.z
+  } else if (pp_color == "bw" & pp_geom == "bar") {
+    p_plot + p_hist_c + p_scale_gray_a + p_scale_gray_l + amb.z
+  } else if (pp_color == "color" & pp_geom == "bar") {
+    p_plot + p_hist_c + p_scale_color_a + p_scale_color_l + amb.z
+  } else if (pp_color == "black" & pp_geom == "line") {
+    p_plot + p_freq
+  } else if (pp_color == "black" & pp_geom == "dot") {
+    p_plot + p_dots + amb.y
   } else {stop(warning_general)}
 }
 
@@ -336,6 +346,27 @@ pp_1DD_tileplot <- function(pp_df,
   } else {stop(warning_general)}
 }
 
+pp_1DD_raster   <- function(pp_df,
+                            pp_var,
+                            pp_coord = "xy",
+                            pp_color = "bw")
+{
+  pp_df$pp_var <- unlist(pp_df[, pp_var])
+
+  p_labs  <- labs(y=names(pp_df[pp_var]), x="seq")
+  p_plot <- ggplot(pp_df, aes_string(y=pp_var), environment = environment()) + p_labs + pp_theme()
+  p_raster  <- stat_density_2d(aes(x=seq_along(pp_var), fill = stat(density)), geom = 'raster', contour = FALSE)
+
+  if (pp_coord == "xy" & pp_color == "bw") {
+    p_plot + p_raster + p_scale_gray_a + coord_flip() + amb.z
+  } else if (pp_coord == "xy" & pp_color == "color") {
+    p_plot + p_raster + p_scale_color_a + coord_flip() + amb.z
+  } else if (pp_coord == "yx" & pp_color == "bw") {
+    p_plot + p_raster + p_scale_gray_a + amb.z
+  } else if (pp_coord == "yx" & pp_color == "color") {
+    p_plot + p_raster + p_scale_color_a + amb.z
+  } else {stop(warning_general)}
+}
 
 pp_1DD_heatmap <- function(pp_df,
                            pp_var,
@@ -362,7 +393,6 @@ pp_1DD_heatmap <- function(pp_df,
   } else if (pp_coord == "xy" & pp_color == "color") {
     p_plot + p_bin2d_c + p_scale_color_a + coord_flip()
   } else {stop(warning_general)}
-
 }
 
 
@@ -374,15 +404,15 @@ pp_binned_stripegraph <- function(pp_df,
 
   p_labs    <- labs(x=names(pp_df[pp_var]))
   p_plot    <- ggplot(pp_df, aes_string(x=pp_var), environment = environment()) + pp_theme() + amb.y
-  p_bin2d   <- geom_bin2d(aes(y=1), binwidth = c(pp_binwidth, 1), fill="black")
+  p_bin2d   <- geom_bin2d(aes(y=1), binwidth = c(pp_binwidth, 1), fill = "black")
   p_bin2d_c <- geom_bin2d(aes(y=1), binwidth = c(pp_binwidth, 1))
 
   if (pp_color == "black") {
     p_plot + p_bin2d
   } else if (pp_color == "bw") {
-    p_plot + p_bin2d_c + p_scale_gray_a + amb.z
+    p_plot + p_bin2d_c + p_scale_gray_a + p_scale_gray_l + amb.z
   } else if (pp_color == "color") {
-    p_plot + p_bin2d_c + p_scale_color_a + amb.z
+    p_plot + p_bin2d_c + p_scale_color_a + p_scale_color_l + amb.z
   } else {stop(warning_general)}
 }
 

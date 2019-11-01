@@ -12,15 +12,6 @@ dataclass_v <- c('logical',
                  'datetime',
                  'character'
                  )
-datetime_v  <- c('blank',
-                 'line graph',
-                 'stepped line graph',
-                 'point graph',
-                 'point-to-point graph',
-                 'binned heatmap',
-                 'bw binned heatmap',
-                 'color binned heatmap'
-                 )
 logical_v   <- c('blank',
                  'line graph',
                  'tile plot',
@@ -82,6 +73,18 @@ factor_v    <- c('blank',
                  'bw alphab. reordered bar graph',
                  'color alphab. reordered bar graph'
                  )
+datetime_v  <- c('blank',
+                 'line graph',
+                 'stepped line graph',
+                 'point graph',
+                 'point-to-point graph',
+                 'stepped point-to-point graph',
+                 'binned heatmap',
+                 'bw binned heatmap',
+                 'color binned heatmap',
+                 'bw heatmap',
+                 'color heatmap'
+                 )
 numeric_v   <- c('blank',
                  'area graph',
                  'stepped area graph',
@@ -102,9 +105,12 @@ numeric_v   <- c('blank',
                  'binned heatmap',
                  'bw binned heatmap',
                  'color binned heatmap',
+                 'bw heatmap',
+                 'color heatmap',
                  'binned point graph',
                  'bw binned point graph',
                  'color binned point graph',
+                 'stepped point-to-point graph',
                  'point-to-point graph',
                  'bar graph',
                  'bw bar graph',
@@ -112,6 +118,7 @@ numeric_v   <- c('blank',
                  'histogram',
                  'bw histogram',
                  'color histogram',
+                 'freq. polygon',
                  'density plot',
                  'filled density plot',
                  'violin plot',
@@ -155,13 +162,13 @@ character_v <- c('blank',
                  'bw alphab. reordered bar graph',
                  'color alphab. reordered bar graph'
                  )
-group_v     <- c('overview',
-                 'sequential',
-                 'scattered',
-                 'binned',
-                 'modeled',
-                 'methods',
-                 'tuned'
+group_v     <- c('sequence',
+                 'scatter',
+                 'bin',
+                 'model',
+                 'symbol',
+                 'GOF',
+                 'random'
                  )
 label_v     <- c('TRUE',
                  'FALSE',
@@ -174,10 +181,28 @@ label_v     <- c('TRUE',
 #' @noRd
 output_show <- "
 #' ---
-#' title: '*'
-#' author: 'Brinton`s showplot'
-#' date: '`r format(Sys.time(), \"%d %b %Y %H:%M:%S\")`'
+#' title: 'plotup output'
+#' author: 'by brinton R package'
+#' date: ''
 #' ---
+#' <style>
+#'   .main-container {
+#'   max-width: 1200px !important;
+#'   }
+#'   h1.title {
+#'   font-family: monospace;
+#'   font-size: 20px;
+#'   color: black;
+#'   }
+#'   h4.author{
+#'   font-family: monospace;
+#'   font-size: 10pt;
+#'   }
+#'   h4.date{
+#'   font-family: monospace;
+#'   font-size: 10pt;
+#'   }
+#' </style>
 #+ preamble, echo=FALSE, message=FALSE
 knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev='png')
 "
@@ -185,13 +210,26 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev=
 #' @noRd
 output_wide <- "
 #' ---
-#' title: '*'
-#' author: 'Brinton`s wideplot'
-#' date: '`r format(Sys.time(), \"%d %b %Y %H:%M:%S\")`'
+#' title: 'wideplot graphic'
+#' author: 'by brinton R package'
+#' date: ''
 #' ---
 #' <style>
 #'   .main-container {
 #'   max-width: 1200px !important;
+#'   }
+#'   h1.title {
+#'   font-family: monospace;
+#'   font-size: 20px;
+#'   color: black;
+#'   }
+#'   h4.author{
+#'   font-family: monospace;
+#'   font-size: 10pt;
+#'   }
+#'   h4.date{
+#'   font-family: monospace;
+#'   font-size: 10pt;
 #'   }
 #' </style>
 #+ preamble, echo=FALSE, message=FALSE
@@ -201,10 +239,28 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev=
 #' @noRd
 output_long <- "
 #' ---
-#' title: '*'
-#' author: 'Brinton`s longplot'
-#' date: '`r format(Sys.time(), \"%d %b %Y %H:%M:%S\")`'
+#' title: 'longplot graphic'
+#' author: 'by brinton R package'
+#' date: ''
 #' ---
+#' <style>
+#'   .main-container {
+#'   max-width: 1200px !important;
+#'   }
+#'   h1.title {
+#'   font-family: monospace;
+#'   font-size: 20px;
+#'   color: black;
+#'   }
+#'   h4.author{
+#'   font-family: monospace;
+#'   font-size: 10pt;
+#'   }
+#'   h4.date{
+#'   font-family: monospace;
+#'   font-size: 10pt;
+#'   }
+#' </style>
 #+ preamble, echo=FALSE, message=FALSE
 knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev='png')
 "
@@ -215,6 +271,7 @@ warning_bargraph  <- "You may prefer a 'histogram' instead of a 'bargraph'."
 warning_general   <- "I'm so sorry because something went wrong :("
 warning_color     <- "Color argument accepts only 'black', 'bw' or 'color' values."
 warning_coord     <- "Coord argument accepts only 'xy' or 'yx' values."
+warning_long      <- "It seems that there are too many levels for some categorical variable."
 warning_wp_dt     <- "Wideplot's 'datetime' available graphics are 'linegraph', 'pointgraph' and 'blank'."
 warning_wp_lc     <- "Wideplot's 'logical' available graphics are 'linegraph', 'pointgraph' and 'blank'."
 warning_wp_of     <- "Wideplot's 'ordered factor' available graphics are 'linegraph', 'pointgraph', 'bargraph' and 'blank'."

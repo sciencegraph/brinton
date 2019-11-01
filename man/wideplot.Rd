@@ -4,54 +4,218 @@
 \alias{wideplot}
 \title{Presents a wideplot in a html output.}
 \usage{
-wideplot(data, dataclass = c("logical", "ordered", "factor", "character",
-  "datetime", "numeric"), logical = c("line graph",
-  "point-to-point graph", "point graph", "tile plot", "bar graph"),
-  ordered = c("line graph", "point-to-point graph", "point graph",
-  "tile plot", "bar graph"), factor = c("line graph",
-  "point-to-point graph", "point graph", "tile plot", "bar graph",
-  "freq. reordered bar graph", "alphab. reordered bar graph"),
-  character = c("line graph", "point-to-point graph", "point graph",
-  "tile plot", "bar graph", "freq. reordered bar graph",
-  "alphab. reordered bar graph"), datetime = c("line graph",
-  "point-to-point graph", "point graph", "binned heatmap"),
-  numeric = c("line graph", "stepped line graph", "point graph",
-  "color point graph", "histogram", "color bar graph", "normal qq plot"),
-  group = "overview", ncol = 7, label = "FALSE")
+wideplot(data, dataclass = NULL, logical = NULL, ordered = NULL,
+  factor = NULL, character = NULL, datetime = NULL, numeric = NULL,
+  group = NULL, ncol = 7, label = "FALSE")
 }
 \arguments{
-\item{data}{Data.frame. Default dataset to use for plot. If not already
-a data.frame, it should be first coerced to by [as.data.frame()].}
+\item{data}{Data.frame. Default dataset to use for plot. Unquoted. If not
+already a data.frame, it should be first coerced to by \emph{as.data.frame()}.}
 
-\item{dataclass}{Character. Types of data to be considered.}
+\item{dataclass}{Character vector.
+The types of data to be considered among the following:
+\itemize{
+  \item \emph{'logical'}
+  \item \emph{'ordered'}
+  \item \emph{'factor'}
+  \item \emph{'numeric'}
+  \item \emph{'datetime'}
+  \item \emph{'character'}
+}}
 
-\item{logical}{Character. Graphics for logical variables.}
+\item{logical}{Character vector. Graphics for logical variables among the following:
+\itemize{
+  \item \emph{'blank'}
+  \item \emph{'line graph'}
+  \item \emph{'tile plot'}
+  \item \emph{'point graph'}
+  \item \emph{'point-to-point graph'}
+  \item \emph{'linerange graph'}
+  \item \emph{'bar graph'}
+  \item \emph{'bw bar graph'}
+  \item \emph{'color bar graph'}
+  \item \emph{'binned heatmap'}
+  \item \emph{'bw binned heatmap'}
+  \item \emph{'color binned heatmap'}
+}}
 
-\item{ordered}{Character. Graphics for ordered factor variables.}
+\item{ordered}{Character vector. Graphics for ordered factor variables among the following:
+\itemize{
+  \item \emph{'blank'}
+  \item \emph{'line graph'}
+  \item \emph{'tile plot'}
+  \item \emph{'point graph'}
+  \item \emph{'point-to-point graph'}
+  \item \emph{'linerange graph'}
+  \item \emph{'bar graph'}
+  \item \emph{'bw bar graph'}
+  \item \emph{'color bar graph'}
+  \item \emph{'binned heatmap'}
+  \item \emph{'bw binned heatmap'}
+  \item \emph{'color binned heatmap'}
+}}
 
-\item{factor}{Character. Graphics for factor variables.}
+\item{factor}{Character vector. Graphics for Character variables among the following:
+\itemize{
+  \item \emph{'blank'}
+  \item \emph{'line graph'}
+  \item \emph{'freq. reordered line graph'}
+  \item \emph{'alphab. reordered line graph'}
+  \item \emph{'tile plot'}
+  \item \emph{'freq. reordered tile plot'}
+  \item \emph{'alphab. reordered tile plot'}
+  \item \emph{'point graph'}
+  \item \emph{'freq. reordered point graph'}
+  \item \emph{'alphab. reordered point graph'}
+  \item \emph{'binned heatmap'}
+  \item \emph{'bw binned heatmap'}
+  \item \emph{'color binned heatmap'}
+  \item \emph{'freq. reordered binned heatmap'}
+  \item \emph{'bw freq. reordered binned heatmap'}
+  \item \emph{'color freq. reordered binned heatmap'}
+  \item \emph{'alphab. reordered binned heatmap'}
+  \item \emph{'bw alphab. reordered binned heatmap'}
+  \item \emph{'color alphab. reordered binned heatmap'}
+  \item \emph{'point-to-point graph'}
+  \item \emph{'freq. reordered point-to-point graph'}
+  \item \emph{'alphab. reordered point-to-point graph'}
+  \item \emph{'linerange graph'}
+  \item \emph{'freq. reordered linerange graph'}
+  \item \emph{'alphab. reordered linerange graph'}
+  \item \emph{'bar graph'}
+  \item \emph{'bw bar graph'}
+  \item \emph{'color bar graph'}
+  \item \emph{'freq. reordered bar graph'}
+  \item \emph{'bw freq. reordered bar graph'}
+  \item \emph{'color freq. reordered bar graph'}
+  \item \emph{'alphab. reordered bar graph'}
+  \item \emph{'bw alphab. reordered bar graph'}
+  \item \emph{'color alphab. reordered bar graph'}
+}}
 
-\item{character}{Character. Graphics for character variables.}
+\item{character}{Character vector. Graphics for character variables among the following:
+\itemize{
+  \item \emph{'blank'}
+  \item \emph{'line graph'}
+  \item \emph{'freq. reordered line graph'}
+  \item \emph{'alphab. reordered line graph'}
+  \item \emph{'tile plot'}
+  \item \emph{'freq. reordered tile plot'}
+  \item \emph{'alphab. reordered tile plot'}
+  \item \emph{'point graph'}
+  \item \emph{'freq. reordered point graph'}
+  \item \emph{'alphab. reordered point graph'}
+  \item \emph{'binned heatmap'}
+  \item \emph{'bw binned heatmap'}
+  \item \emph{'color binned heatmap'}
+  \item \emph{'freq. reordered binned heatmap'}
+  \item \emph{'bw freq. reordered binned heatmap'}
+  \item \emph{'color freq. reordered binned heatmap'}
+  \item \emph{'alphab. reordered binned heatmap'}
+  \item \emph{'bw alphab. reordered binned heatmap'}
+  \item \emph{'color alphab. reordered binned heatmap'}
+  \item \emph{'point-to-point graph'}
+  \item \emph{'freq. reordered point-to-point graph'}
+  \item \emph{'alphab. reordered point-to-point graph'}
+  \item \emph{'linerange graph'}
+  \item \emph{'freq. reordered linerange graph'}
+  \item \emph{'alphab. reordered linerange graph'}
+  \item \emph{'bar graph'}
+  \item \emph{'bw bar graph'}
+  \item \emph{'color bar graph'}
+  \item \emph{'freq. reordered bar graph'}
+  \item \emph{'bw freq. reordered bar graph'}
+  \item \emph{'color freq. reordered bar graph'}
+  \item \emph{'alphab. reordered bar graph'}
+  \item \emph{'bw alphab. reordered bar graph'}
+  \item \emph{'color alphab. reordered bar graph'}
+}}
 
-\item{datetime}{Character. Graphics for datetime variables.}
+\item{datetime}{Character vector. Graphics for datetime variables among the following:
+\itemize{
+  \item \emph{'blank'}
+  \item \emph{'line graph'}
+  \item \emph{'stepped line graph'}
+  \item \emph{'point graph'}
+  \item \emph{'point-to-point graph'}
+  \item \emph{'stepped point-to-point graph'}
+  \item \emph{'binned heatmap'}
+  \item \emph{'bw binned heatmap'}
+  \item \emph{'color binned heatmap'}
+  \item \emph{'bw heatmap'}
+  \item \emph{'color heatmap'}
+}}
 
-\item{numeric}{Character. Graphics for numeric variables.}
+\item{numeric}{Character vector. Graphics for numeric variables among the following:
+\itemize{
+  \item \emph{'blank'}
+  \item \emph{'area graph'}
+  \item \emph{'stepped area graph'}
+  \item \emph{'line graph'}
+  \item \emph{'stepped line graph'}
+  \item \emph{'stripe graph'}
+  \item \emph{'bw stripe graph'}
+  \item \emph{'color stripe graph'}
+  \item \emph{'binned stripe graph'}
+  \item \emph{'bw binned stripe graph'}
+  \item \emph{'color binned stripe graph'}
+  \item \emph{'point graph'}
+  \item \emph{'bw point graph'}
+  \item \emph{'color point graph'}
+  \item \emph{'point graph with trend line'}
+  \item \emph{'bw point graph with trend line'}
+  \item \emph{'color point graph with trend line'}
+  \item \emph{'binned heatmap'}
+  \item \emph{'bw binned heatmap'}
+  \item \emph{'color binned heatmap'}
+  \item \emph{'bw heatmap'}
+  \item \emph{'color heatmap'}
+  \item \emph{'binned point graph'}
+  \item \emph{'bw binned point graph'}
+  \item \emph{'color binned point graph'}
+  \item \emph{'point-to-point graph'}
+  \item \emph{'stepped point-to-point graph'}
+  \item \emph{'bar graph'}
+  \item \emph{'bw bar graph'}
+  \item \emph{'color bar graph'}
+  \item \emph{'histogram'}
+  \item \emph{'bw histogram'}
+  \item \emph{'color histogram'}
+  \item \emph{'density plot'}
+  \item \emph{'filled density plot'}
+  \item \emph{'violin plot'}
+  \item \emph{'filled violin plot'}
+  \item \emph{'box plot'}
+  \item \emph{'3 uniaxial'}
+  \item \emph{'normal qq plot'}
+}}
 
-\item{group}{Character. Group of prestablished graphics.}
+\item{group}{Quoted character. Group of prestablished graphics which marks represent:
+\itemize{
+  \item \emph{'sequence'}: the row number of the observations.
+  \item \emph{'scatter'}: graphics which marks represent individual observations.
+  \item \emph{'bin'}: observations into a series of intervals.
+  \item \emph{'model'}: a model built from the observations.
+  \item \emph{'symbol'}: different statistics through symbols.
+  \item \emph{'GOF'}: the goodness of fit of a statistical model.
+  \item \emph{'random'}: random graphics.
+}}
 
-\item{ncol}{Numeric. Number of columns A number between 3 and 10.}
+\item{ncol}{Numeric. Number of columns. An integer between 3 and 7. The
+fewer columns displayed, the larger the size of the resulting graphics, a
+feature that is especially useful if the scale labels dwarf the graphics area.}
 
 \item{label}{Logical. If `TRUE` the output includes labels that show the
 names of the graphics that are being displayed.}
 }
 \value{
-A html file that includes a matrix of graphics. The variables of a
-the dataset are first grouped by the type of data, then, each variable is
-graphically represented into a range of different grap hics in one row of
+A html file that includes a grid of graphics. The variables of a
+dataset are first grouped by the type of data, then, each variable is
+graphically represented into a range of different graphics in one row of
 the matrix.
 }
 \description{
-A wideplot is a matrix of graphics were the graphics within each row
+A wideplot is a grid of graphics were the graphics within each row
 corresponds to graphical representations of each one of the variables
 considered within a given dataset.
 }

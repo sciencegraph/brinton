@@ -1,8 +1,6 @@
-# str_eval <- function(x) {eval(parse(text=x))}
-
 #' @noRd
 add_blank <- function(x) {
-  while (length(x) < 10) {
+  while (length(x) < 7) {
     x <- append(x, c("blank"), after = length(x))
     i = length(x)
     }
@@ -12,7 +10,6 @@ add_blank <- function(x) {
 add_plots <- function(a, b) {
   write(paste0("gridExtra::grid.arrange(", paste0(a, 1:b, collapse = ", "), ", ncol=5)"), file="output.R", append = TRUE)
   }
-
 
 add_label <- function(a, b) {
   char_types <- paste0(a, " = c('", paste0(b, collapse = "', '"), "')")
@@ -26,6 +23,9 @@ add_density_1D <- function(a, b) {
   }
   else if (any(is.na(a$b)) == FALSE) {
     dens <- sm::sm.density(a$b, eval.points=a$b, display='none')$estimate
+  }
+  else if (all(is.na(a$b)) == FALSE) {
+    dens <- as.numeric(NA)
   }
   else {
     ind <- which(is.na(a$b) == TRUE)

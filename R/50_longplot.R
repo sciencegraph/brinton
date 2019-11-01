@@ -31,8 +31,9 @@ longplot <- function(data,
          "You have provided an object of class ", class(data))
   }
   if(tibble::is_tibble(data) == TRUE) {
-    stop("The object must be coerced to a data frame.")
-    }
+    # stop("The object must be coerced to a data frame.")
+    data <- as.data.frame(data)
+  }
   string      <- " argument expects a character vector"
   if(is.character(vars)  == FALSE) {
     stop(paste0("The 'vars'",  string))
@@ -48,16 +49,17 @@ longplot <- function(data,
   ) {long <- length(unique(unlist(data[, vars])))/6 + 0.5}
   else if (
     is.numeric(unlist(data[, vars])) == TRUE |
-    lubridate::is.Date(unlist(data[, vars])) == TRUE
+    lubridate::is.instant(unlist(data[, vars])) == TRUE
   ) {long <- 2.4}
   else {stop("This type of variable has not been yet considered")}
 
   my_env <- new.env()
   ncol <- 5
   writeLines(output_long, "output.R")
-  write(paste0("cat('", deparse(substitute(data)), " dataframe')"), file="output.R", append=TRUE)
+  write(paste0("cat('Graphics from the ", deparse(substitute(vars)), " variable(s) of the ", deparse(substitute(data))," dataframe')"),
+        file="output.R", append=TRUE)
 
-  if (lubridate::is.Date(unlist(data[, vars])) == TRUE) {
+  if (lubridate::is.instant(unlist(data[, vars])) == TRUE) {
     write(paste0("#+ datetime, fig.width=12, fig.height=", long), file="output.R", append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'stepped line graph')
@@ -78,6 +80,11 @@ longplot <- function(data,
     dt32 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     dt33 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("dt3", 3)
+    if (label == TRUE) {add_label("datetime", stripe)}
+    stripe <- c('bw heatmap', 'color heatmap')
+    p151 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'bw')
+    p152 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'color')
+    add_plots("p15", 2)
     if (label == TRUE) {add_label("datetime", stripe)}
     rmarkdown::render("output.R","html_document")
     pander::openFileInOS("output.html")
@@ -135,7 +142,7 @@ longplot <- function(data,
     of22 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     of23 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("of2", 3)
-    if (label == TRUE) {add_label("logical", stripe)}
+    if (label == TRUE) {add_label("ordered", stripe)}
     stripe <- c('bar graph',
                 'bw bar graph',
                 'color bar graph')
@@ -344,12 +351,16 @@ longplot <- function(data,
     my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
     write(paste0("#+ numeric, fig.width=12, fig.height=", long), file="output.R", append=TRUE)  # gridExtra
     stripe <- c('line graph',
-                'stepped line graph',
-                'point-to-point graph')
+                'stepped line graph')
     p011 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     p012 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_trans = 'step')
-    p013 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_points = TRUE)
-    add_plots("p01", 3)
+    add_plots("p01", 2)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('point-to-point graph',
+                'stepped point-to-point graph')
+    p161 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_points = TRUE)
+    p162 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_points = TRUE, pp_trans = 'step')
+    add_plots("p16", 2)
     if (label == TRUE) {add_label("numeric", stripe)}
     stripe <- c('area graph',
                 'stepped area graph')
@@ -401,6 +412,11 @@ longplot <- function(data,
     p063 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("p06", 3)
     if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('bw heatmap', 'color heatmap')
+    p151 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'bw')
+    p152 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'color')
+    add_plots("p15", 2)
+    if (label == TRUE) {add_label("numeric", stripe)}
     stripe <- c('bar graph',
                 'bw bar graph',
                 'color bar graph')
@@ -412,10 +428,16 @@ longplot <- function(data,
     stripe <- c('histogram',
                 'bw histogram',
                 'color histogram')
-    p081 <- pp_histogram(data, colnames(data[vars]), 'black', my_binwidth)
-    p082 <- pp_histogram(data, colnames(data[vars]), 'bw', my_binwidth)
-    p083 <- pp_histogram(data, colnames(data[vars]), 'color', my_binwidth)
+    p081 <- pp_histogram(data, colnames(data[vars]), 'black', pp_binwidth = my_binwidth)
+    p082 <- pp_histogram(data, colnames(data[vars]), 'bw', pp_binwidth = my_binwidth)
+    p083 <- pp_histogram(data, colnames(data[vars]), 'color', pp_binwidth = my_binwidth)
     add_plots("p08", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('dot plot',
+                'freq. polygon')
+    p141 <- pp_histogram(data, colnames(data[vars]), 'black', 1, pp_geom = 'dot', my_binwidth)
+    p142 <- pp_histogram(data, colnames(data[vars]), 'black', 1, pp_geom = 'line', my_binwidth)
+    add_plots("p14", 2)
     if (label == TRUE) {add_label("numeric", stripe)}
     stripe <- c('density plot',
                 'filled density plot')
@@ -434,7 +456,7 @@ longplot <- function(data,
                 'normal qq plot')
     p111 <- pp_boxplot(data, colnames(data[vars]), pp_size = 1/ncol)
     p112 <- pp_3uniaxial(data, colnames(data[vars]), pp_size = 4/ncol)
-    p113 <- qqplot(data[,vars], pp_size = 1/ncol)
+    p113 <- qqplot(data, colnames(data[vars]), pp_size = 1/ncol)
     add_plots("p11", 3)
     if (label == TRUE) {add_label("numeric", stripe)}
     rmarkdown::render("output.R","html_document")
