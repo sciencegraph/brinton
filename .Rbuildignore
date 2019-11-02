@@ -6,3 +6,5 @@ output.html
 output.R
 ^doc$
 ^Meta$
+cran-comments.md
+^docs$

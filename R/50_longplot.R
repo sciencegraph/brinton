@@ -433,11 +433,9 @@ longplot <- function(data,
     p083 <- pp_histogram(data, colnames(data[vars]), 'color', pp_binwidth = my_binwidth)
     add_plots("p08", 3)
     if (label == TRUE) {add_label("numeric", stripe)}
-    stripe <- c('dot plot',
-                'freq. polygon')
-    p141 <- pp_histogram(data, colnames(data[vars]), 'black', 1, pp_geom = 'dot', my_binwidth)
-    p142 <- pp_histogram(data, colnames(data[vars]), 'black', 1, pp_geom = 'line', my_binwidth)
-    add_plots("p14", 2)
+    stripe <- c('freq. polygon')
+    p141 <- pp_histogram(data, colnames(data[vars]), 'black', 1, pp_geom = 'line', my_binwidth)
+    add_plots("p14", 1)
     if (label == TRUE) {add_label("numeric", stripe)}
     stripe <- c('density plot',
                 'filled density plot')

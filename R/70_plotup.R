@@ -949,18 +949,6 @@ ggplot(",
   geom_line(stat = 'bin', bins = 20, center = 0, size = 0.5) +
   ", theme_detail)
   }
-  else if (diagram == "dot plot" &
-           is.numeric(unlist(data[, vars])) == TRUE
-  ) {
-    p <- paste0(theme, "
-ggplot(",
-  deparse(substitute(data)),
-  ", aes(x=",
-  as.character(substitute(vars)),
-  ")) +
-  geom_dotplot(bins = 20, dotsize = 0.85, stackratio = 1/0.85) +
-  ", theme_detail_y)
-  }
   else if (diagram == "density plot" &
            is.numeric(unlist(data[, vars])) == TRUE
   ) {
