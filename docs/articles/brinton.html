@@ -77,7 +77,7 @@
       <h1>Automated Graphical Data Analysis with brinton</h1>
                         <h4 class="author">Pere Millán-Martínez &amp; Ramon Oller Piqué</h4>
             
-            <h4 class="date">2019-11-02</h4>
+            <h4 class="date">2019-11-04</h4>
       
       
       <div class="hidden name"><code>brinton.Rmd</code></div>
@@ -109,7 +109,7 @@
 <pre><code>wideplot(data, dataclass = NULL, logical = NULL, ordered = NULL,
   factor = NULL, character = NULL, datetime = NULL, numeric = NULL,
   group = NULL, ncol = 7, label = 'FALSE')</code></pre>
-<p>The only argument necessary to obtain a result is <code>data</code> that expects a <code>data-frame</code> class object; <code>ncol</code> filters the first <em>n</em> columns of the grid, between 3 and 7, which will be shown. The fewer columns displayed, the larger the size of the resulting graphics, a feature that is especially useful if the scale labels dwarf the graphics area; <code>label</code> adds to the grid a vector below each group of rows according to the variable type, with the names and order of the graphics; <code>logical</code>, <code>ordered</code>, <code>factor</code>, <code>character</code>, <code>datetime</code> and <code>numeric</code> make it possible to choose which graphics appear in the grid and in what order, for each variable type. Finally, <code>group</code> changes the selection of graphics that are shown by default according to the criteria of the table @ref{tab:table1}.</p>
+<p>The only argument necessary to obtain a result is <code>data</code> that expects a <code>data-frame</code> class object; <code>ncol</code> filters the first <em>n</em> columns of the grid, between 3 and 7, which will be shown. The fewer columns displayed, the larger the size of the resulting graphics, a feature that is especially useful if the scale labels dwarf the graphics area; <code>label</code> adds to the grid a vector below each group of rows according to the variable type, with the names and order of the graphics; <code>logical</code>, <code>ordered</code>, <code>factor</code>, <code>character</code>, <code>datetime</code> and <code>numeric</code> make it possible to choose which graphics appear in the grid and in what order, for each variable type. Finally, <code>group</code> changes the selection of graphics that are shown by default according to the criteria of the table 1.</p>
 <p>The <code><a href="../reference/wideplot.html">wideplot()</a></code> function takes inspiration from this function, but instead of describing the dataset in textual or tabular form, it does it graphically. We can easily compare the results of these two functions, for example, with the dataset esoph from a case-control study of esophageal cancer in Ille-et-Vilaine, France. The dataset has three ordered factor-type variables and two numerical variables:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(esoph)</a></code></pre></div>
 <pre><code>## 'data.frame':    88 obs. of  5 variables:
@@ -119,7 +119,11 @@
 ##  $ ncases   : num  0 0 0 0 0 0 0 0 0 0 ...
 ##  $ ncontrols: num  40 10 6 5 27 7 4 7 2 1 ...</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="../reference/wideplot.html">wideplot</a></span>(<span class="dt">data =</span> esoph)</a></code></pre></div>
-<p><img src="figures/wideplot_esoph.png" width="80%"></p>
+<div class="figure">
+<img src="figures/wideplot_esoph.png" alt="Figure 1" width="80%"><p class="caption">
+Figure 1
+</p>
+</div>
 <p>If the order and graphic types to be shown for each variable type are not specified and if the graphic types aren’t filtered using the argument <code>group</code>, then the default graphic will contain an opinion-based selection graphics for each variable type, organized especially to facilitate comparison between graphics of the same row and between graphics of the same column. The user can overwrite this default selection of graphics as needed, using the arguments <code>logical</code>, <code>ordered</code>, <code>factor</code>, <code>character</code>, <code>datetime</code> and <code>numeric</code>.</p>
 <table class="table">
 <thead><tr class="header">
@@ -163,8 +167,12 @@
 <a href="#the-longplot-function" class="anchor"></a>The longplot function</h2>
 <p>To facilitate economy of calculation, the <code><a href="../reference/wideplot.html">wideplot()</a></code> function presents a limited number of graphics in each row. If the user wants to expand the array of suggested graphics for a given variable, he or she should use the <code><a href="../reference/longplot.html">longplot()</a></code> function, which returns a grid with all of the graphics considered by the library for that variable. The structure of the function is very simple <code><a href="../reference/longplot.html">longplot(data, vars, label = TRUE)</a></code> and we can easily check the outcome of applying this function to the variable <code>alcgp</code> of the dataset <code>esoph</code>:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="../reference/longplot.html">longplot</a></span>(esoph, <span class="st">'alcgp'</span>)</a></code></pre></div>
-<p><img src="figures/longplot_esoph_alcgp.png" width="80%"></p>
-<p>The arguments of the function are <code>data</code>, which must be a <code>data-frame</code> class object; <code>vars</code>, which requires the name of a specific variable of the dataset; and <code>label</code>, which does not have to be defined and which adds a vector below each row of the grid indicating the name of each graphic. Unlike the grid of the <code><a href="../reference/wideplot.html">wideplot()</a></code> function, the grid of the <code><a href="../reference/longplot.html">longplot()</a></code> function does not include parameters to limit the array of graphics to be presented. We made this decision because the main advantage of this function is precisely that it presents all of the graphic representations available for a given variable. However, we do not rule out adding filters that limit the number of graphics to be shown if this feature seems useful as the catalog fills with graphics. Each graphic presented can be called explicitly by name using the functions<code><a href="../reference/wideplot.html">wideplot()</a></code> and <code><a href="../reference/plotup.html">plotup()</a></code>, which is why the argument <code>label</code> has been set to <code>TRUE</code> in this case.</p>
+<div class="figure">
+<img src="figures/longplot_esoph_alcgp.png" alt="Figure 2" width="80%"><p class="caption">
+Figure 2
+</p>
+</div>
+<p>The arguments of the function are <code>data</code>, which must be a <code>data-frame</code> class object; <code>vars</code>, which requires the name of a specific variable of the dataset; and <code>label</code>, which does not have to be defined and which adds a vector below each row of the grid indicating the name of each graphic. Unlike the grid of the <code><a href="../reference/wideplot.html">wideplot()</a></code> function, the grid of the <code><a href="../reference/longplot.html">longplot()</a></code> function does not include parameters to limit the array of graphics to be presented. We made this decision because the main advantage of this function is precisely that it presents all of the graphic representations available for a given variable. However, we do not rule out adding filters that limit the number of graphics to be shown if this feature seems useful as the catalog fills with graphics. Each graphic presented can be called explicitly by name using the functions <code><a href="../reference/wideplot.html">wideplot()</a></code> and <code><a href="../reference/plotup.html">plotup()</a></code>, which is why the argument <code>label</code> has been set to <code>TRUE</code> in this case.</p>
 <p>The array of graphics that the <code><a href="../reference/longplot.html">longplot()</a></code> function returns is sorted so that in the rows we find different graphic types and in the columns different variations of the same graphic type. This organization, however, is not absolute and in some cases in order to compress the results, we find different graphic types in the columns of the same row.</p>
 </div>
 <div id="the-plotup-function" class="section level2">
@@ -172,7 +180,11 @@
 <a href="#the-plotup-function" class="anchor"></a>The plotup function</h2>
 <p>The <code><a href="../reference/plotup.html">plotup()</a></code> function has the following structure: <code><a href="../reference/plotup.html">plotup(data, vars, diagram, output = 'html')</a></code>. By default, this function returns an <strong>html</strong> document with a single graphic based on a variable from a given dataset and the name of the desired graphic, from among the names included by the specimen that we present in the next subsection. We can easily check the outcome of applying this function to produce a line graph from the variable <code>ncases</code> of the dataset <code>esoph</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="../reference/plotup.html">plotup</a></span>(esoph, <span class="st">'ncases'</span>, <span class="st">'line graph'</span>)</a></code></pre></div>
-<p><img src="figures/plotup_esoph_ncases_linegraph.png" width="80%"></p>
+<div class="figure">
+<img src="figures/plotup_esoph_ncases_linegraph.png" alt="Figure 3" width="80%"><p class="caption">
+Figure 3
+</p>
+</div>
 <p>This function requires three arguments: <code>data</code>, <code>vars</code> and <code>diagram</code>. The fourth argument, <code>output</code>, is optional and has the default value of <strong>html</strong>. However, if it is set to <code>plots pane</code>, instead of generating a graphic in an <strong>html</strong> page, it generates a graphic in the plots pane of RStudio. If, instead, it is set to ’’console´´, the function returns the code used by the library to generate this precise graphic. This feature is especially useful to adapt the default graphic to the specific needs and preferences of the user.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw"><a href="../reference/plotup.html">plotup</a></span>(esoph, <span class="st">'ncases'</span>, <span class="st">'line graph'</span>, <span class="dt">output =</span> <span class="st">'console'</span>)</a></code></pre></div>
 <pre><code>theme_set(theme_minimal())
@@ -199,55 +211,83 @@ ggplot(esoph, aes(x=seq_along(ncases), y=ncases)) +
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(aids, <span class="dt">package =</span> <span class="st">'KMsurv'</span>)</a>
 <a class="sourceLine" id="cb14-2" title="2"><span class="kw"><a href="../reference/wideplot.html">wideplot</a></span>(aids)</a>
 <a class="sourceLine" id="cb14-3" title="3"><span class="kw"><a href="../reference/wideplot.html">wideplot</a></span>(aids, <span class="dt">numeric =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'line graph'</span>, <span class="st">'stepped line graph'</span>), <span class="dt">ncol=</span><span class="dv">5</span>)</a></code></pre></div>
-<p><img src="figures/wideplot_aids0.png" width="80%"></p>
+<div class="figure">
+<img src="figures/wideplot_aids0.png" alt="Figure 4" width="80%"><p class="caption">
+Figure 4
+</p>
+</div>
 <p>From this result we observe that the line graph is the one that best shows that the dataset is ordered first by the variable <code>adult</code> and then by the variable <code>infect</code>. To finish selecting the most suitable graphic we can then execute the same function but limit the graphic types such that only two variations of line graph are shown. We can moreover limit the function so that it displays, for example, only five columns, so that the graphics will be larger.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw"><a href="../reference/wideplot.html">wideplot</a></span>(<span class="dt">data =</span> aids, <span class="dt">numeric =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'line graph'</span>, <span class="st">'stepped line graph'</span>), </a>
 <a class="sourceLine" id="cb15-2" title="2">         <span class="dt">ncol =</span> <span class="dv">5</span>)</a></code></pre></div>
-<p><img src="figures/wideplot_aids.png" width="80%"></p>
+<div class="figure">
+<img src="figures/wideplot_aids.png" alt="Figure 4" width="80%"><p class="caption">
+Figure 4
+</p>
+</div>
 <p>The result is two variations of the line graph for each variable, in which we can clearly see that the data set is ordered first by the variable <code>adult</code> and then by the variable <code>infect</code>. In this case, there may be equally valid arguments for using the graphics of the first column as the graphics of the second column.</p>
 </div>
 <div id="identify-variables-that-can-be-reclassified" class="section level2">
 <h2 class="hasAnchor">
 <a href="#identify-variables-that-can-be-reclassified" class="anchor"></a>Identify variables that can be reclassified</h2>
-<p>When loading a dataset it is important to check which assumptions the function has made and which variables can be reclassified. We can see an example of this in Figure @ref{fig:wideplotaids2}, which shows that the variable <code>adult</code> of the dataset <code>aids</code> is better treated as a <code>logical</code>-type variable than an <code>integer</code>. If we recode the variable type more appropriately, when we apply the <code><a href="../reference/wideplot.html">wideplot()</a></code> function again, the graphics it shows also tend to be more appropriate. In Figure @ref{fig:wideplotaids3} we see the result after the variable <code>adult</code> is reclassified.</p>
+<p>When loading a dataset it is important to check which assumptions the function has made and which variables can be reclassified. We can see an example of this in Figure 4, which shows that the variable <code>adult</code> of the dataset <code>aids</code> is better treated as a <code>logical</code>-type variable than an <code>integer</code>. If we recode the variable type more appropriately, when we apply the <code><a href="../reference/wideplot.html">wideplot()</a></code> function again, the graphics it shows also tend to be more appropriate. In Figure 5 we see the result after the variable <code>adult</code> is reclassified.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1">aids<span class="op">$</span>adult &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/logical">as.logical</a></span>(aids<span class="op">$</span>adult)</a>
 <a class="sourceLine" id="cb16-2" title="2"><span class="kw"><a href="../reference/wideplot.html">wideplot</a></span>(<span class="dt">data =</span> aids)</a></code></pre></div>
-<p><img src="figures/wideplot_aids2.png" width="80%"></p>
+<div class="figure">
+<img src="figures/wideplot_aids2.png" alt="Figure 5" width="80%"><p class="caption">
+Figure 5
+</p>
+</div>
 </div>
 <div id="identify-key-variables" class="section level2">
 <h2 class="hasAnchor">
 <a href="#identify-key-variables" class="anchor"></a>Identify key variables</h2>
-<p>The best way to identify key variables is by using complementary graphics. Figure @ref{fig:wideplotazt} makes it possible, for example, to identify rapidly the variable <code>patient</code> of the dataset <code>azt</code> in the library <code>KMsurv</code>, as a key variable, given that it assigns a sequential number to each record, each of which is observed a single time. We can draw these two conclusions from the line graph and the color bar graph.</p>
+<p>The best way to identify key variables is by using complementary graphics. Figure 6 makes it possible, for example, to identify rapidly the variable <code>patient</code> of the dataset <code>azt</code> in the library <code>KMsurv</code>, as a key variable, given that it assigns a sequential number to each record, each of which is observed a single time. We can draw these two conclusions from the line graph and the color bar graph.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(azt, <span class="dt">package =</span> <span class="st">'KMsurv'</span>)</a>
 <a class="sourceLine" id="cb17-2" title="2"><span class="kw"><a href="../reference/wideplot.html">wideplot</a></span>(<span class="dt">data =</span> azt, <span class="dt">label =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
-<p><img src="figures/wideplot_azt.png" width="80%"></p>
-<p>In the case of categorical key variables, the same line graph and color bar graph would also help us to identify the key variable. Figure @ref{fig:SpeciesArea} shows these two graphs for the factor-type variable of the dataset <code>SpeciesArea</code> in the library <code>Stat2Data</code>, which allow us to identify rapidly the variable <code>Name</code> as a key variable.</p>
+<div class="figure">
+<img src="figures/wideplot_azt.png" alt="Figure 6" width="80%"><p class="caption">
+Figure 6
+</p>
+</div>
+<p>In the case of categorical key variables, the same line graph and color bar graph would also help us to identify the key variable. Figure 7 shows these two graphs for the factor-type variable of the dataset <code>SpeciesArea</code> in the library <code>Stat2Data</code>, which allow us to identify rapidly the variable <code>Name</code> as a key variable.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(SpeciesArea, <span class="dt">package =</span> <span class="st">'Stat2Data'</span>)</a>
 <a class="sourceLine" id="cb18-2" title="2"><span class="kw"><a href="../reference/wideplot.html">wideplot</a></span>(<span class="dt">data =</span> SpeciesArea, <span class="dt">dataclas =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'factor'</span>),</a>
 <a class="sourceLine" id="cb18-3" title="3">         <span class="dt">factor =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'line graph'</span>, <span class="st">'color bar graph'</span>), <span class="dt">ncol =</span> <span class="dv">5</span>)</a></code></pre></div>
-<p><img src="figures/wideplot_SpeciesArea.png" width="80%"></p>
+<div class="figure">
+<img src="figures/wideplot_SpeciesArea.png" alt="Figure 7" width="80%"><p class="caption">
+Figure 7
+</p>
+</div>
 </div>
 <div id="be-surprised-by-serendipity" class="section level2">
 <h2 class="hasAnchor">
 <a href="#be-surprised-by-serendipity" class="anchor"></a>Be surprised by serendipity</h2>
 <p>Next we describe isolated cases in which we are surprised by the values that the data depict. We use the following procedure to locate unexpected aspects of the data: first we obtain a general view of the dataset using the function <code><a href="../reference/wideplot.html">wideplot()</a></code>; next we focus our attention on one variable in particular and explore all of the compatible graphics using the function <code><a href="../reference/longplot.html">longplot()</a></code>; finally, we use the function <code><a href="../reference/plotup.html">plotup()</a></code> to obtain the graphic that best enables us to identify, narrow down and communicate the aspect of the data that we have found.</p>
 <ul>
-<li>The first example of an unexpected funding appears in the variable <code>experience</code> (years of potential work experience) of the dataset <code>HI</code> in the library <code>Ecdat</code>. This dataset contains 22,272 records of 13 variables that link health insurance policies to the weekly hours worked by the wives of the policyholders, while the variable <code>experience</code> refers to the years of potential work experience of the wives. If we look at the bar graph applied to this numerical variable (see Figure @ref{fig:HI_1}), we see that the frequency of the whole values is systematically greater than the frequency of the real non-whole values. This behavior could indicate that the variable can be informed with excessive precision and whoever informed the variable <code>experience</code> tended to round to the unit. Another possibility is that the dataset was constructed by joining two data sources with different degrees of precision.</li>
+<li>The first example of an unexpected funding appears in the variable <code>experience</code> (years of potential work experience) of the dataset <code>HI</code> in the library <code>Ecdat</code>. This dataset contains 22,272 records of 13 variables that link health insurance policies to the weekly hours worked by the wives of the policyholders, while the variable <code>experience</code> refers to the years of potential work experience of the wives. If we look at the bar graph applied to this numerical variable –see Figure 8–, we see that the frequency of the whole values is systematically greater than the frequency of the real non-whole values. This behavior could indicate that the variable can be informed with excessive precision and whoever informed the variable <code>experience</code> tended to round to the unit. Another possibility is that the dataset was constructed by joining two data sources with different degrees of precision.</li>
 </ul>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(HI, <span class="dt">package =</span> <span class="st">'Ecdat'</span>)</a>
 <a class="sourceLine" id="cb19-2" title="2"><span class="kw"><a href="../reference/wideplot.html">wideplot</a></span>(<span class="dt">data =</span> HI)</a>
 <a class="sourceLine" id="cb19-3" title="3"><span class="kw"><a href="../reference/longplot.html">longplot</a></span>(<span class="dt">data =</span> HI, <span class="dt">vars =</span> <span class="st">'experience'</span>)</a>
 <a class="sourceLine" id="cb19-4" title="4"><span class="kw"><a href="../reference/plotup.html">plotup</a></span>(<span class="dt">data =</span> HI, <span class="dt">vars =</span> <span class="st">'experience'</span>, <span class="dt">diagram =</span> <span class="st">'bar graph'</span>, </a>
 <a class="sourceLine" id="cb19-5" title="5">       <span class="dt">output =</span> <span class="st">'plots pane'</span>)</a></code></pre></div>
-<p><img src="brinton_files/figure-html/HI_1-1.png" width="40%"></p>
+<div class="figure">
+<img src="brinton_files/figure-html/HI_1-1.png" alt="Figure 8" width="40%"><p class="caption">
+Figure 8
+</p>
+</div>
 <ul>
-<li>In the same dataset we can see that we could reach mistaken conclusions about the distribution of the variable <code>husby</code> (husband’s income in thousands of dollars) if we only looked at a histogram. As we can see in Figure @ref{fig:HI_2}, the distribution, and in particular the value zero, acquires a different value if we compare the histogram (right) with another graphic that isn’t as common for numerical variables: the bar graph (left), which shows the count of unique values. The bar graph makes it possible to clearly differentiate two groups: the informants whose husbands have no income and the informants whose husbands do have income (and to whom, therefore, it makes more sense to ask approximate income).</li>
+<li>In the same dataset we can see that we could reach mistaken conclusions about the distribution of the variable <code>husby</code> (husband’s income in thousands of dollars) if we only looked at a histogram. As we can see in Figure 9, the distribution, and in particular the value zero, acquires a different value if we compare the histogram (right) with another graphic that isn’t as common for numerical variables: the bar graph (left), which shows the count of unique values. The bar graph makes it possible to clearly differentiate two groups: the informants whose husbands have no income and the informants whose husbands do have income (and to whom, therefore, it makes more sense to ask approximate income).</li>
 </ul>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">gridExtra<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">grid.arrange</a></span>(<span class="kw"><a href="../reference/plotup.html">plotup</a></span>(HI, <span class="st">'husby'</span>, <span class="st">'histogram'</span>, <span class="dt">output =</span> <span class="st">'plots pane'</span>),</a>
 <a class="sourceLine" id="cb20-2" title="2">                        <span class="kw"><a href="../reference/plotup.html">plotup</a></span>(HI, <span class="st">'husby'</span>, <span class="st">'bar graph'</span>, <span class="dt">output =</span> <span class="st">'plots pane'</span>),</a>
 <a class="sourceLine" id="cb20-3" title="3">                        <span class="dt">heights=</span>grid<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/grid/topics/unit">unit</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">2.4</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'in'</span>)),</a>
 <a class="sourceLine" id="cb20-4" title="4">                        <span class="dt">ncol=</span><span class="dv">2</span>)</a></code></pre></div>
-<p><img src="brinton_files/figure-html/HI_2-1.png" width="80%"></p>
+<div class="figure">
+<img src="brinton_files/figure-html/HI_2-1.png" alt="Figure 9" width="80%"><p class="caption">
+Figure 9
+</p>
+</div>
 </div>
 </div>
   </div>

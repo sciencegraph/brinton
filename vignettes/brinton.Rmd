@@ -48,7 +48,7 @@ cat("wideplot(data, dataclass = NULL, logical = NULL, ordered = NULL,
   group = NULL, ncol = 7, label = 'FALSE')")
 ```
 
-The only argument necessary to obtain a result is `data` that expects a `data-frame` class object; `ncol` filters the first *n* columns of the grid, between 3 and 7, which will be shown. The fewer columns displayed, the larger the size of the resulting graphics, a feature that is especially useful if the scale labels dwarf the graphics area; `label` adds to the grid a vector below each group of rows according to the variable type, with the names and order of the graphics; `logical`, `ordered`, `factor`, `character`, `datetime` and `numeric` make it possible to choose which graphics appear in the grid and in what order, for each variable type. Finally, `group` changes the selection of graphics that are shown by default according to the criteria of the table \@ref{tab:table1}.
+The only argument necessary to obtain a result is `data` that expects a `data-frame` class object; `ncol` filters the first *n* columns of the grid, between 3 and 7, which will be shown. The fewer columns displayed, the larger the size of the resulting graphics, a feature that is especially useful if the scale labels dwarf the graphics area; `label` adds to the grid a vector below each group of rows according to the variable type, with the names and order of the graphics; `logical`, `ordered`, `factor`, `character`, `datetime` and `numeric` make it possible to choose which graphics appear in the grid and in what order, for each variable type. Finally, `group` changes the selection of graphics that are shown by default according to the criteria of the table 1.
 
 The `wideplot()` function takes inspiration from this function, but instead of describing the dataset in textual or tabular form, it does it graphically. We can easily compare the results of these two functions, for example, with the dataset esoph from a case-control study of esophageal cancer in Ille-et-Vilaine, France. The dataset has three ordered factor-type variables and two numerical variables:
 
@@ -60,13 +60,13 @@ str(esoph)
 wideplot(data = esoph)
 ```
 
-```{r wideplotesoph, echo=FALSE, out.width = '80%'}
+```{r wideplotesoph, echo=FALSE, out.width = '80%', fig.cap="Figure 1"}
 knitr::include_graphics("figures/wideplot_esoph.png")
 ```
 
 If the order and graphic types to be shown for each variable type are not specified and if the graphic types aren’t filtered using the argument `group`, then the default graphic will contain an opinion-based selection graphics for each variable type, organized especially to facilitate comparison between graphics of the same row and between graphics of the same column. The user can overwrite this default selection of graphics as needed, using the arguments `logical`, `ordered`, `factor`, `character`, `datetime` and `numeric`.
 
-```{r table1, echo=FALSE}
+```{r table1, echo=FALSE, tab.cap="Table 1"}
 table1 <- data.frame("group" = c("sequence", "scatter", "bin", "model", "symbol", "GOF", "random"),
            "graphic type" = c("includes the sequence in which the values are observed so that an axis develops this sequence. e.g., line graph, point-to-point graph", "marks represent individual observations. e.g., point graph, stripe graph", "marks represent aggregated observations based on class intervals. e.g., histogram, bar graph", "represents models based on observations. e.g. density plot, violin plot", "represents models based on observations and not only points, lines or areas. e.g., box plo. ", "represents the goodness of fit of some values with respect to a model. e.g. qq plot", "chosen at random"))
 knitr::kable(table1)
@@ -80,11 +80,11 @@ To facilitate economy of calculation, the `wideplot()` function presents a limit
 longplot(esoph, 'alcgp')
 ```
 
-```{r longplotesophagegp, echo=FALSE, out.width = '80%'}
+```{r longplotesophagegp, echo=FALSE, out.width = '80%', fig.cap="Figure 2"}
 knitr::include_graphics("figures/longplot_esoph_alcgp.png")
 ```
 
-The arguments of the function are `data`, which must be a `data-frame` class object; `vars`, which requires the name of a specific variable of the dataset; and `label`, which does not have to be defined and which adds a vector below each row of the grid indicating the name of each graphic. Unlike the grid of the `wideplot()` function, the grid of the `longplot()` function does not include parameters to limit the array of graphics to be presented. We made this decision because the main advantage of this function is precisely that it presents all of the graphic representations available for a given variable. However, we do not rule out adding filters that limit the number of graphics to be shown if this feature seems useful as the catalog fills with graphics. Each graphic presented can be called explicitly by name using the functions`wideplot()` and `plotup()`, which is why the argument `label` has been set to `TRUE` in this case.
+The arguments of the function are `data`, which must be a `data-frame` class object; `vars`, which requires the name of a specific variable of the dataset; and `label`, which does not have to be defined and which adds a vector below each row of the grid indicating the name of each graphic. Unlike the grid of the `wideplot()` function, the grid of the `longplot()` function does not include parameters to limit the array of graphics to be presented. We made this decision because the main advantage of this function is precisely that it presents all of the graphic representations available for a given variable. However, we do not rule out adding filters that limit the number of graphics to be shown if this feature seems useful as the catalog fills with graphics. Each graphic presented can be called explicitly by name using the functions `wideplot()` and `plotup()`, which is why the argument `label` has been set to `TRUE` in this case.
 
 The array of graphics that the `longplot()` function returns is sorted so that in the rows we find different graphic types and in the columns different variations of the same graphic type. This organization, however, is not absolute and in some cases in order to compress the results, we find different graphic types in the columns of the same row.
 
@@ -96,7 +96,7 @@ The `plotup()` function has the following structure: `plotup(data, vars, diagram
 plotup(esoph, 'ncases', 'line graph')
 ```
 
-```{r plotupesophncaseslinegraph, echo=FALSE, out.width = '80%'}
+```{r plotupesophncaseslinegraph, echo=FALSE, out.width = '80%', fig.cap="Figure 3"}
 knitr::include_graphics('figures/plotup_esoph_ncases_linegraph.png')
 ```
 
@@ -124,7 +124,7 @@ wideplot(aids)
 wideplot(aids, numeric = c('line graph', 'stepped line graph'), ncol=5)
 ```
 
-```{r wideplotaids1, echo=FALSE, out.width = '80%'}
+```{r wideplotaids1, echo=FALSE, out.width = '80%', fig.cap="Figure 4"}
 knitr::include_graphics('figures/wideplot_aids0.png')
 ```
 
@@ -135,7 +135,7 @@ wideplot(data = aids, numeric = c('line graph', 'stepped line graph'),
          ncol = 5)
 ```
 
-```{r wideplotaids2, echo=FALSE, out.width = '80%'}
+```{r wideplotaids2, echo=FALSE, out.width = '80%', fig.cap="Figure 4"}
 knitr::include_graphics('figures/wideplot_aids.png')
 ```
 
@@ -143,31 +143,31 @@ The result is two variations of the line graph for each variable, in which we ca
 
 ## Identify variables that can be reclassified
 
-When loading a dataset it is important to check which assumptions the function has made and which variables can be reclassified. We can see an example of this in Figure \@ref{fig:wideplotaids2}, which shows that the variable `adult` of the dataset `aids` is better treated as a `logical`-type variable than an `integer`. If we recode the variable type more appropriately, when we apply the `wideplot()` function again, the graphics it shows also tend to be more appropriate. In Figure \@ref{fig:wideplotaids3} we see the result after the variable `adult` is reclassified.
+When loading a dataset it is important to check which assumptions the function has made and which variables can be reclassified. We can see an example of this in Figure 4, which shows that the variable `adult` of the dataset `aids` is better treated as a `logical`-type variable than an `integer`. If we recode the variable type more appropriately, when we apply the `wideplot()` function again, the graphics it shows also tend to be more appropriate. In Figure 5 we see the result after the variable `adult` is reclassified.
 
 ```{r, eval=FALSE}
 aids$adult <- as.logical(aids$adult)
 wideplot(data = aids)
 ```
 
-```{r wideplotaids3, echo=FALSE, out.width = '80%'}
+```{r wideplotaids3, echo=FALSE, out.width = '80%', fig.cap="Figure 5"}
 knitr::include_graphics('figures/wideplot_aids2.png')
 ```
 
 ## Identify key variables
 
-The best way to identify key variables is by using complementary graphics. Figure \@ref{fig:wideplotazt} makes it possible, for example, to identify rapidly the variable `patient` of the dataset `azt` in the library `KMsurv`, as a key variable, given that it assigns a sequential number to each record, each of which is observed a single time. We can draw these two conclusions from the line graph and the color bar graph. 
+The best way to identify key variables is by using complementary graphics. Figure 6 makes it possible, for example, to identify rapidly the variable `patient` of the dataset `azt` in the library `KMsurv`, as a key variable, given that it assigns a sequential number to each record, each of which is observed a single time. We can draw these two conclusions from the line graph and the color bar graph. 
 
 ```{r, eval=FALSE}
 data(azt, package = 'KMsurv')
 wideplot(data = azt, label = TRUE)
 ```
 
-```{r wideplotazt, echo=FALSE, out.width = '80%'}
+```{r wideplotazt, echo=FALSE, out.width = '80%', fig.cap="Figure 6"}
 knitr::include_graphics('figures/wideplot_azt.png')
 ```
 
-In the case of categorical key variables, the same line graph and color bar graph would also help us to identify the key variable. Figure \@ref{fig:SpeciesArea} shows these two graphs for the factor-type variable of the dataset `SpeciesArea` in the library `Stat2Data`, which allow us to identify rapidly the variable `Name` as a key variable.
+In the case of categorical key variables, the same line graph and color bar graph would also help us to identify the key variable. Figure 7 shows these two graphs for the factor-type variable of the dataset `SpeciesArea` in the library `Stat2Data`, which allow us to identify rapidly the variable `Name` as a key variable.
 
 ```{r, echo=TRUE, eval=FALSE}
 data(SpeciesArea, package = 'Stat2Data')
@@ -175,7 +175,7 @@ wideplot(data = SpeciesArea, dataclas = c('factor'),
          factor = c('line graph', 'color bar graph'), ncol = 5)
 ```
 
-```{r SpeciesArea, echo=FALSE, out.width = '80%'}
+```{r SpeciesArea, echo=FALSE, out.width = '80%', fig.cap="Figure 7"}
 knitr::include_graphics('figures/wideplot_SpeciesArea.png')
 ```
 
@@ -183,7 +183,7 @@ knitr::include_graphics('figures/wideplot_SpeciesArea.png')
 
 Next we describe isolated cases in which we are surprised by the values that the data depict. We use the following procedure to locate unexpected aspects of the data: first we obtain a general view of the dataset using the function `wideplot()`; next we focus our attention on one variable in particular and explore all of the compatible graphics using the function `longplot()`; finally, we use the function `plotup()` to obtain the graphic that best enables us to identify, narrow down and communicate the aspect of the data that we have found.
 
-+ The first example of an unexpected funding appears in the variable `experience` (years of potential work experience) of the dataset `HI` in the library `Ecdat`. This dataset contains 22,272 records of 13 variables that link health insurance policies to the weekly hours worked by the wives of the policyholders, while the variable `experience` refers to the years of potential work experience of the wives. If we look at the bar graph applied to this numerical variable (see Figure \@ref{fig:HI_1}), we see that the frequency of the whole values is systematically greater than the frequency of the real non-whole values. This behavior could indicate that the variable can be informed with excessive precision and whoever informed the variable `experience` tended to round to the unit. Another possibility is that the dataset was constructed by joining two data sources with different degrees of precision.
++ The first example of an unexpected funding appears in the variable `experience` (years of potential work experience) of the dataset `HI` in the library `Ecdat`. This dataset contains 22,272 records of 13 variables that link health insurance policies to the weekly hours worked by the wives of the policyholders, while the variable `experience` refers to the years of potential work experience of the wives. If we look at the bar graph applied to this numerical variable --see Figure 8--, we see that the frequency of the whole values is systematically greater than the frequency of the real non-whole values. This behavior could indicate that the variable can be informed with excessive precision and whoever informed the variable `experience` tended to round to the unit. Another possibility is that the dataset was constructed by joining two data sources with different degrees of precision.
 
 ```{r, eval = FALSE, echo = TRUE}
 data(HI, package = 'Ecdat')
@@ -193,15 +193,15 @@ plotup(data = HI, vars = 'experience', diagram = 'bar graph',
        output = 'plots pane')
 ```
 
-```{r HI_1, fig.height=2.0, out.width = '40%', echo = FALSE}
+```{r HI_1, fig.height=2.4, out.width = '40%', echo = FALSE, fig.cap="Figure 8"}
 data(HI, package = 'Ecdat')
 plotup(data = HI, vars = 'experience', diagram = 'bar graph', 
        output = 'plots pane')
 ```
 
-+ In the same dataset we can see that we could reach mistaken conclusions about the distribution of the variable `husby` (husband’s income in thousands of dollars) if we only looked at a histogram. As we can see in Figure \@ref{fig:HI_2}, the distribution, and in particular the value zero, acquires a different value if we compare the histogram (right) with another graphic that isn’t as common for numerical variables: the bar graph (left), which shows the count of unique values. The bar graph makes it possible to clearly differentiate two groups: the informants whose husbands have no income and the informants whose husbands do have income (and to whom, therefore, it makes more sense to ask approximate income).
++ In the same dataset we can see that we could reach mistaken conclusions about the distribution of the variable `husby` (husband’s income in thousands of dollars) if we only looked at a histogram. As we can see in Figure 9, the distribution, and in particular the value zero, acquires a different value if we compare the histogram (right) with another graphic that isn’t as common for numerical variables: the bar graph (left), which shows the count of unique values. The bar graph makes it possible to clearly differentiate two groups: the informants whose husbands have no income and the informants whose husbands do have income (and to whom, therefore, it makes more sense to ask approximate income).
 
-```{r HI_2, echo=TRUE, fig.width=10, fig.height = 2.4, out.width = '80%'}
+```{r HI_2, echo=TRUE, fig.width=10, fig.height = 2.4, out.width = '80%', fig.cap="Figure 9"}
 gridExtra::grid.arrange(plotup(HI, 'husby', 'histogram', output = 'plots pane'),
                         plotup(HI, 'husby', 'bar graph', output = 'plots pane'),
                         heights=grid::unit(c(2.4), c('in')),
