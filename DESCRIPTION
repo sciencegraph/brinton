@@ -2,12 +2,12 @@ Package: brinton
 Type: Package
 Version: 0.1.0
 Title: A Graphical EDA Tool
-Description: An autoGEDA tool that introduces: 
-  a.) "wideplot()" graphics for exploring the structure of a dataset through a grid of variables 
+Description: An automated graphical exploratory data analysis (EDA) tool that introduces: 
+  a.) wideplot() graphics for exploring the structure of a dataset through a grid of variables 
       and graphic types. 
-  b.) "longplot()" graphics, which present the entire catalog of available graphics for representing 
-      a particular variable using a grid of graphic types and variations on these types. 
-  c.) "plotup()" function, which presents a particular graphic for a specific variable of a dataset. 
+  b.) longplot() graphics, which present the entire catalog of available graphics for representing 
+      a particular variable using a grid of graphic types and variations on these types.
+  c.) plotup() function, which presents a particular graphic for a specific variable of a dataset. 
       The "plotup()" function also makes it possible to obtain the code used to generate the graphic, 
       meaning that the user can adjust its properties as needed.
 Authors@R: c(person("Millán-Martínez", "Pere", email="info@sciencegraph.org", role = c("aut", "cre")), person("Oller Piqué", "Ramon", email="ramon.oller@uvic.cat", role = "ctb"))

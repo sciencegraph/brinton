@@ -220,6 +220,5 @@ corresponds to graphical representations of each one of the variables
 considered within a given dataset.
 }
 \examples{
-\dontrun{wideplot(iris)}
-\dontrun{wideplot(as.data.frame(HairEyeColor))}
+wideplot(Indometh)
 }

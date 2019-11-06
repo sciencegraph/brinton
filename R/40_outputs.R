@@ -179,7 +179,7 @@ label_v     <- c('TRUE',
                  )
 
 #' @noRd
-output_show <- "
+output_up <- "
 #' ---
 #' title: 'plotup output'
 #' author: 'by brinton R package'

@@ -201,8 +201,7 @@ my_env <- new.env(parent = emptyenv())
 #' @export
 #'
 #' @examples
-#' \dontrun{wideplot(iris)}
-#' \dontrun{wideplot(as.data.frame(HairEyeColor))}
+#' wideplot(Indometh)
 wideplot <- function(data,
                      dataclass = NULL,
                      logical = NULL,
@@ -216,6 +215,9 @@ wideplot <- function(data,
                      label = "FALSE"
                      )
 {
+dirtemp <- tempdir()
+pathR <- paste0(dirtemp, "\\output.R")
+pathHTML <- paste0(dirtemp, "\\output.html")
 
 ## Default types of data
 
@@ -360,8 +362,8 @@ wideplot <- function(data,
   character   <- add_blank(character)
 
   my_env <- new.env()
-  writeLines(output_wide, "output.R")
-  write(paste0("cat('", deparse(substitute(data)), " dataframe')"), file="output.R", append=TRUE)
+  writeLines(output_wide, pathR)
+  write(paste0("cat('", deparse(substitute(data)), " dataframe')"), file=pathR, append=TRUE)
 
 ## Format validation: function's object
 
@@ -482,14 +484,14 @@ if (length(data[sapply(data, is.logical)])>0)
 
       line <- eval(parse(
         text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" lgi", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-      write(paste0("#+ logical", i, ", fig.width=13, fig.height=", long), file="output.R", append=TRUE)  # gridExtra
-      write(line, file="output.R", append=TRUE)  # gridExtra
+      write(paste0("#+ logical", i, ", fig.width=13, fig.height=", long), file=pathR, append=TRUE)  # gridExtra
+      write(line, file=pathR, append=TRUE)  # gridExtra
     }
     logic.plot(data.logic)
   }
   if (label == TRUE) {
     char_types <- paste0("logical = c('", paste0(logical[1:ncol], collapse = "', '"), "')")
-    write(paste0('cat("', char_types, '")'), file='output.R', append=TRUE)
+    write(paste0('cat("', char_types, '")'), file=paste0(tempdir(), '\\output.R'), append=TRUE)
   }
 }
 
@@ -550,14 +552,14 @@ if (length(data[sapply(data, is.ordered)])>0)
 
       line <- eval(parse(
         text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ofi", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-      write(paste0("#+ ordered", i, ", fig.width=13, fig.height=", long), file="output.R", append=TRUE)  # gridExtra
-      write(line, file="output.R", append=TRUE)  # gridExtra
+      write(paste0("#+ ordered", i, ", fig.width=13, fig.height=", long), file=pathR, append=TRUE)  # gridExtra
+      write(line, file=pathR, append=TRUE)  # gridExtra
       }
     ofac.plot(data.ofac)
   }
   if (label == TRUE) {
     char_types <- paste0("ordered = c('", paste0(ordered[1:ncol], collapse = "', '"), "')")
-    write(paste0('cat("', char_types, '")'), file='output.R', append=TRUE)
+    write(paste0('cat("', char_types, '")'), file=paste0(tempdir(), '\\output.R'), append=TRUE)
   }
 }
 
@@ -720,14 +722,14 @@ if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], 
         }
       line <- eval(parse(
         text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" fti", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-      write(paste0("#+ factor", i, ", fig.width=13, fig.height=", long), file="output.R", append=TRUE)  # gridExtra
-      write(line, file="output.R", append=TRUE) # gridExtra
+      write(paste0("#+ factor", i, ", fig.width=13, fig.height=", long), file=pathR, append=TRUE)  # gridExtra
+      write(line, file=pathR, append=TRUE) # gridExtra
       }
     fac.plot(data.fac)
   }
   if (label == TRUE) {
     char_types <- paste0("factor = c('", paste0(factor[1:ncol], collapse = "', '"), "')")
-    write(paste0('cat("', char_types, '")'), file='output.R', append=TRUE)
+    write(paste0('cat("', char_types, '")'), file=paste0(tempdir(), '\\output.R'), append=TRUE)
   }
 }
 
@@ -742,7 +744,7 @@ if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], 
       rownames(data.date) <- NULL
       out = NULL
       # plot a row of graphics for every column
-      write(paste0("#+ datetime, fig.width=13, fig.height=", round(12/ncol, 1)), file="output.R", append=TRUE)  # gridExtra
+      write(paste0("#+ datetime, fig.width=13, fig.height=", round(12/ncol, 1)), file=pathR, append=TRUE)  # gridExtra
       for (i in seq_along(data.date))
       {
         for (j in 1:ncol) {eval(parse(text=paste0("dti", letters[j], " <- paste0('dt', ", i, ", '", letters[j],"')")))}
@@ -786,13 +788,13 @@ if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], 
 
           line <- eval(parse(
             text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" dti", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-          write(line, file="output.R", append=TRUE)  # gridExtra
+          write(line, file=pathR, append=TRUE)  # gridExtra
           }
         date.plot(data.date)
       }
       if (label == TRUE) {
         char_types <- paste0("datetime = c('", paste0(datetime[1:ncol], collapse = "', '"), "')")
-        write(paste0('cat("', char_types, '")'), file='output.R', append=TRUE)
+        write(paste0('cat("', char_types, '")'), file=paste0(tempdir(), '\\output.R'), append=TRUE)
       }
     }
 
@@ -804,7 +806,7 @@ if (length(data[sapply(data, is.numeric)])>0)
 {
   data.num <- data[sapply(data, is.numeric)]
   out = NULL
-  write(paste0("#+ numeric, fig.width=13, fig.height=", round(12/ncol,1)), file="output.R", append=TRUE) # gridExtra
+  write(paste0("#+ numeric, fig.width=13, fig.height=", round(12/ncol,1)), file=pathR, append=TRUE) # gridExtra
   for (i in seq_along(data.num))
   {
     for (j in 1:ncol) {eval(parse(text=paste0("nui", letters[j], " <- paste0('nu', ", i, ", '", letters[j],"')")))}
@@ -940,13 +942,13 @@ if (length(data[sapply(data, is.numeric)])>0)
 
       line <- eval(parse(
         text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" nui", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-      write(line, file="output.R", append=TRUE)  # gridExtra
+      write(line, file=pathR, append=TRUE)  # gridExtra
     }
     num.plot(data.num)
   }
   if (label == TRUE) {
     char_types <- paste0("numeric = c('", paste0(numeric[1:ncol], collapse = "', '"), "')")
-    write(paste0('cat("', char_types, '")'), file='output.R', append=TRUE)
+    write(paste0('cat("', char_types, '")'), file=paste0(tempdir(), '\\output.R'), append=TRUE)
   }
 }
 
@@ -1106,21 +1108,21 @@ if (length(data[sapply(data, is.character)])>0)
                                              } else {print(warning_wp_ch)}")))}
       line <- eval(parse(
       text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" chi", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-      write(paste0("#+ character", i, ", fig.width=13, fig.height=", long), file="output.R", append=TRUE)  # gridExtra
-      write(line, file="output.R", append=TRUE)  # gridExtra
+      write(paste0("#+ character", i, ", fig.width=13, fig.height=", long), file=pathR, append=TRUE)  # gridExtra
+      write(line, file=pathR, append=TRUE)  # gridExtra
       }
     char.plot(data.char)
   }
   if (label == TRUE) {
     char_types <- paste0("character = c('", paste0(character[1:ncol], collapse = "', '"), "')")
-    write(paste0('cat("', char_types, '")'), file='output.R', append=TRUE)
+    write(paste0('cat("', char_types, '")'), file=paste0(tempdir(), '\\output.R'), append=TRUE)
   }
 }
   } else {stop(warning_wp_dc)}
 }
 
-rmarkdown::render("output.R", "html_document", envir=my_env)
-pander::openFileInOS("output.html")
+rmarkdown::render(pathR, "html_document", envir=my_env)
+pander::openFileInOS(pathHTML)
 
 }
 

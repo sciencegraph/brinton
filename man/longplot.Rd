@@ -29,5 +29,5 @@ select one variable whitin it. Future work will include the ability to relate mo
 than one variable.
 }
 \examples{
-\dontrun{longplot(iris, "Petal.Length")}
+longplot(Indometh, "Subject")
 }

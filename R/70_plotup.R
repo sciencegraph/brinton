@@ -22,14 +22,18 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{plotup(iris, "Petal.Length", "point graph")}
+#' plotup(Indometh, "conc", "point-to-point graph")
 
 plotup <- function(data,
-                     vars,
-                     diagram,
-                     output = 'html'
-)
+                   vars,
+                   diagram,
+                   output = 'html'
+                   )
 {
+dirtemp <- tempdir()
+pathR <- paste0(dirtemp, "\\output.R")
+pathHTML <- paste0(dirtemp, "\\output.html")
+
   my_env <- new.env()
   ## Value validation: function's argument
   ### dataset
@@ -1395,12 +1399,12 @@ ggplot(",
   else if (output == 'plots pane') {
     eval(parse(text=p))}
   else if (output == 'html') {
-    writeLines(output_show, "output.R")
+    writeLines(output_up, pathR)
     write(paste0("cat('A ", deparse(substitute(diagram)), " produced from the " ,deparse(substitute(vars)), " variable(s) of the ", deparse(substitute(data))," dataframe')"),
-          file="output.R", append=TRUE)
-    write(paste0("#+ plot, fig.width=6, fig.height=", long), "output.R", append = TRUE)
-    write(p, "output.R", append = TRUE)
-    rmarkdown::render("output.R","html_document", envir=my_env)
-    pander::openFileInOS("output.html")
+          file=pathR, append=TRUE)
+    write(paste0("#+ plot, fig.width=6, fig.height=", long), pathR, append = TRUE)
+    write(p, pathR, append = TRUE)
+    rmarkdown::render(pathR,"html_document", envir=my_env)
+    pander::openFileInOS(pathHTML)
     }
   }

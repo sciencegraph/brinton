@@ -1,10 +1,8 @@
+^cran-comments\.md$
+^\.Rproj\.user$
 ^\.travis\.yml$
 ^README\.Rmd$
 ^.*\.Rproj$
-^\.Rproj\.user$
-output.html
-output.R
-^doc$
 ^Meta$
-cran-comments.md
 ^docs$
+^doc$

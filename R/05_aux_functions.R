@@ -8,12 +8,12 @@ add_blank <- function(x) {
   }
 
 add_plots <- function(a, b) {
-  write(paste0("gridExtra::grid.arrange(", paste0(a, 1:b, collapse = ", "), ", ncol=5)"), file="output.R", append = TRUE)
+  write(paste0("gridExtra::grid.arrange(", paste0(a, 1:b, collapse = ", "), ", ncol=5)"), file=paste0(tempdir(), "\\output.R"), append = TRUE)
   }
 
 add_label <- function(a, b) {
   char_types <- paste0(a, " = c('", paste0(b, collapse = "', '"), "')")
-  write(paste0('cat("', char_types, '")'), file='output.R', append=TRUE)
+  write(paste0('cat("', char_types, '")'), file=paste0(tempdir(), '\\output.R'), append=TRUE)
   }
 
 add_density_1D <- function(a, b) {
