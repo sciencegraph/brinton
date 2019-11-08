@@ -7,15 +7,6 @@ add_blank <- function(x) {
   return(x)
   }
 
-add_plots <- function(a, b) {
-  write(paste0("gridExtra::grid.arrange(", paste0(a, 1:b, collapse = ", "), ", ncol=5)"), file=paste0(getwd(), "\\longplot.R"), append = TRUE)
-  }
-
-add_label <- function(a, b) {
-  char_types <- paste0(a, " = c('", paste0(b, collapse = "', '"), "')")
-  write(paste0('cat("', char_types, '")'), file=paste0(getwd(), "\\longplot.R"), append=TRUE)
-  }
-
 add_density_1D <- function(a, b) {
   a$b <- unlist(a[, b])
   if (length(unique(stats::na.omit(a$b))) == 1) {

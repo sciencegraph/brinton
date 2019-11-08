@@ -29,10 +29,12 @@ plotup <- function(data,
                    output = 'html'
                    )
 {
+  ## Auxiliary constant
+  dir <- tempdir()
   my_env <- new.env()
-  dirtemp <- getwd()
-  plotupR <- paste0(dirtemp, "\\plotup.R")
-  plotupHTML <- paste0(dirtemp, "\\plotup.html")
+  # dirtemp <- getwd()
+  # file.path(dir, "output.R") <- paste0(dirtemp, "\\plotup.R")
+  # plotupHTML <- paste0(dirtemp, "\\plotup.html")
   ## Value validation: function's argument
   ### dataset
   ### variable
@@ -1397,12 +1399,12 @@ ggplot(",
   else if (output == 'plots pane') {
     eval(parse(text=p))}
   else if (output == 'html') {
-    writeLines(output_up, plotupR)
+    writeLines(output_up, file.path(dir, "output.R"))
     write(paste0("cat('A ", deparse(substitute(diagram)), " produced from the " ,deparse(substitute(vars)), " variable(s) of the ", deparse(substitute(data))," dataframe')"),
-          file=plotupR, append=TRUE)
-    write(paste0("#+ plot, fig.width=6, fig.height=", long), plotupR, append = TRUE)
-    write(p, plotupR, append = TRUE)
-    rmarkdown::render(plotupR,"html_document", envir=my_env)
-    pander::openFileInOS(plotupHTML)
+          file=file.path(dir, "output.R"), append=TRUE)
+    write(paste0("#+ plot, fig.width=6, fig.height=", long), file.path(dir, "output.R"), append = TRUE)
+    write(p, file.path(dir, "output.R"), append = TRUE)
+    rmarkdown::render(file.path(dir, "output.R"),"html_document", envir=my_env)
+    pander::openFileInOS(file.path(dir, "output.html"))
     }
   }
