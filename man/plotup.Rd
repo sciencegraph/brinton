@@ -33,5 +33,5 @@ variable whitin this dataset and a compatible type of graphic.
 Future work will include graphics that involve more than one variable.
 }
 \examples{
-plotup(Indometh, "conc", "point-to-point graph")
+plotup(esoph, "ncases", "line graph")
 }

@@ -22,19 +22,17 @@
 #' @export
 #'
 #' @examples
-#' plotup(Indometh, "conc", "point-to-point graph")
-
+#' plotup(esoph, "ncases", "line graph")
 plotup <- function(data,
                    vars,
                    diagram,
                    output = 'html'
                    )
 {
-dirtemp <- tempdir()
-pathR <- paste0(dirtemp, "\\output.R")
-pathHTML <- paste0(dirtemp, "\\output.html")
-
   my_env <- new.env()
+  dirtemp <- getwd()
+  plotupR <- paste0(dirtemp, "\\plotup.R")
+  plotupHTML <- paste0(dirtemp, "\\plotup.html")
   ## Value validation: function's argument
   ### dataset
   ### variable
@@ -1399,12 +1397,12 @@ ggplot(",
   else if (output == 'plots pane') {
     eval(parse(text=p))}
   else if (output == 'html') {
-    writeLines(output_up, pathR)
+    writeLines(output_up, plotupR)
     write(paste0("cat('A ", deparse(substitute(diagram)), " produced from the " ,deparse(substitute(vars)), " variable(s) of the ", deparse(substitute(data))," dataframe')"),
-          file=pathR, append=TRUE)
-    write(paste0("#+ plot, fig.width=6, fig.height=", long), pathR, append = TRUE)
-    write(p, pathR, append = TRUE)
-    rmarkdown::render(pathR,"html_document", envir=my_env)
-    pander::openFileInOS(pathHTML)
+          file=plotupR, append=TRUE)
+    write(paste0("#+ plot, fig.width=6, fig.height=", long), plotupR, append = TRUE)
+    write(p, plotupR, append = TRUE)
+    rmarkdown::render(plotupR,"html_document", envir=my_env)
+    pander::openFileInOS(plotupHTML)
     }
   }

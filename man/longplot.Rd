@@ -29,5 +29,5 @@ select one variable whitin it. Future work will include the ability to relate mo
 than one variable.
 }
 \examples{
-longplot(Indometh, "Subject")
+longplot(esoph, "tobgp")
 }

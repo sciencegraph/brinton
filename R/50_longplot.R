@@ -18,17 +18,13 @@
 #' @export
 #'
 #' @examples
-#' longplot(Indometh, "Subject")
+#' longplot(esoph, "tobgp")
 longplot <- function(data,
                      vars,
                      # ncol = 5,
                      label = TRUE
                      )
 {
-dirtemp <- tempdir()
-pathR <- paste0(dirtemp, "\\output.R")
-pathHTML <- paste0(dirtemp, "\\output.html")
-
   ## Format validation: function's object
   if(is.data.frame(data) == FALSE) {
     stop("I am so sorry, but this function only works with a data.frame input!\n",
@@ -58,13 +54,16 @@ pathHTML <- paste0(dirtemp, "\\output.html")
   else {stop("This type of variable has not been yet considered")}
 
   my_env <- new.env()
+  dirtemp <- getwd()
+  longplotR <- paste0(dirtemp, "\\longplot.R")
+  longplotHTML <- paste0(dirtemp, "\\longplot.html")
   ncol <- 5
-  writeLines(output_long, pathR)
+  writeLines(output_long, longplotR)
   write(paste0("cat('Graphics from the ", deparse(substitute(vars)), " variable(s) of the ", deparse(substitute(data))," dataframe')"),
-        file=pathR, append=TRUE)
+        file=longplotR, append=TRUE)
 
   if (lubridate::is.instant(unlist(data[, vars])) == TRUE) {
-    write(paste0("#+ datetime, fig.width=12, fig.height=", long), file=pathR, append=TRUE)  # gridExtra
+    write(paste0("#+ datetime, fig.width=12, fig.height=", long), file=longplotR, append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'stepped line graph')
     dt11 <- pp_1DD_linegraph(data, colnames(data[vars]), pp_size = 1/ncol)
@@ -90,11 +89,11 @@ pathHTML <- paste0(dirtemp, "\\output.html")
     p152 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'color')
     add_plots("p15", 2)
     if (label == TRUE) {add_label("datetime", stripe)}
-    rmarkdown::render(pathR,"html_document")
-    pander::openFileInOS(pathHTML)
+    rmarkdown::render(longplotR,"html_document")
+    pander::openFileInOS(longplotHTML)
 
   } else if (is.logical(unlist(data[, vars])) == TRUE) {
-    write(paste0("#+ logical, fig.width=12, fig.height=", long), file=pathR, append=TRUE)  # gridExtra
+    write(paste0("#+ logical, fig.width=12, fig.height=", long), file=longplotR, append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'point graph',
                 'point-to-point graph',
@@ -123,10 +122,10 @@ pathHTML <- paste0(dirtemp, "\\output.html")
     lg33 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("lg3", 3)
     if (label == TRUE) {add_label("logical", stripe)}
-    rmarkdown::render(pathR,"html_document")
-    pander::openFileInOS(pathHTML)
+    rmarkdown::render(longplotR,"html_document")
+    pander::openFileInOS(longplotHTML)
   } else if (is.ordered(unlist(data[, vars])) == TRUE) {
-    write(paste0("#+ ordered, fig.width=12, fig.height=", long), file=pathR, append=TRUE)  # gridExtra
+    write(paste0("#+ ordered, fig.width=12, fig.height=", long), file=longplotR, append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'point graph',
                 'point-to-point graph',
@@ -155,10 +154,10 @@ pathHTML <- paste0(dirtemp, "\\output.html")
     of33 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("of3", 3)
     if (label == TRUE) {add_label("ordered", stripe)}
-    rmarkdown::render(pathR,"html_document")
-    pander::openFileInOS(pathHTML)
+    rmarkdown::render(longplotR,"html_document")
+    pander::openFileInOS(longplotHTML)
   } else if (is.factor(unlist(data[, vars])) == TRUE & is.ordered(unlist(data[, vars])) == FALSE) {
-    write(paste0("#+ factor, fig.width=12, fig.height=", long), file=pathR, append=TRUE)  # gridExtra
+    write(paste0("#+ factor, fig.width=12, fig.height=", long), file=longplotR, append=TRUE)  # gridExtra
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('line graph',
                 'point graph',
@@ -252,10 +251,10 @@ pathHTML <- paste0(dirtemp, "\\output.html")
     ft93 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("ft9", 3)
     if (label == TRUE) {add_label("factor", stripe)}
-    rmarkdown::render(pathR,"html_document")
-    pander::openFileInOS(pathHTML)
+    rmarkdown::render(longplotR,"html_document")
+    pander::openFileInOS(longplotHTML)
   } else if (is.character(unlist(data[, vars])) == TRUE ) {
-    write(paste0("#+ character, fig.width=12, fig.height=", long), file=pathR, append=TRUE)  # gridExtra
+    write(paste0("#+ character, fig.width=12, fig.height=", long), file=longplotR, append=TRUE)  # gridExtra
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('line graph',
                 'point graph',
@@ -349,11 +348,11 @@ pathHTML <- paste0(dirtemp, "\\output.html")
     p093 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("p09", 3)
     if (label == TRUE) {add_label("character", stripe)}
-    rmarkdown::render(pathR,"html_document")
-    pander::openFileInOS(pathHTML)
+    rmarkdown::render(longplotR,"html_document")
+    pander::openFileInOS(longplotHTML)
   } else if (is.numeric(unlist(data[, vars])) == TRUE) {
     my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
-    write(paste0("#+ numeric, fig.width=12, fig.height=", long), file=pathR, append=TRUE)  # gridExtra
+    write(paste0("#+ numeric, fig.width=12, fig.height=", long), file=longplotR, append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'stepped line graph')
     p011 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
@@ -461,8 +460,8 @@ pathHTML <- paste0(dirtemp, "\\output.html")
     p113 <- qqplot(data, colnames(data[vars]), pp_size = 1/ncol)
     add_plots("p11", 3)
     if (label == TRUE) {add_label("numeric", stripe)}
-    rmarkdown::render(pathR,"html_document")
-    pander::openFileInOS(pathHTML)
+    rmarkdown::render(longplotR,"html_document")
+    pander::openFileInOS(longplotHTML)
   }
   }
 }

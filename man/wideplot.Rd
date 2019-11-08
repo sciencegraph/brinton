@@ -220,5 +220,5 @@ corresponds to graphical representations of each one of the variables
 considered within a given dataset.
 }
 \examples{
-wideplot(Indometh)
+wideplot(sleep)
 }
