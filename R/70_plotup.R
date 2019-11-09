@@ -28,7 +28,7 @@ plotup <- function(data,
                    vars,
                    diagram,
                    output = 'html',
-                   dir = tempdir()
+                   dir = getwd()
                    )
 {
   my_env <- new.env()
@@ -1396,12 +1396,14 @@ ggplot(",
   else if (output == 'plots pane') {
     eval(parse(text=p))}
   else if (output == 'html') {
-    writeLines(output_up, file.path(dir, "plotup.R"))
+    dir.create(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), showWarnings = FALSE)
+    writeLines(output_up, file.path(dir, "brinton_outcomes", "plotup.R"))
     write(paste0("cat('A ", deparse(substitute(diagram)), " produced from the " ,deparse(substitute(vars)), " variable(s) of the ", deparse(substitute(data))," dataframe')"),
-          file=file.path(dir, "plotup.R"), append=TRUE)
-    write(paste0("#+ plot, fig.width=6, fig.height=", long), file.path(dir, "plotup.R"), append = TRUE)
-    write(p, file.path(dir, "plotup.R"), append = TRUE)
-    rmarkdown::render(file.path(dir, "plotup.R"),"html_document", envir=my_env)
-    pander::openFileInOS(file.path(dir, "plotup.html"))
+          file=file.path(dir, "brinton_outcomes", "plotup.R"), append=TRUE)
+    write(paste0("#+ plot, fig.width=6, fig.height=", long), file.path(dir, "brinton_outcomes", "plotup.R"), append = TRUE)
+    write(p, file.path(dir, "brinton_outcomes", "plotup.R"), append = TRUE)
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "plotup.R"),"html_document", envir=my_env)
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "plotup.html"))
+    # unlink(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), recursive = TRUE)
     }
   }

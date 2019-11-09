@@ -266,7 +266,6 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev=
 "
 
 # warnings
-
 warning_bargraph  <- "You may prefer a 'histogram' instead of a 'bargraph'."
 warning_general   <- "I'm so sorry because something went wrong :("
 warning_color     <- "Color argument accepts only 'black', 'bw' or 'color' values."

@@ -4,7 +4,7 @@
 \alias{plotup}
 \title{Presents a specific graphic explicitly called by name.}
 \usage{
-plotup(data, vars, diagram, output = "html", dir = tempdir())
+plotup(data, vars, diagram, output = "html", dir = getwd())
 }
 \arguments{
 \item{data}{Data.frame. Default dataset to use for plot. If not already a

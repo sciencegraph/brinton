@@ -6,7 +6,7 @@
 \usage{
 wideplot(data, dataclass = NULL, logical = NULL, ordered = NULL,
   factor = NULL, character = NULL, datetime = NULL, numeric = NULL,
-  group = NULL, ncol = 7, label = "FALSE", dir = tempdir())
+  group = NULL, ncol = 7, label = "FALSE", dir = getwd())
 }
 \arguments{
 \item{data}{Data.frame. Default dataset to use for plot. Unquoted. If not

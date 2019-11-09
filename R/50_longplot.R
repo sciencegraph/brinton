@@ -23,12 +23,12 @@
 longplot <- function(data,
                      vars,
                      label = TRUE,
-                     dir = tempdir()
+                     dir = getwd()
                      )
 {
   ## Auxiliary functions
   add_plots <- function(a, b) {
-    write(paste0("gridExtra::grid.arrange(", paste0(a, 1:b, collapse = ", "), ", ncol=5)"), file.path(dir, "longplot.R"), append = TRUE)
+    write(paste0("gridExtra::grid.arrange(", paste0(a, 1:b, collapse = ", "), ", ncol=5)"), file.path(dir, "brinton_outcomes", "longplot.R"), append = TRUE)
   }
 
   add_label <- function(a, b) {
@@ -65,12 +65,13 @@ longplot <- function(data,
 
   my_env <- new.env()
   ncol <- 5
-  writeLines(output_long, file.path(dir, "longplot.R"))
+  dir.create(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), showWarnings = FALSE)
+  writeLines(output_long, file.path(dir, "brinton_outcomes", "longplot.R"))
   write(paste0("cat('Graphics from the ", deparse(substitute(vars)), " variable(s) of the ", deparse(substitute(data))," dataframe')"),
-        file.path(dir, "longplot.R"), append=TRUE)
+        file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
 
   if (lubridate::is.instant(unlist(data[, vars])) == TRUE) {
-    write(paste0("#+ datetime, fig.width=12, fig.height=", long), file.path(dir, "longplot.R"), append=TRUE)  # gridExtra
+    write(paste0("#+ datetime, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'stepped line graph')
     dt11 <- pp_1DD_linegraph(data, colnames(data[vars]), pp_size = 1/ncol)
@@ -96,11 +97,11 @@ longplot <- function(data,
     p152 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'color')
     add_plots("p15", 2)
     if (label == TRUE) {add_label("datetime", stripe)}
-    rmarkdown::render(file.path(dir, "longplot.R"),"html_document")
-    pander::openFileInOS(file.path(dir, "longplot.html"))
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
 
   } else if (is.logical(unlist(data[, vars])) == TRUE) {
-    write(paste0("#+ logical, fig.width=12, fig.height=", long), file.path(dir, "longplot.R"), append=TRUE)  # gridExtra
+    write(paste0("#+ logical, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'point graph',
                 'point-to-point graph',
@@ -129,10 +130,10 @@ longplot <- function(data,
     lg33 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("lg3", 3)
     if (label == TRUE) {add_label("logical", stripe)}
-    rmarkdown::render(file.path(dir, "longplot.R"),"html_document")
-    pander::openFileInOS(file.path(dir, "longplot.html"))
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
   } else if (is.ordered(unlist(data[, vars])) == TRUE) {
-    write(paste0("#+ ordered, fig.width=12, fig.height=", long), file.path(dir, "longplot.R"), append=TRUE)  # gridExtra
+    write(paste0("#+ ordered, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'point graph',
                 'point-to-point graph',
@@ -161,10 +162,10 @@ longplot <- function(data,
     of33 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("of3", 3)
     if (label == TRUE) {add_label("ordered", stripe)}
-    rmarkdown::render(file.path(dir, "longplot.R"),"html_document")
-    pander::openFileInOS(file.path(dir, "longplot.html"))
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
   } else if (is.factor(unlist(data[, vars])) == TRUE & is.ordered(unlist(data[, vars])) == FALSE) {
-    write(paste0("#+ factor, fig.width=12, fig.height=", long), file.path(dir, "longplot.R"), append=TRUE)  # gridExtra
+    write(paste0("#+ factor, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('line graph',
                 'point graph',
@@ -258,10 +259,10 @@ longplot <- function(data,
     ft93 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("ft9", 3)
     if (label == TRUE) {add_label("factor", stripe)}
-    rmarkdown::render(file.path(dir, "longplot.R"),"html_document")
-    pander::openFileInOS(file.path(dir, "longplot.html"))
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
   } else if (is.character(unlist(data[, vars])) == TRUE ) {
-    write(paste0("#+ character, fig.width=12, fig.height=", long), file.path(dir, "longplot.R"), append=TRUE)  # gridExtra
+    write(paste0("#+ character, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('line graph',
                 'point graph',
@@ -355,11 +356,11 @@ longplot <- function(data,
     p093 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("p09", 3)
     if (label == TRUE) {add_label("character", stripe)}
-    rmarkdown::render(file.path(dir, "longplot.R"),"html_document")
-    pander::openFileInOS(file.path(dir, "longplot.html"))
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
   } else if (is.numeric(unlist(data[, vars])) == TRUE) {
     my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
-    write(paste0("#+ numeric, fig.width=12, fig.height=", long), file.path(dir, "longplot.R"), append=TRUE)  # gridExtra
+    write(paste0("#+ numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'stepped line graph')
     p011 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
@@ -467,8 +468,9 @@ longplot <- function(data,
     p113 <- qqplot(data, colnames(data[vars]), pp_size = 1/ncol)
     add_plots("p11", 3)
     if (label == TRUE) {add_label("numeric", stripe)}
-    rmarkdown::render(file.path(dir, "longplot.R"),"html_document")
-    pander::openFileInOS(file.path(dir, "longplot.html"))
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
   }
+  # unlink(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), recursive = TRUE)
   }
 }
