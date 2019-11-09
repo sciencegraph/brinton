@@ -128,7 +128,7 @@ considered within a given dataset.</p>
 
     <pre class="usage"><span class='fu'>wideplot</span>(<span class='no'>data</span>, <span class='kw'>dataclass</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>logical</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ordered</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>factor</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>character</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>datetime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>numeric</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"FALSE"</span>)</pre>
+  <span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"FALSE"</span>, <span class='kw'>dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -346,6 +346,10 @@ feature that is especially useful if the scale labels dwarf the graphics area.</
       <td><p>Logical. If `TRUE` the output includes labels that show the
 names of the graphics that are being displayed.</p></td>
     </tr>
+    <tr>
+      <th>dir</th>
+      <td><p>Directory in which the files are stored.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -357,11 +361,33 @@ the matrix.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>wideplot</span>(<span class='no'>iris</span>)
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
-<span class='fu'>wideplot</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.data.frame'>as.data.frame</a></span>(<span class='no'>HairEyeColor</span>))
-<span class='co'># }</span></pre>
+    <pre class="examples"><div class='input'><span class='fu'>wideplot</span>(<span class='no'>sleep</span>, <span class='kw'>dataclass</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"factor"</span>), <span class='kw'>factor</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"point graph"</span>, <span class='st'>"line graph"</span>, <span class='st'>"tile plot"</span>),
+<span class='kw'>numeric</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"point graph"</span>, <span class='st'>"line graph"</span>, <span class='st'>"stepped line graph"</span>))</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>processing file: wideplot.spin.Rmd</span></div><div class='output co'>#&gt;   |                                                                         |                                                                 |   0%  |                                                                         |.............                                                    |  20%
+#&gt;   ordinary text without R code
+#&gt; 
+#&gt;   |                                                                         |..........................                                       |  40%
+#&gt; label: preamble (with options) 
+#&gt; List of 2
+#&gt;  $ echo   : logi FALSE
+#&gt;  $ message: logi FALSE
+#&gt; 
+#&gt;   |                                                                         |.......................................                          |  60%
+#&gt; label: factor1 (with options) 
+#&gt; List of 2
+#&gt;  $ fig.width : num 13
+#&gt;  $ fig.height: num 0.8
+#&gt; </div><div class='output co'>#&gt;   |                                                                         |....................................................             |  80%
+#&gt; label: factor2 (with options) 
+#&gt; List of 2
+#&gt;  $ fig.width : num 13
+#&gt;  $ fig.height: num 2.2
+#&gt; </div><div class='output co'>#&gt;   |                                                                         |.................................................................| 100%
+#&gt;   ordinary text without R code
+#&gt; 
+#&gt; </div><div class='output co'>#&gt; <span class='message'>output file: wideplot.knit.md</span></div><div class='output co'>#&gt; "C:/PROGRA~1/Pandoc/pandoc" +RTS -K512m -RTS wideplot.utf8.md --to html4 --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash+smart --output wideplot.html --email-obfuscation none --self-contained --standalone --section-divs --template "C:\Users\34601\Documents\R\win-library\3.4\rmarkdown\rmd\h\default.html" --no-highlight --variable highlightjs=1 --variable "theme:bootstrap" --include-in-header "C:\Users\34601\AppData\Local\Temp\RtmpklK126\rmarkdown-str1efc305a1490.html" --mathjax --variable "mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" </div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Output created: wideplot.html</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

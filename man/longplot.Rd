@@ -4,7 +4,7 @@
 \alias{longplot}
 \title{Presents a longplot in a html output.}
 \usage{
-longplot(data, vars, label = TRUE)
+longplot(data, vars, label = TRUE, dir = tempdir())
 }
 \arguments{
 \item{data}{Data.frame. Default dataset to use for plot. If not already a
@@ -13,6 +13,8 @@ data.frame, it should be first coerced to by [as.data.frame()].}
 \item{vars}{Character. A specific variable within the dataset. Future work will allow to include a vector of variables.}
 
 \item{label}{Logical. If `TRUE` the output includes labels that show the names of the graphics that are being displayed.}
+
+\item{dir}{Directory in which the files are stored.}
 }
 \value{
 A html file that includes a range of graphics suitable for this particular combination of variables.

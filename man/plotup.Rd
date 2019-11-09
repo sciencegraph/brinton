@@ -4,7 +4,7 @@
 \alias{plotup}
 \title{Presents a specific graphic explicitly called by name.}
 \usage{
-plotup(data, vars, diagram, output = "html")
+plotup(data, vars, diagram, output = "html", dir = tempdir())
 }
 \arguments{
 \item{data}{Data.frame. Default dataset to use for plot. If not already a
@@ -22,6 +22,8 @@ arguments of the 'wideplot()' function.}
   \item \emph{'plots pane'}: output in RStudio's plots pane.
   \item \emph{'console'}: shows the code that produces a particular graphic.
 }}
+
+\item{dir}{Directory in which the files are stored.}
 }
 \value{
 This function can have three outputs: by default it produces a particular graphic,
@@ -33,5 +35,5 @@ variable whitin this dataset and a compatible type of graphic.
 Future work will include graphics that involve more than one variable.
 }
 \examples{
-plotup(esoph, "ncases", "line graph")
+plotup(iris, "Petal.Width", "color heatmap")
 }

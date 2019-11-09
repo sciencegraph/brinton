@@ -194,6 +194,8 @@ my_env <- new.env(parent = emptyenv())
 #' feature that is especially useful if the scale labels dwarf the graphics area.
 #' @param label Logical. If `TRUE` the output includes labels that show the
 #' names of the graphics that are being displayed.
+#' @param dir Directory in which the files are stored.
+#'
 #' @return A html file that includes a grid of graphics. The variables of a
 #' dataset are first grouped by the type of data, then, each variable is
 #' graphically represented into a range of different graphics in one row of
@@ -201,7 +203,8 @@ my_env <- new.env(parent = emptyenv())
 #' @export
 #'
 #' @examples
-#' wideplot(sleep)
+#' wideplot(sleep, dataclass = c("factor"), factor=c("point graph", "line graph", "tile plot"),
+#' numeric = c("point graph", "line graph", "stepped line graph"))
 wideplot <- function(data,
                      dataclass = NULL,
                      logical = NULL,
@@ -212,12 +215,18 @@ wideplot <- function(data,
                      numeric = NULL,
                      group = NULL,
                      ncol = 7,
-                     label = "FALSE"
+                     label = "FALSE",
+                     dir = tempdir()
                      )
 {
-  ## Auxiliary constant
-  dir <- tempdir()
-
+  ### Aux. function
+  add_blank <- function(x) {
+    while (length(x) < 7) {
+      x <- append(x, c("blank"), after = length(x))
+      i = length(x)
+    }
+    return(x)
+  }
   ## Default types of data
   if (is.null(dataclass) == TRUE) {
     index <- c(length(data[sapply(data, is.logical)])>0,
@@ -229,8 +238,7 @@ wideplot <- function(data,
     dataclass <- c("logical", "ordered", "factor", "character", "datetime", "numeric")[index]
     }
 
-## Default groups of graphics
-
+  ## Default groups of graphics
   if (is.null(group) == TRUE & is.null(logical) == TRUE) {
     logical   <- c("line graph", "point graph", "tile plot", "blank", "bar graph", "color bar graph")
     }
@@ -360,9 +368,6 @@ wideplot <- function(data,
   character   <- add_blank(character)
 
   my_env <- new.env()
-  # dirtemp <- getwd()
-  # wideplotR <- paste0(dirtemp, "\\wideplot.R")
-  # wideplotHTML <- paste0(dirtemp, "\\wideplot.html")
   writeLines(output_wide, file.path(dir, "wideplot.R"))
   write(paste0("cat('", deparse(substitute(data)), " dataframe')"), file.path(dir, "wideplot.R"), append=TRUE)
 
@@ -1117,14 +1122,12 @@ if (length(data[sapply(data, is.character)])>0)
   if (label == TRUE) {
     char_types <- paste0("character = c('", paste0(character[1:ncol], collapse = "', '"), "')")
     write(paste0('cat("', char_types, '")'), file.path(dir, "wideplot.R"), append=TRUE)
-  }
+    }
 }
-  } else {stop(warning_wp_dc)}
+    } else {stop(warning_wp_dc)}
 }
-
 rmarkdown::render(file.path(dir, "wideplot.R"), "html_document", envir=my_env)
 pander::openFileInOS(file.path(dir, "wideplot.html"))
-
 }
 
 

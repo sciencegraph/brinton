@@ -1,12 +1,4 @@
 #' @noRd
-add_blank <- function(x) {
-  while (length(x) < 7) {
-    x <- append(x, c("blank"), after = length(x))
-    i = length(x)
-    }
-  return(x)
-  }
-
 add_density_1D <- function(a, b) {
   a$b <- unlist(a[, b])
   if (length(unique(stats::na.omit(a$b))) == 1) {

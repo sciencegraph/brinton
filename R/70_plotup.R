@@ -16,25 +16,22 @@
 #'   \item \emph{'plots pane'}: output in RStudio's plots pane.
 #'   \item \emph{'console'}: shows the code that produces a particular graphic.
 #' }
+#' @param dir Directory in which the files are stored.
 #'
 #' @return This function can have three outputs: by default it produces a particular graphic,
 #' but it can also be represented into the RStudio's plots pane, or can return the code to produce it.
 #' @export
 #'
 #' @examples
-#' plotup(esoph, "ncases", "line graph")
+#' plotup(iris, "Petal.Width", "color heatmap")
 plotup <- function(data,
                    vars,
                    diagram,
-                   output = 'html'
+                   output = 'html',
+                   dir = tempdir()
                    )
 {
-  ## Auxiliary constant
-  dir <- tempdir()
   my_env <- new.env()
-  # dirtemp <- getwd()
-  # file.path(dir, "plotup.R") <- paste0(dirtemp, "\\plotup.R")
-  # plotupHTML <- paste0(dirtemp, "\\plotup.html")
   ## Value validation: function's argument
   ### dataset
   ### variable

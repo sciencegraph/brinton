@@ -13,6 +13,7 @@
 #' data.frame, it should be first coerced to by [as.data.frame()].
 #' @param vars Character. A specific variable within the dataset. Future work will allow to include a vector of variables.
 #' @param label Logical. If `TRUE` the output includes labels that show the names of the graphics that are being displayed.
+#' @param dir Directory in which the files are stored.
 #'
 #' @return A html file that includes a range of graphics suitable for this particular combination of variables.
 #' @export
@@ -21,12 +22,10 @@
 #' longplot(esoph, "tobgp")
 longplot <- function(data,
                      vars,
-                     # ncol = 5,
-                     label = TRUE
+                     label = TRUE,
+                     dir = tempdir()
                      )
 {
-  ## Auxiliary constant
-  dir <- tempdir()
   ## Auxiliary functions
   add_plots <- function(a, b) {
     write(paste0("gridExtra::grid.arrange(", paste0(a, 1:b, collapse = ", "), ", ncol=5)"), file.path(dir, "longplot.R"), append = TRUE)
@@ -65,9 +64,6 @@ longplot <- function(data,
   else {stop("This type of variable has not been yet considered")}
 
   my_env <- new.env()
-  # dirtemp <- getwd()
-  # longplotR <- paste0(dirtemp, "\\longplot.R")
-  # file.path(dir, "longplot.html") <- paste0(dirtemp, "\\longplot.html")
   ncol <- 5
   writeLines(output_long, file.path(dir, "longplot.R"))
   write(paste0("cat('Graphics from the ", deparse(substitute(vars)), " variable(s) of the ", deparse(substitute(data))," dataframe')"),

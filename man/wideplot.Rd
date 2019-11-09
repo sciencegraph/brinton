@@ -6,7 +6,7 @@
 \usage{
 wideplot(data, dataclass = NULL, logical = NULL, ordered = NULL,
   factor = NULL, character = NULL, datetime = NULL, numeric = NULL,
-  group = NULL, ncol = 7, label = "FALSE")
+  group = NULL, ncol = 7, label = "FALSE", dir = tempdir())
 }
 \arguments{
 \item{data}{Data.frame. Default dataset to use for plot. Unquoted. If not
@@ -207,6 +207,8 @@ feature that is especially useful if the scale labels dwarf the graphics area.}
 
 \item{label}{Logical. If `TRUE` the output includes labels that show the
 names of the graphics that are being displayed.}
+
+\item{dir}{Directory in which the files are stored.}
 }
 \value{
 A html file that includes a grid of graphics. The variables of a
@@ -220,5 +222,6 @@ corresponds to graphical representations of each one of the variables
 considered within a given dataset.
 }
 \examples{
-wideplot(sleep)
+wideplot(sleep, dataclass = c("factor"), factor=c("point graph", "line graph", "tile plot"),
+numeric = c("point graph", "line graph", "stepped line graph"))
 }
