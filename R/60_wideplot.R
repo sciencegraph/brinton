@@ -216,7 +216,7 @@ wideplot <- function(data,
                      group = NULL,
                      ncol = 7,
                      label = "FALSE",
-                     dir = getwd()
+                     dir = tempdir()
                      )
 {
   ## Aux. function

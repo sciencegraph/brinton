@@ -10,14 +10,13 @@ This is a first submission.
 There were no ERRORs or WARNINGs. Just one NOTE
 concerning the possibly mis-spelled words in "EDA".
 
-Acronyms are now explained and function names 
-are unquoted in the description.
+Acronyms have been deleted.
 
 Examples are now simpler in order to speed up the 
 outputs.
 
 Arguments have been added in order to write the 
-examples/vignettes/tests to getwd() by default.
+examples/vignettes/tests to tempdir() by default.
 
 We would like to thank the helpful revision that 
 Swetlana Herbrandt have provided.

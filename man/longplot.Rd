@@ -4,7 +4,7 @@
 \alias{longplot}
 \title{Presents a longplot in a html output.}
 \usage{
-longplot(data, vars, label = TRUE, dir = getwd())
+longplot(data, vars, label = TRUE, dir = tempdir())
 }
 \arguments{
 \item{data}{Data.frame. Default dataset to use for plot. If not already a

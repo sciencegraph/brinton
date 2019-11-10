@@ -28,7 +28,7 @@ plotup <- function(data,
                    vars,
                    diagram,
                    output = 'html',
-                   dir = getwd()
+                   dir = tempdir()
                    )
 {
   my_env <- new.env()

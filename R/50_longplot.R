@@ -23,7 +23,7 @@
 longplot <- function(data,
                      vars,
                      label = TRUE,
-                     dir = getwd()
+                     dir = tempdir()
                      )
 {
   ## Auxiliary functions

@@ -1,0 +1,10 @@
+* using log directory 'C:/Users/34601/Documents/brinton/brinton.Rcheck'
+* using R version 3.4.4 (2018-03-15)
+* using platform: x86_64-w64-mingw32 (64-bit)
+* using session charset: ISO8859-1
+* using option '--as-cran'
+* checking for file 'brinton/DESCRIPTION' ... ERROR
+Required fields missing or empty:
+  'Author' 'Maintainer'
+* DONE
+Status: 1 ERROR
