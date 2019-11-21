@@ -194,18 +194,20 @@ plotup(data = HI, vars = 'experience', diagram = 'bar graph',
 ```
 
 ```{r HI_1, fig.height=2.4, out.width = '40%', echo = FALSE, fig.cap="Figure 8"}
-data(HI, package = 'Ecdat')
-plotup(data = HI, vars = 'experience', diagram = 'bar graph', 
-       output = 'plots pane')
+knitr::include_graphics('figures/HI_1-1.png')
 ```
 
 + In the same dataset we can see that we could reach mistaken conclusions about the distribution of the variable `husby` (husband’s income in thousands of dollars) if we only looked at a histogram. As we can see in Figure 9, the distribution, and in particular the value zero, acquires a different value if we compare the histogram (right) with another graphic that isn’t as common for numerical variables: the bar graph (left), which shows the count of unique values. The bar graph makes it possible to clearly differentiate two groups: the informants whose husbands have no income and the informants whose husbands do have income (and to whom, therefore, it makes more sense to ask approximate income).
 
-```{r HI_2, echo=TRUE, fig.width=10, fig.height = 2.4, out.width = '80%', fig.cap="Figure 9"}
+```{r HI_11, eval = FALSE, echo=TRUE}
 gridExtra::grid.arrange(plotup(HI, 'husby', 'histogram', output = 'plots pane'),
                         plotup(HI, 'husby', 'bar graph', output = 'plots pane'),
                         heights=grid::unit(c(2.4), c('in')),
                         ncol=2)
+```
+
+```{r HI_2, echo=FALSE, fig.width=10, fig.height = 2.4, out.width = '80%', fig.cap="Figure 9"}
+knitr::include_graphics('figures/HI_2-1.png')
 ```
 
 

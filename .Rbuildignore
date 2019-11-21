@@ -1,7 +1,6 @@
 ^cran-comments\.md$
 ^\.Rproj\.user$
 ^\.travis\.yml$
-^brinton_outcomes$
 ^README\.Rmd$
 ^.*\.Rproj$
 ^Meta$

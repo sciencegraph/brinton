@@ -10,16 +10,21 @@ This is a first submission.
 There were no ERRORs or WARNINGs. Just one NOTE
 concerning the possibly mis-spelled words in "EDA".
 
-Acronyms have been deleted.
+Vinettes now load precompiled figures.
+
+While runing CMD check the system does not find 
+the temporary file wideplot.html. This behaviour 
+seems to be particular of CMD check since 
+devtools::run_examples() works properly.
 
 Examples are now simpler in order to speed up the 
 outputs.
 
-Arguments have been added in order to write the 
-examples/vignettes/tests to tempdir() by default.
+Arguments of functions have been added in order to 
+write the examples/vignettes/tests to tempdir() 
+by default.
 
-We would like to thank the helpful revision that 
-Swetlana Herbrandt have provided.
+
 
 
 
