@@ -19,13 +19,14 @@
 #' @export
 #'
 #' @examples
-#' longplot(esoph, "tobgp")
+#' \dontrun{longplot(esoph, "tobgp")}
 longplot <- function(data,
                      vars,
                      label = TRUE,
                      dir = tempdir()
                      )
 {
+  if(rmarkdown::pandoc_available() == FALSE | rmarkdown::pandoc_version() < "1.12.3") {stop(warning_pandoc)}
   ## Auxiliary functions
   add_plots <- function(a, b) {
     write(paste0("gridExtra::grid.arrange(", paste0(a, 1:b, collapse = ", "), ", ncol=5)"), file.path(dir, "brinton_outcomes", "longplot.R"), append = TRUE)

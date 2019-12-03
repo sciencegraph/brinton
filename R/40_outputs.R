@@ -268,6 +268,7 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev=
 # warnings
 warning_bargraph  <- "You may prefer a 'histogram' instead of a 'bargraph'."
 warning_general   <- "I'm so sorry because something went wrong :("
+warning_pandoc    <- "'brinton' requires Pandoc v < 1.12.3 (https://pandoc.org/)."
 warning_color     <- "Color argument accepts only 'black', 'bw' or 'color' values."
 warning_coord     <- "Coord argument accepts only 'xy' or 'yx' values."
 warning_long      <- "It seems that there are too many levels for some categorical variable."

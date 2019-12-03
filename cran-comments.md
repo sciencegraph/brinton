@@ -10,20 +10,16 @@ This is a first submission.
 There were no ERRORs or WARNINGs. Just one NOTE
 concerning the possibly mis-spelled words in "EDA".
 
-Vinettes now load precompiled figures.
+Vignettes now load precompiled figures.
 
-While runing CMD check the system does not find 
-the temporary file wideplot.html. This behaviour 
-seems to be particular of CMD check since 
-devtools::run_examples() works properly.
-
-Examples are now simpler in order to speed up the 
-outputs.
+In order to avoid leaving browser open, examples that
+produce a html file, are now wrapped in \dontrun{}.
 
 Arguments of functions have been added in order to 
 write the examples/vignettes/tests to tempdir() 
 by default.
 
+The requirement of pandoc is now declared and used conditionally.
 
 
 

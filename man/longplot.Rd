@@ -31,5 +31,5 @@ select one variable whitin it. Future work will include the ability to relate mo
 than one variable.
 }
 \examples{
-longplot(esoph, "tobgp")
+\dontrun{longplot(esoph, "tobgp")}
 }

@@ -203,8 +203,9 @@ my_env <- new.env(parent = emptyenv())
 #' @export
 #'
 #' @examples
-#' wideplot(sleep, dataclass = c("factor"), factor=c("point graph", "line graph", "tile plot"),
-#' numeric = c("point graph", "line graph", "stepped line graph"))
+#' \dontrun{wideplot(sleep, dataclass = c("factor"),
+#' factor=c("point graph", "line graph", "tile plot"),
+#' numeric = c("point graph", "line graph", "stepped line graph"))}
 wideplot <- function(data,
                      dataclass = NULL,
                      logical = NULL,
@@ -227,6 +228,7 @@ wideplot <- function(data,
     }
     return(x)
   }
+  if(rmarkdown::pandoc_available() == FALSE | rmarkdown::pandoc_version() < "1.12.3") {stop(warning_pandoc)}
   ## Default types of data
   if (is.null(dataclass) == TRUE) {
     index <- c(length(data[sapply(data, is.logical)])>0,

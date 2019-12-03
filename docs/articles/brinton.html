@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -77,7 +77,7 @@
       <h1>Automated Graphical Data Analysis with brinton</h1>
                         <h4 class="author">Pere Millán-Martínez &amp; Ramon Oller Piqué</h4>
             
-            <h4 class="date">2019-11-21</h4>
+            <h4 class="date">2019-12-03</h4>
       
       
       <div class="hidden name"><code>brinton.Rmd</code></div>
@@ -279,11 +279,10 @@ Figure 8
 <ul>
 <li>In the same dataset we can see that we could reach mistaken conclusions about the distribution of the variable <code>husby</code> (husband’s income in thousands of dollars) if we only looked at a histogram. As we can see in Figure 9, the distribution, and in particular the value zero, acquires a different value if we compare the histogram (right) with another graphic that isn’t as common for numerical variables: the bar graph (left), which shows the count of unique values. The bar graph makes it possible to clearly differentiate two groups: the informants whose husbands have no income and the informants whose husbands do have income (and to whom, therefore, it makes more sense to ask approximate income).</li>
 </ul>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="co"># gridExtra::grid.arrange(plotup(HI, 'husby', 'histogram', output = 'plots pane'),</span></a>
-<a class="sourceLine" id="cb20-2" title="2"><span class="co">#                         plotup(HI, 'husby', 'bar graph', output = 'plots pane'),</span></a>
-<a class="sourceLine" id="cb20-3" title="3"><span class="co">#                         heights=grid::unit(c(2.4), c('in')),</span></a>
-<a class="sourceLine" id="cb20-4" title="4"><span class="co">#                         ncol=2)</span></a>
-<a class="sourceLine" id="cb20-5" title="5">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/include_graphics">include_graphics</a></span>(<span class="st">'figures/HI_2-1.png'</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">gridExtra<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">grid.arrange</a></span>(<span class="kw"><a href="../reference/plotup.html">plotup</a></span>(HI, <span class="st">'husby'</span>, <span class="st">'histogram'</span>, <span class="dt">output =</span> <span class="st">'plots pane'</span>),</a>
+<a class="sourceLine" id="cb20-2" title="2">                        <span class="kw"><a href="../reference/plotup.html">plotup</a></span>(HI, <span class="st">'husby'</span>, <span class="st">'bar graph'</span>, <span class="dt">output =</span> <span class="st">'plots pane'</span>),</a>
+<a class="sourceLine" id="cb20-3" title="3">                        <span class="dt">heights=</span>grid<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/grid/topics/unit">unit</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">2.4</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'in'</span>)),</a>
+<a class="sourceLine" id="cb20-4" title="4">                        <span class="dt">ncol=</span><span class="dv">2</span>)</a></code></pre></div>
 <div class="figure">
 <img src="figures/HI_2-1.png" alt="Figure 9" width="80%"><p class="caption">
 Figure 9

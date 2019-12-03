@@ -222,6 +222,7 @@ corresponds to graphical representations of each one of the variables
 considered within a given dataset.
 }
 \examples{
-wideplot(sleep, dataclass = c("factor"), factor=c("point graph", "line graph", "tile plot"),
-numeric = c("point graph", "line graph", "stepped line graph"))
+\dontrun{wideplot(sleep, dataclass = c("factor"),
+factor=c("point graph", "line graph", "tile plot"),
+numeric = c("point graph", "line graph", "stepped line graph"))}
 }
