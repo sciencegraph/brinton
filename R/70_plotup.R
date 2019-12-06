@@ -33,7 +33,7 @@ plotup <- function(data,
                    )
 {
   my_env <- new.env()
-  if(rmarkdown::pandoc_available() == FALSE | rmarkdown::pandoc_version() < "1.12.3") {stop(warning_pandoc)}
+  if(rmarkdown::pandoc_available() == FALSE || rmarkdown::pandoc_version() < "1.12.3") {stop(warning_pandoc)}
   ## Value validation: function's argument
   ### dataset
   ### variable

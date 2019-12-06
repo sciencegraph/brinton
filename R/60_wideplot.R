@@ -228,7 +228,7 @@ wideplot <- function(data,
     }
     return(x)
   }
-  if(rmarkdown::pandoc_available() == FALSE | rmarkdown::pandoc_version() < "1.12.3") {stop(warning_pandoc)}
+  if(rmarkdown::pandoc_available() == FALSE || rmarkdown::pandoc_version() < "1.12.3") {stop(warning_pandoc)}
   ## Default types of data
   if (is.null(dataclass) == TRUE) {
     index <- c(length(data[sapply(data, is.logical)])>0,

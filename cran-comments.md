@@ -4,24 +4,16 @@ This is a first submission.
 ## Test environments
 * local Windows 10, R 3.4.4
 * travis Ubuntu Xenial 16.04
-* win-builder (devel)
+* R Under development (unstable) (2019-12-02 r77499)
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. Just one NOTE
 concerning the possibly mis-spelled words in "EDA".
 
-Vignettes now load precompiled figures.
+Examples that produce a html file, are now wrapped 
+in \dontrun{} in order to avoid leaving browser open
+while checking.
 
-In order to avoid leaving browser open, examples that
-produce a html file, are now wrapped in \dontrun{}.
-
-Arguments of functions have been added in order to 
-write the examples/vignettes/tests to tempdir() 
-by default.
-
-The requirement of pandoc is now declared and used conditionally.
-
-
-
-
-
+The requirement of pandoc is now declared and used 
+conditionally. It has also been tested on a machine 
+without pandoc installed.
