@@ -1,5 +1,6 @@
 ## NOTE
-This is a first submission.
+This is a submission of package not currently 
+available on CRAN.
 
 ## Test environments
 * local Windows 10, R 3.4.4
@@ -11,9 +12,9 @@ There were no ERRORs or WARNINGs. Just one NOTE
 concerning the possibly mis-spelled words in "EDA".
 
 Examples that produce a html file, are now wrapped 
-in \dontrun{} in order to avoid leaving browser open
+into \dontrun{} in order to avoid leaving browser open
 while checking.
 
 The requirement of pandoc is now declared and used 
-conditionally. It has also been tested on a machine 
-without pandoc installed.
+conditionally. It has been tested on a machine 
+without pandoc being available.
