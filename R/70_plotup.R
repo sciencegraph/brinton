@@ -32,8 +32,9 @@ plotup <- function(data,
                    dir = tempdir()
                    )
 {
+  if (rmarkdown::pandoc_available("1.12.3") == FALSE) {warning(warning_pandoc)}
+  else if (rmarkdown::pandoc_available("1.12.3") == TRUE) {
   my_env <- new.env()
-  if(rmarkdown::pandoc_available() == FALSE || rmarkdown::pandoc_version() < "1.12.3") {stop(warning_pandoc)}
   ## Value validation: function's argument
   ### dataset
   ### variable
@@ -1409,3 +1410,4 @@ ggplot(",
     # unlink(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), recursive = TRUE)
     }
   }
+}

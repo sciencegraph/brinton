@@ -228,7 +228,8 @@ wideplot <- function(data,
     }
     return(x)
   }
-  if(rmarkdown::pandoc_available() == FALSE || rmarkdown::pandoc_version() < "1.12.3") {stop(warning_pandoc)}
+  if (rmarkdown::pandoc_available("1.12.3") == FALSE) {warning(warning_pandoc)}
+  else if (rmarkdown::pandoc_available("1.12.3") == TRUE) {
   ## Default types of data
   if (is.null(dataclass) == TRUE) {
     index <- c(length(data[sapply(data, is.logical)])>0,
@@ -1132,6 +1133,7 @@ if (length(data[sapply(data, is.character)])>0)
 rmarkdown::render(file.path(dir, "brinton_outcomes", "wideplot.R", fsep = .Platform$file.sep), "html_document", envir=my_env)
 pander::openFileInOS(file.path(dir, "brinton_outcomes", "wideplot.html", fsep = .Platform$file.sep))
 # unlink(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), recursive = TRUE)
+  }
 }
 
 

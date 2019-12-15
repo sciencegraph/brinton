@@ -26,7 +26,8 @@ longplot <- function(data,
                      dir = tempdir()
                      )
 {
-  if(rmarkdown::pandoc_available() == FALSE || rmarkdown::pandoc_version() < "1.12.3") {stop(warning_pandoc)}
+  if (rmarkdown::pandoc_available("1.12.3") == FALSE) {warning(warning_pandoc)}
+  else if (rmarkdown::pandoc_available("1.12.3") == TRUE) {
   ## Auxiliary functions
   add_plots <- function(a, b) {
     write(paste0("gridExtra::grid.arrange(", paste0(a, 1:b, collapse = ", "), ", ncol=5)"), file.path(dir, "brinton_outcomes", "longplot.R"), append = TRUE)
@@ -34,7 +35,7 @@ longplot <- function(data,
 
   add_label <- function(a, b) {
     char_types <- paste0(a, " = c('", paste0(b, collapse = "', '"), "')")
-    write(paste0('cat("', char_types, '")'), file.path(dir, 'longplot.R'), append=TRUE)
+    write(paste0('cat("', char_types, '")'), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
   }
   ## Format validation: function's object
   if(is.data.frame(data) == FALSE) {
@@ -473,5 +474,6 @@ longplot <- function(data,
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
   }
   # unlink(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), recursive = TRUE)
+  }
   }
 }

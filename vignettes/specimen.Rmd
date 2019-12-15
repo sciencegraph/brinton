@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, echo=FALSE, message=FALSE}
-library(dplyr)
+# library(dplyr)
 ```
 
 
@@ -350,7 +350,7 @@ cat("datetime = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph
 
 # Datetime variables:
 
-```{r}
+```{r, eval = FALSE}
 # flights_dt <- nycflights13::flights %>%
 #   transmute(departure = lubridate::make_datetime(
 #     year, 

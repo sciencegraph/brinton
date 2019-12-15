@@ -9,7 +9,7 @@ available on CRAN.
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. Just one NOTE
-concerning the possibly mis-spelled words in "EDA".
+while checking CRAN incoming feasibility.
 
 Examples that produce a html file, are now wrapped 
 into \dontrun{} in order to avoid leaving browser open
@@ -17,4 +17,5 @@ while checking.
 
 The requirement of pandoc is now declared and used 
 conditionally. It has been tested on a machine 
-without pandoc being available.
+without pandoc and exits with a warning that reminds 
+that pandoc is requiered.
