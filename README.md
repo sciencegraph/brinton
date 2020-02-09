@@ -3,7 +3,7 @@
 
 # brinton <img src="man/figures/logo.png" align="right" alt="" width="60" />
 
-This package library introduces:
+This package introduces:
 
   - `wideplot()` graphics for exploring the structure of a dataset
     through a grid of variables and graphic types.
@@ -34,6 +34,7 @@ library(brinton)
 #> Loading required package: ggplot2
 #> Loading required package: gridExtra
 #> Loading required package: rmarkdown
+#> Loading required package: glue
 #> M a G i C i N G R a P H S
 ```
 
@@ -109,13 +110,14 @@ plotup(infert, "pooled.stratum", "color binned stripe graph", output = "plots pa
 ``` r
 plotup(infert, "pooled.stratum", "color binned stripe graph", output = "console")
 #> theme_set(theme_minimal())
+#> 
 #> binwidth <- (max(infert['pooled.stratum'], na.rm=TRUE)-min(infert['pooled.stratum'], na.rm=TRUE))/20
 #> ggplot(infert, aes(x=pooled.stratum)) +
 #>   geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +
 #>   scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3)) +
 #>   theme(panel.grid = element_line(colour = NA),
-#>     axis.text.y=element_text(color=NA),
-#>     axis.title.y=element_text(color=NA),
-#>     axis.ticks.x=element_line(color='black'),
+#>     axis.text.y =element_text(color = NA),
+#>     axis.title.y =element_text(color = NA),
+#>     axis.ticks.x =element_line(color = 'black'),
 #>     legend.position='none')
 ```

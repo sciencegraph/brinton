@@ -104,6 +104,11 @@ my_env <- new.env(parent = emptyenv())
 #'   \item \emph{'blank'}
 #'   \item \emph{'area graph'}
 #'   \item \emph{'stepped area graph'}
+#'   \item \emph{'bw stepped area graph'}
+#'   \item \emph{'color stepped area graph'}
+#'   \item \emph{'seq. stripe graph'}
+#'   \item \emph{'bw seq. stripe graph'}
+#'   \item \emph{'color seq. stripe graph'}
 #'   \item \emph{'line graph'}
 #'   \item \emph{'stepped line graph'}
 #'   \item \emph{'stripe graph'}
@@ -141,6 +146,9 @@ my_env <- new.env(parent = emptyenv())
 #'   \item \emph{'box plot'}
 #'   \item \emph{'3 uniaxial'}
 #'   \item \emph{'normal qq plot'}
+#'   \item \emph{'ecdf plot'}
+#'   \item \emph{'dotted ecdf plot'}
+#'   \item \emph{'stepped ecdf plot'}
 #' }
 #' @param character Character vector. Graphics for character variables among the following:
 #' \itemize{
@@ -203,9 +211,11 @@ my_env <- new.env(parent = emptyenv())
 #' @export
 #'
 #' @examples
-#' \dontrun{wideplot(sleep, dataclass = c("factor"),
+#' if (interactive()) {
+#' wideplot(sleep, dataclass = c("factor"),
 #' factor=c("point graph", "line graph", "tile plot"),
-#' numeric = c("point graph", "line graph", "stepped line graph"))}
+#' numeric = c("point graph", "line graph", "stepped line graph"))
+#' }
 wideplot <- function(data,
                      dataclass = NULL,
                      logical = NULL,
@@ -228,7 +238,7 @@ wideplot <- function(data,
     }
     return(x)
   }
-  if (rmarkdown::pandoc_available("1.12.3") == FALSE) {warning(warning_pandoc)}
+  if (rmarkdown::pandoc_available("1.12.3") == FALSE) {print(warning_pandoc)}
   else if (rmarkdown::pandoc_available("1.12.3") == TRUE) {
   ## Default types of data
   if (is.null(dataclass) == TRUE) {
@@ -361,7 +371,7 @@ wideplot <- function(data,
     numeric   <- sample(numeric_v[2:length(numeric_v)], 7, replace=F)
   }
 
-## Addition of black cells to the graphic matrix source
+## Addition of blank cells to the graphic matrix source
 
   datetime    <- add_blank(datetime)
   logical     <- add_blank(logical)
@@ -382,8 +392,8 @@ if(is.data.frame(data) == FALSE) {
        "You have provided an object of class ", class(data))
   }
 if(tibble::is_tibble(data) == TRUE) {
-  # stop("The object must be coerced to a data frame.")
-  data <- as.data.frame(data)
+  stop(warning_tibble)
+  # data <- as.data.frame(data)
   }
 
 ## Format validation: function's parameters
@@ -490,7 +500,7 @@ if (length(data[sapply(data, is.logical)])>0)
                                              } else if (logical[", j, "] == 'blank') {
                                              assign(lgi", letters[j], ",
                                              blank(pp, colnames(pp[i])), envir=my_env)
-                                             } else {print(warning_wp_lc)}")))}
+                                             } else {print(warning_wrong)}")))}
 
       line <- eval(parse(
         text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" lgi", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
@@ -558,7 +568,7 @@ if (length(data[sapply(data, is.ordered)])>0)
                                              } else if (ordered[", j, "] == 'blank') {
                                              assign(ofi", letters[j], ",
                                              blank(pp, colnames(pp[i])), envir=my_env)
-                                             } else {print(warning_wp_of)}")))}
+                                             } else {print(warning_wrong)}")))}
 
       line <- eval(parse(
         text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ofi", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
@@ -725,7 +735,7 @@ if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], 
                                                 } else if (factor[", j, "] == 'blank') {
                                                 assign(fti", letters[j], ",
                                                 blank(pp, colnames(pp[i])), envir=my_env)
-                                                } else {print(warning_wp_ft)}
+                                                } else {print(warning_wrong)}
                                                 ")
                                     )
                               )
@@ -794,7 +804,7 @@ if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], 
                                                     } else if (datetime[", j, "] == 'blank') {
                                                     assign(dti", letters[j], ",
                                                     blank(pp, colnames(pp[i])), envir=my_env)
-                                                    } else {print(warning_wp_dt)}")))}
+                                                    } else {print(warning_wrong)}")))}
 
           line <- eval(parse(
             text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" dti", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
@@ -948,7 +958,7 @@ if (length(data[sapply(data, is.numeric)])>0)
                                              } else if (numeric[", j, "] == 'blank') {
                                              assign(nui", letters[j], ",
                                              blank(pp, colnames(pp[i])), envir=my_env)
-                                             } else {print(warning_wp_nu)}")))}
+                                             } else {print(warning_wrong)}")))}
 
       line <- eval(parse(
         text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" nui", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
@@ -1115,7 +1125,7 @@ if (length(data[sapply(data, is.character)])>0)
                                              } else if (character[", j, "] == 'blank') {
                                              assign(chi", letters[j], ",
                                              blank(pp, colnames(pp[i])), envir=my_env)
-                                             } else {print(warning_wp_ch)}")))}
+                                             } else {print(warning_wrong)}")))}
       line <- eval(parse(
       text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" chi", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
       write(paste0("#+ character", i, ", fig.width=13, fig.height=", long), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra

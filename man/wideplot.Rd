@@ -4,9 +4,20 @@
 \alias{wideplot}
 \title{Presents a wideplot in a html output.}
 \usage{
-wideplot(data, dataclass = NULL, logical = NULL, ordered = NULL,
-  factor = NULL, character = NULL, datetime = NULL, numeric = NULL,
-  group = NULL, ncol = 7, label = "FALSE", dir = tempdir())
+wideplot(
+  data,
+  dataclass = NULL,
+  logical = NULL,
+  ordered = NULL,
+  factor = NULL,
+  character = NULL,
+  datetime = NULL,
+  numeric = NULL,
+  group = NULL,
+  ncol = 7,
+  label = "FALSE",
+  dir = tempdir()
+)
 }
 \arguments{
 \item{data}{Data.frame. Default dataset to use for plot. Unquoted. If not
@@ -151,6 +162,11 @@ The types of data to be considered among the following:
   \item \emph{'blank'}
   \item \emph{'area graph'}
   \item \emph{'stepped area graph'}
+  \item \emph{'bw stepped area graph'}
+  \item \emph{'color stepped area graph'}
+  \item \emph{'seq. stripe graph'}
+  \item \emph{'bw seq. stripe graph'}
+  \item \emph{'color seq. stripe graph'}
   \item \emph{'line graph'}
   \item \emph{'stepped line graph'}
   \item \emph{'stripe graph'}
@@ -188,6 +204,9 @@ The types of data to be considered among the following:
   \item \emph{'box plot'}
   \item \emph{'3 uniaxial'}
   \item \emph{'normal qq plot'}
+  \item \emph{'ecdf plot'}
+  \item \emph{'dotted ecdf plot'}
+  \item \emph{'stepped ecdf plot'}
 }}
 
 \item{group}{Quoted character. Group of prestablished graphics which marks represent:
@@ -222,7 +241,9 @@ corresponds to graphical representations of each one of the variables
 considered within a given dataset.
 }
 \examples{
-\dontrun{wideplot(sleep, dataclass = c("factor"),
+if (interactive()) {
+wideplot(sleep, dataclass = c("factor"),
 factor=c("point graph", "line graph", "tile plot"),
-numeric = c("point graph", "line graph", "stepped line graph"))}
+numeric = c("point graph", "line graph", "stepped line graph"))
+}
 }

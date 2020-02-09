@@ -17,3 +17,12 @@ add_density_1D <- function(a, b) {
   }
   return(dens)
 }
+
+# borrowed from: https://slowkow.com/notes/ggplot2-color-by-density/
+get_density <- function(x, y, ...) {
+  dens <- MASS::kde2d(x, y, ...)
+  ix <- findInterval(x, dens$x)
+  iy <- findInterval(y, dens$y)
+  ii <- cbind(ix, iy)
+  return(dens$z[ii])
+}

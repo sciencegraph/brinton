@@ -31,7 +31,7 @@ library(brinton)
 ```
 
 ```{r, echo = FALSE}
-library(brinton)
+suppressWarnings(library(brinton))
 ```
 
 # brinton's functions
@@ -57,7 +57,7 @@ str(esoph)
 ```
 
 ```{r, eval = FALSE}
-wideplot(data = esoph)
+wideplot(esoph)
 ```
 
 ```{r wideplotesoph, echo=FALSE, out.width = '80%', fig.cap="Figure 1"}
@@ -103,111 +103,11 @@ knitr::include_graphics('figures/plotup_esoph_ncases_linegraph.png')
 This function requires three arguments: `data`, `vars` and `diagram`. The fourth argument, `output`, is optional and has the default value of **html**. However, if it is set to `plots pane`, instead of generating a graphic in an **html** page, it generates a graphic in the plots pane of RStudio. If, instead, it is set to ''console´´, the function returns the code used by the library to generate this precise graphic. This feature is especially useful to adapt the default graphic to the specific needs and preferences of the user.
 
 ```{r, comment = ""}
-plotup(esoph, 'ncases', 'line graph', output = 'console')
+plotup(data = esoph, vars = 'ncases', diagram ='line graph', output = 'console')
 ```
 
 # The specimen
 
-The documentation of the library includes the vignette '1v specimen´´, which contains a specimen with images of all the graphic types for a single variable, incorporated into the library according to the variable type. These graphs serve as an example so that the user can rapidly check whether a graphic has been incorporated, the type or types of variable for which it has been incorporated, and the label with which it has been identified. The suitability of a particular graphic will depend on the datasets of interest and the variables of each particular user. 
+The documentation of the library includes the vignette '1v specimen', which contains a specimen with images of all the graphic types for a single variable, incorporated into the library according to the variable type. These graphs serve as an example so that the user can rapidly check whether a graphic has been incorporated, the type or types of variable for which it has been incorporated, and the label with which it has been identified. The suitability of a particular graphic will depend on the datasets of interest and the variables of each particular user. 
 
-# Applications
-
-The main application of a library for exploratory data analysis is to help the user make sense of the data. This includes describing the number and nature of the variables, the number of observations and examples of the variables--this is precisely what the `str()` function does. It also includes evaluating the validity and quality of the data and the properties of the values found. Below we list a series of tasks for which the functions included in `brinton` are useful, and describe the process for carrying them out.
-
-## Identify multi-column sorting
-
-Here we describe how to use the `wideplot()` function to determine whether the observations of the dataset `aids` of the library `KMsurv` are sorted according to one of the variables. This dataset has three variables, `infect` (infection time for AIDS in years), `induct` (induction time for AIDS in years), and `adult` (indicator of adult: 1=adult, 0=child). To accomplish the task, we first install the library, then load it into memory and run the wideplot function with its default output.
-
-```{r, eval=FALSE}
-data(aids, package = 'KMsurv')
-wideplot(aids)
-wideplot(aids, numeric = c('line graph', 'stepped line graph'), ncol=5)
-```
-
-```{r wideplotaids1, echo=FALSE, out.width = '80%', fig.cap="Figure 4"}
-knitr::include_graphics('figures/wideplot_aids0.png')
-```
-
-From this result we observe that the line graph is the one that best shows that the dataset is ordered first by the variable `adult` and then by the variable `infect`. To finish selecting the most suitable graphic we can then execute the same function but limit the graphic types such that only two variations of line graph are shown. We can moreover limit the function so that it displays, for example, only five columns, so that the graphics will be larger.
-
-```{r, eval = FALSE}
-wideplot(data = aids, numeric = c('line graph', 'stepped line graph'), 
-         ncol = 5)
-```
-
-```{r wideplotaids2, echo=FALSE, out.width = '80%', fig.cap="Figure 4"}
-knitr::include_graphics('figures/wideplot_aids.png')
-```
-
-The result is two variations of the line graph for each variable, in which we can clearly see that the data set is ordered first by the variable `adult` and then by the variable `infect`. In this case, there may be equally valid arguments for using the graphics of the first column as the graphics of the second column.
-
-## Identify variables that can be reclassified
-
-When loading a dataset it is important to check which assumptions the function has made and which variables can be reclassified. We can see an example of this in Figure 4, which shows that the variable `adult` of the dataset `aids` is better treated as a `logical`-type variable than an `integer`. If we recode the variable type more appropriately, when we apply the `wideplot()` function again, the graphics it shows also tend to be more appropriate. In Figure 5 we see the result after the variable `adult` is reclassified.
-
-```{r, eval=FALSE}
-aids$adult <- as.logical(aids$adult)
-wideplot(data = aids)
-```
-
-```{r wideplotaids3, echo=FALSE, out.width = '80%', fig.cap="Figure 5"}
-knitr::include_graphics('figures/wideplot_aids2.png')
-```
-
-## Identify key variables
-
-The best way to identify key variables is by using complementary graphics. Figure 6 makes it possible, for example, to identify rapidly the variable `patient` of the dataset `azt` in the library `KMsurv`, as a key variable, given that it assigns a sequential number to each record, each of which is observed a single time. We can draw these two conclusions from the line graph and the color bar graph. 
-
-```{r, eval=FALSE}
-data(azt, package = 'KMsurv')
-wideplot(data = azt, label = TRUE)
-```
-
-```{r wideplotazt, echo=FALSE, out.width = '80%', fig.cap="Figure 6"}
-knitr::include_graphics('figures/wideplot_azt.png')
-```
-
-In the case of categorical key variables, the same line graph and color bar graph would also help us to identify the key variable. Figure 7 shows these two graphs for the factor-type variable of the dataset `SpeciesArea` in the library `Stat2Data`, which allow us to identify rapidly the variable `Name` as a key variable.
-
-```{r, echo=TRUE, eval=FALSE}
-data(SpeciesArea, package = 'Stat2Data')
-wideplot(data = SpeciesArea, dataclas = c('factor'),
-         factor = c('line graph', 'color bar graph'), ncol = 5)
-```
-
-```{r SpeciesArea, echo=FALSE, out.width = '80%', fig.cap="Figure 7"}
-knitr::include_graphics('figures/wideplot_SpeciesArea.png')
-```
-
-## Be surprised by serendipity
-
-Next we describe isolated cases in which we are surprised by the values that the data depict. We use the following procedure to locate unexpected aspects of the data: first we obtain a general view of the dataset using the function `wideplot()`; next we focus our attention on one variable in particular and explore all of the compatible graphics using the function `longplot()`; finally, we use the function `plotup()` to obtain the graphic that best enables us to identify, narrow down and communicate the aspect of the data that we have found.
-
-+ The first example of an unexpected funding appears in the variable `experience` (years of potential work experience) of the dataset `HI` in the library `Ecdat`. This dataset contains 22,272 records of 13 variables that link health insurance policies to the weekly hours worked by the wives of the policyholders, while the variable `experience` refers to the years of potential work experience of the wives. If we look at the bar graph applied to this numerical variable --see Figure 8--, we see that the frequency of the whole values is systematically greater than the frequency of the real non-whole values. This behavior could indicate that the variable can be informed with excessive precision and whoever informed the variable `experience` tended to round to the unit. Another possibility is that the dataset was constructed by joining two data sources with different degrees of precision.
-
-```{r, eval = FALSE, echo = TRUE}
-data(HI, package = 'Ecdat')
-wideplot(data = HI)
-longplot(data = HI, vars = 'experience')
-plotup(data = HI, vars = 'experience', diagram = 'bar graph', 
-       output = 'plots pane')
-```
-
-```{r HI_1, fig.height=2.4, out.width = '40%', echo = FALSE, fig.cap="Figure 8"}
-knitr::include_graphics('figures/HI_1-1.png')
-```
-
-+ In the same dataset we can see that we could reach mistaken conclusions about the distribution of the variable `husby` (husband’s income in thousands of dollars) if we only looked at a histogram. As we can see in Figure 9, the distribution, and in particular the value zero, acquires a different value if we compare the histogram (right) with another graphic that isn’t as common for numerical variables: the bar graph (left), which shows the count of unique values. The bar graph makes it possible to clearly differentiate two groups: the informants whose husbands have no income and the informants whose husbands do have income (and to whom, therefore, it makes more sense to ask approximate income).
-
-```{r HI_11, eval = FALSE, echo=TRUE}
-gridExtra::grid.arrange(plotup(HI, 'husby', 'histogram', output = 'plots pane'),
-                        plotup(HI, 'husby', 'bar graph', output = 'plots pane'),
-                        heights=grid::unit(c(2.4), c('in')),
-                        ncol=2)
-```
-
-```{r HI_2, echo=FALSE, fig.width=10, fig.height = 2.4, out.width = '80%', fig.cap="Figure 9"}
-knitr::include_graphics('figures/HI_2-1.png')
-```
-
-
+In order to keep the package as compact as possible, the specimens of graphics that require more than one input variable are not built whithin the package but they can be found at [sciencegraph.github.io/brinton/articles/](https://sciencegraph.github.io/brinton/articles/).

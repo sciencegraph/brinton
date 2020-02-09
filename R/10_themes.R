@@ -1,16 +1,35 @@
 #' @import ggplot2
+#' @import glue
 #' @importFrom gridExtra grid.arrange
 #' @importFrom rmarkdown render
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom stats density
+#' @importFrom stats reshape
 #' @importFrom forcats fct_infreq
 #' @importFrom lubridate is.instant
 #' @importFrom pander openFileInOS
+#' @importFrom utils head
+utils::globalVariables(c("..level..", "..count..", "pp_dens", "reshape", "pp_id", "head"))
 
 pp_theme <- function(base_size = 11,
                       base_family = "",
                       base_line_size = base_size / 22,
                       base_rect_size = base_size / 22){
+  theme_minimal(base_size = base_size,
+                base_family = base_family,
+                base_line_size = base_line_size) %+replace%
+    theme(
+      axis.ticks=element_line(color="black"),
+      panel.grid = element_line(colour = NA),
+      axis.title = element_text(colour = "#333333", size=base_size/1.2),
+      complete = TRUE
+    )
+}
+
+pp_theme <- function(base_size = 11,
+                     base_family = "",
+                     base_line_size = base_size / 22,
+                     base_rect_size = base_size / 22){
   theme_minimal(base_size = base_size,
                 base_family = base_family,
                 base_line_size = base_line_size) %+replace%
@@ -35,12 +54,12 @@ theme_blank <-  theme(axis.text= element_blank(),
 amb.x <- theme(axis.text.x  = element_blank(),
                axis.title.x = element_blank(), #element_text(color=NA),
                axis.ticks.x = element_blank() #element_line(color=NA)
-)
+               )
 
 amb.y <- theme(axis.text.y  = element_blank(),
                axis.title.y = element_blank(), #element_text(color=NA),
                axis.ticks.y = element_blank() #element_line(color=NA)
-)
+               )
 
 amb.z <- theme(legend.position="none")
 

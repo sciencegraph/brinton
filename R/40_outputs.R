@@ -88,6 +88,8 @@ datetime_v  <- c('blank',
 numeric_v   <- c('blank',
                  'area graph',
                  'stepped area graph',
+                 'bw stepped area graph',
+                 'color stepped area graph',
                  'line graph',
                  'stepped line graph',
                  'stripe graph',
@@ -96,6 +98,9 @@ numeric_v   <- c('blank',
                  'binned stripe graph',
                  'bw binned stripe graph',
                  'color binned stripe graph',
+                 'seq. stripe graph',
+                 'bw seq. stripe graph',
+                 'color seq. stripe graph',
                  'point graph',
                  'bw point graph',
                  'color point graph',
@@ -125,7 +130,10 @@ numeric_v   <- c('blank',
                  'filled violin plot',
                  'box plot',
                  '3 uniaxial',
-                 'normal qq plot'
+                 'normal qq plot',
+                 'ecdf plot',
+                 'point ecdf plot',
+                 'stepped ecdf plot'
                  )
 character_v <- c('blank',
                  'line graph',
@@ -177,10 +185,66 @@ label_v     <- c('TRUE',
                  0,
                  1
                  )
-
+numeric2_v <- c('blank',
+                 'scatter plot',
+                 'bw scatter plot',
+                 'color scatter plot',
+                 'binned scatter plot',
+                 'bw binned scatter plot',
+                 'color binned scatter plot',
+                 'binned heatmap',
+                 'bw binned heatmap',
+                 'color binned heatmap',
+                 'hexagonal binned heatmap',
+                 'bw hexagonal binned heatmap',
+                 'color hexagonal binned heatmap',
+                 'bw heatmap',
+                 'color heatmap',
+                 'contour plot',
+                 'bw contour plot',
+                 'color contour plot',
+                 'contour plot with data points',
+                 'bw contour plot with data points',
+                 'color contour plot with data points',
+                 'parallel plot',
+                 'bw parallel plot',
+                 'color parallel plot',
+                 'unscaled parallel plot',
+                 'unscaled bw parallel plot',
+                 'unscaled color parallel plot',
+                 'path graph',
+                 'bw path graph',
+                 'color path graph',
+                 'point-to-point graph',
+                 'bw point-to-point graph',
+                 'color point-to-point graph',
+                 'point graph', 'bw point graph',
+                 'color point graph',
+                 'line graph',
+                 'stepped line graph',
+                 'area graph',
+                 'stepped area graph',
+                 'bw stepped area graph',
+                 'color stepped area graph',
+                 'bw heatmap',
+                 'color heatmap',
+                 'bw seq. stripe graph',
+                 'color seq. stripe graph',
+                 'histogram',
+                 'bw histogram',
+                 'color histogram',
+                 'freq. polygon',
+                 'density plot',
+                 'filled density plot',
+                 'violin plot',
+                 'filled violin plot',
+                 'box plot',
+                 'ecdf plot',
+                 'point ecdf plot',
+                 'stepped ecdf plot'
+                 )
 #' @noRd
-output_up <- "
-#' ---
+output_up <- "#' ---
 #' title: 'plotup output'
 #' author: 'by brinton R package'
 #' date: ''
@@ -208,8 +272,7 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev=
 "
 
 #' @noRd
-output_wide <- "
-#' ---
+output_wide <- "#' ---
 #' title: 'wideplot graphic'
 #' author: 'by brinton R package'
 #' date: ''
@@ -237,8 +300,7 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev=
 "
 
 #' @noRd
-output_long <- "
-#' ---
+output_long <- "#' ---
 #' title: 'longplot graphic'
 #' author: 'by brinton R package'
 #' date: ''
@@ -266,6 +328,7 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev=
 "
 
 # warnings
+warning_tibble    <- "The vars argument expects a data.frame() class object. Please coerce with 'as.data.frame()'."
 warning_bargraph  <- "You may prefer a 'histogram' instead of a 'bargraph'."
 warning_general   <- "I'm so sorry because something went wrong :("
 warning_pandoc    <- "'brinton' requires Pandoc v < 1.12.3 (https://pandoc.org/)."
@@ -279,3 +342,6 @@ warning_wp_ft     <- "Wideplot's 'factor' available graphics are 'linegraph', 'p
 warning_wp_nu     <- "Wideplot's 'numeric' available graphics are 'linegraph', 'pointgraph', 'histogram', 'densityplot', '3uniaxial', 'qqplot' and 'blank'."
 warning_wp_ch     <- "Wideplot's 'character' available graphics are 'linegraph', 'pointgraph', 'bargraph', 'reorderedbargraph' and 'blank'."
 warning_wp_dc     <- "Available datatypes are 'datetime', 'logical', 'factor', 'ordered', 'integer', 'double' and 'character'"
+
+spmn1 <- "Better take a look at https://sciencegraph.github.io/brinton/articles/specimen.html"
+spmn2 <- "Better take a look at https://sciencegraph.github.io/brinton/articles/specimen2.html"

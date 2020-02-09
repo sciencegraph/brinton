@@ -19,14 +19,16 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{longplot(esoph, "tobgp")}
+#' if (interactive()) {
+#' longplot(esoph, "tobgp")
+#' }
 longplot <- function(data,
                      vars,
                      label = TRUE,
                      dir = tempdir()
                      )
 {
-  if (rmarkdown::pandoc_available("1.12.3") == FALSE) {warning(warning_pandoc)}
+  if (rmarkdown::pandoc_available("1.12.3") == FALSE) {print(warning_pandoc)}
   else if (rmarkdown::pandoc_available("1.12.3") == TRUE) {
   ## Auxiliary functions
   add_plots <- function(a, b) {
@@ -43,15 +45,15 @@ longplot <- function(data,
          "You have provided an object of class ", class(data))
   }
   if(tibble::is_tibble(data) == TRUE) {
-    # stop("The object must be coerced to a data frame.")
-    data <- as.data.frame(data)
+    stop(warning_tibble)
+    # data <- as.data.frame(data)
   }
   string      <- " argument expects a character vector"
   if(is.character(vars)  == FALSE) {
     stop(paste0("The 'vars'",  string))
     }
-  if(length(vars) > 1) {
-    stop("I am so sorry but, up to now, only one variable combinations have been considered.")
+  if(length(vars) > 2) {
+    stop("I am so sorry but, up to now, only one and two variables combinations have been considered.")
   } else {
   if (
     is.logical(unlist(data[, vars])) == TRUE |
@@ -72,7 +74,7 @@ longplot <- function(data,
   write(paste0("cat('Graphics from the ", deparse(substitute(vars)), " variable(s) of the ", deparse(substitute(data))," dataframe')"),
         file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
 
-  if (lubridate::is.instant(unlist(data[, vars])) == TRUE) {
+  if (length(vars) == 1 & lubridate::is.instant(unlist(data[, vars])) == TRUE) {
     write(paste0("#+ datetime, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'stepped line graph')
@@ -102,7 +104,7 @@ longplot <- function(data,
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
 
-  } else if (is.logical(unlist(data[, vars])) == TRUE) {
+  } else if (length(vars) == 1 & is.logical(unlist(data[, vars])) == TRUE) {
     write(paste0("#+ logical, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'point graph',
@@ -134,7 +136,7 @@ longplot <- function(data,
     if (label == TRUE) {add_label("logical", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (is.ordered(unlist(data[, vars])) == TRUE) {
+  } else if (length(vars) == 1 & is.ordered(unlist(data[, vars])) == TRUE) {
     write(paste0("#+ ordered, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     stripe <- c('line graph',
                 'point graph',
@@ -166,7 +168,7 @@ longplot <- function(data,
     if (label == TRUE) {add_label("ordered", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (is.factor(unlist(data[, vars])) == TRUE & is.ordered(unlist(data[, vars])) == FALSE) {
+  } else if (length(vars) == 1 & is.factor(unlist(data[, vars])) == TRUE & is.ordered(unlist(data[, vars])) == FALSE) {
     write(paste0("#+ factor, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('line graph',
@@ -263,7 +265,7 @@ longplot <- function(data,
     if (label == TRUE) {add_label("factor", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (is.character(unlist(data[, vars])) == TRUE ) {
+  } else if (length(vars) == 1 & is.character(unlist(data[, vars])) == TRUE ) {
     write(paste0("#+ character, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('line graph',
@@ -360,7 +362,7 @@ longplot <- function(data,
     if (label == TRUE) {add_label("character", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (is.numeric(unlist(data[, vars])) == TRUE) {
+  } else if (length(vars) == 1 & is.numeric(unlist(data[, vars])) == TRUE) {
     my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
     write(paste0("#+ numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     stripe <- c('line graph',
@@ -375,11 +377,25 @@ longplot <- function(data,
     p162 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_points = TRUE, pp_trans = 'step')
     add_plots("p16", 2)
     if (label == TRUE) {add_label("numeric", stripe)}
-    stripe <- c('area graph',
-                'stepped area graph')
+    stripe <- c('area graph')
     p131 <- pp_1DD_areagraph(data, colnames(data[vars]), 'yx')
-    p132 <- pp_1DD_areagraph(data, colnames(data[vars]), 'yx', pp_trans = 'step')
-    add_plots("p13", 2)
+    add_plots("p13", 1)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('stepped area graph',
+                'bw stepped area graph',
+                'color stepped area graph')
+    p181 <- pp_1DD_areagraph(data, colnames(data[vars]), 'yx', pp_trans = 'step', pp_color = 'black')
+    p182 <- pp_1DD_areagraph(data, colnames(data[vars]), 'yx', pp_trans = 'step', pp_color = 'bw')
+    p183 <- pp_1DD_areagraph(data, colnames(data[vars]), 'yx', pp_trans = 'step', pp_color = 'color')
+    add_plots("p18", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('seq. stripe graph',
+                'bw seq. stripe graph',
+                'color seq. stripe graph')
+    p191 <- pp_1DD_stripegraph(data, colnames(data[vars]), pp_color = 'black')
+    p192 <- pp_1DD_stripegraph(data, colnames(data[vars]), pp_color = 'bw')
+    p193 <- pp_1DD_stripegraph(data, colnames(data[vars]), pp_color = 'color')
+    add_plots("p19", 3)
     if (label == TRUE) {add_label("numeric", stripe)}
     stripe <- c('stripe graph', 'bw stripe graph', 'color stripe graph')
     p021 <- pp_stripegraph(data, colnames(data[vars]), 'black')
@@ -425,10 +441,11 @@ longplot <- function(data,
     p063 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("p06", 3)
     if (label == TRUE) {add_label("numeric", stripe)}
-    stripe <- c('bw heatmap', 'color heatmap')
-    p151 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'bw')
-    p152 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'color')
-    add_plots("p15", 2)
+    stripe <- c('blank', 'bw heatmap', 'color heatmap')
+    p151 <- blank(data, colnames(data[vars]))
+    p152 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'bw')
+    p153 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'color')
+    add_plots("p15", 3)
     if (label == TRUE) {add_label("numeric", stripe)}
     stripe <- c('bar graph',
                 'bw bar graph',
@@ -469,6 +486,154 @@ longplot <- function(data,
     p112 <- pp_3uniaxial(data, colnames(data[vars]), pp_size = 4/ncol)
     p113 <- qqplot(data, colnames(data[vars]), pp_size = 1/ncol)
     add_plots("p11", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('ecfd plot',
+                'dotted ecfd plot',
+                'stepped ecfd plot')
+    p171 <- pp_ecdf(data, colnames(data[vars]), pp_trans = "rect")
+    p172 <- pp_ecdf(data, colnames(data[vars]), pp_trans = "point")
+    p173 <- pp_ecdf(data, colnames(data[vars]), pp_trans = "step")
+    add_plots("p17", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
+  } else if (length(vars) == 2 & is.numeric(unlist(data[, vars][1])) == TRUE & is.numeric(unlist(data[, vars][2])) == TRUE) {
+    # my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
+    write(paste0("#+ numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+    stripe <- c('scatter plot', 'bw scatter plot', 'color scatter plot')
+    p001 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'black', 'false')
+    p002 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'bw', 'false')
+    p003 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'color', 'false')
+    add_plots("p00", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    # stripe <- c('scatter plot with trend line', 'bw scatter plot with trend line', 'color scatter plot with trend line')
+    # p011 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'black', 'true')
+    # p012 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'bw', 'true')
+    # p013 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'color', 'true')
+    # add_plots("p01", 3)
+    # if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')
+    p021 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'black')
+    p022 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'bw')
+    p023 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'color')
+    add_plots("p02", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')
+    p031 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'black')
+    p032 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'bw')
+    p033 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'color')
+    add_plots("p03", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('hexagonal binned heatmap', 'bw hexagonal binned heatmap', 'color hexagonal binned heatmap')
+    p041 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'black', 6)
+    p042 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'bw', 6)
+    p043 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'color', 6)
+    add_plots("p04", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('blank', 'bw heatmap', 'color heatmap')
+    p051 <- blank2(data, colnames(data[vars][1]), colnames(data[vars][2]))
+    p052 <- pp_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'bw')
+    p053 <- pp_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'color')
+    add_plots("p05", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('contour plot', 'bw contour plot', 'color contour plot')
+    p061 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'black')
+    p062 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'bw')
+    p063 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'color')
+    add_plots("p06", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('contour plot with data points', 'bw contour plot with data points', 'color contour plot with data points')
+    p071 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'black', pp_size = 3/ncol, 'TRUE')
+    p072 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'bw', pp_size = 3/ncol, 'TRUE')
+    p073 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'color', pp_size = 3/ncol, 'TRUE')
+    add_plots("p07", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('parallel plot', 'bw parallel plot', 'color parallel plot')
+    p081 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'black', pp_size = 3/ncol)
+    p082 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'bw', pp_size = 3/ncol)
+    p083 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'color', pp_size = 3/ncol)
+    add_plots("p08", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('unscaled parallel plot', 'unscaled bw parallel plot', 'unscaled color parallel plot')
+    p091 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'black', pp_size = 3/ncol)
+    p092 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'bw', pp_size = 3/ncol)
+    p093 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'color', pp_size = 3/ncol)
+    add_plots("p09", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('path graph', 'bw path graph', 'color path graph')
+    p101 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'black', pp_size = 3/ncol)
+    p102 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'bw', pp_size = 3/ncol)
+    p103 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'color', pp_size = 3/ncol)
+    add_plots("p10", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')
+    p111 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'black', pp_size = 3/ncol)
+    p112 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'bw', pp_size = 3/ncol)
+    p113 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'color', pp_size = 3/ncol)
+    add_plots("p11", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('point graph', 'bw point graph', 'color point graph')
+    p121 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'point')
+    p122 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, pp_geom = 'point')
+    p123 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'point')
+    add_plots("p12", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('line graph', 'stepped line graph')
+    p131 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'line')
+    p132 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'step')
+    add_plots("p13", 2)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('area graph')
+    p141 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'area')
+    add_plots("p14", 1)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('stepped area graph', 'bw stepped area graph', 'color stepped area graph')
+    p151 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'bar')
+    p152 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, pp_geom = 'bar')
+    p153 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'bar')
+    add_plots("p15", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('blank', 'bw heatmap', 'color heatmap')
+    p161 <- blank2(data, colnames(data[vars][1]), colnames(data[vars][2]))
+    p162 <- pp_unf_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, pp_geom = 'heat')
+    p163 <- pp_unf_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'heat')
+    add_plots("p16", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('blank', 'bw seq. stripe graph', 'color seq. stripe graph')
+    p171 <- blank2(data, colnames(data[vars][1]), colnames(data[vars][2]))
+    p172 <- pp_unf_tile(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, pp_geom = 'tile')
+    p173 <- pp_unf_tile(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'tile')
+    add_plots("p17", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('histogram', 'bw histogram', 'color histogram')
+    p181 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'hist')
+    p182 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, pp_geom = 'hist')
+    p183 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'hist')
+    add_plots("p18", 3)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('freq. polygon')
+    p191 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'freq')
+    add_plots("p19", 1)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('density plot', 'filled density plot')
+    p201 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'dens')
+    p202 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'fill', pp_size = 3/ncol, pp_geom = 'dens')
+    add_plots("p20", 2)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('violin plot', 'filled violin plot')
+    p211 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'viol')
+    p212 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'fill', pp_size = 3/ncol, pp_geom = 'viol')
+    add_plots("p21", 2)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('box plot')
+    p221 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'box')
+    add_plots("p22", 1)
+    if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('histogram', 'bw histogram', 'color histogram')
+    p231 <- pp_unf_ecdf(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 1/ncol, pp_trans = 'line')
+    p232 <- pp_unf_ecdf(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 1/ncol, pp_trans = 'point')
+    p233 <- pp_unf_ecdf(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 1/ncol, pp_trans = 'step')
+    add_plots("p23", 3)
     if (label == TRUE) {add_label("numeric", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))

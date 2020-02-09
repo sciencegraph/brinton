@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 # brinton <img src="man/figures/logo.png" align="right" alt="" width="60" />
 
-This package library introduces:
+This package introduces:
 
 + `wideplot()` graphics for exploring the structure of a dataset through a grid of variables and graphic types. 
 + `longplot()` graphics, which present the entire catalog of available graphics for representing a particular variable using a grid of graphic types and variations on these types. 

@@ -35,6 +35,8 @@ variable whitin this dataset and a compatible type of graphic.
 Future work will include graphics that involve more than one variable.
 }
 \examples{
-plotup(iris, "Petal.Width", "color heatmap", output = "plots pane")
+if (interactive()) {
+plotup(iris, "Petal.Width", "color heatmap")
+}
 plotup(iris, "Petal.Width", "color heatmap", output = "console")
 }

@@ -1,0 +1,301 @@
+---
+title: "2 input variables specimen"
+output:
+  html_document:
+    df_print: paged
+vignette: >
+  %\VignetteIndexEntry{2v_specimen}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\usepackage[utf8]{inputenc}
+---
+
+<style>
+  .main-container {
+  max-width: 1200px !important;
+  }
+  h1.title {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  color: #4d4d4d;
+  margin-top: 100px;
+  }
+  h1 {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  color: 4d4d4d;
+  margin-top: 35px;
+  }
+  h2 {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  color: #4d4d4d;
+  margin-top: 25px;
+  font-weight: bold;
+  }
+  h3 {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #4d4d4d;
+  margin-top: 15px;
+  font-weight: bold;
+  }
+  h4 {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #4d4d4d;
+  margin-top: 10px;
+  font-style: oblique;
+  }
+  h4.author {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 10pt;
+  margin-top: 0px;
+  }
+  h4.date {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 10pt;
+  margin-top: 0px;
+  }
+</style>
+
+Specimen of the graphics that require 2 input variables and that, up to now, are being considered by the brinton's `longplot()` and `plotup()` functions.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, comment=FALSE}
+knitr::opts_chunk$set(
+  message=FALSE, 
+  warning=FALSE, 
+  comment=NA, 
+  dev='png', 
+  echo=FALSE#, 
+  # eval =FALSE
+  )
+
+# length(unique(data$vars))/6 + 0.5
+```
+
+```{r, echo=FALSE, message=FALSE}
+# library(dplyr)
+```
+
+# 2 numeric variables
+
+```{r 2numeric_01, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'scatter plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw scatter plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color scatter plot', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_01-1.png')
+cat("numeric = c('scatter plot', 'bw scatter plot', 'color scatter plot')")
+```
+
+```{r 2numeric_03, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'binned scatter plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw binned scatter plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color binned scatter plot', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_03-1.png')
+cat("numeric = c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')")
+```
+
+```{r 2numeric_04, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'binned heatmap', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw binned heatmap', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color binned heatmap', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_04-1.png')
+cat("numeric = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
+```
+
+```{r 2numeric_05, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'hexagonal binned heatmap', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw hexagonal binned heatmap', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color hexagonal binned heatmap', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_05-1.png')
+cat("numeric = c('hexagonal binned heatmap', 'bw hexagonal binned heatmap', 'color hexagonal binned heatmap')")
+```
+
+```{r 2numeric_06, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'blank', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw heatmap', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color heatmap', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_06-1.png')
+cat("numeric = c('blank', 'bw heatmap', 'color heatmap')")
+```
+
+```{r 2numeric_07, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'contour plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw contour plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color contour plot', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_07-1.png')
+cat("numeric = c('contour plot', 'bw contour plot', 'color contour plot')")
+```
+
+```{r 2numeric_08, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'contour plot with data points', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw contour plot with data points', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color contour plot with data points', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_08-1.png')
+cat("numeric = c('contour plot with data points', 'bw contour plot with data points', 'color contour plot with data points')")
+```
+
+```{r 2numeric_09, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'parallel plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw parallel plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color parallel plot', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_09-1.png')
+cat("numeric = c('parallel plot', 'bw parallel plot', 'color parallel plot')")
+```
+
+```{r 2numeric_10, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'unscaled parallel plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'unscaled bw parallel plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'unscaled color parallel plot', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_10-1.png')
+cat("numeric = c('unscaled parallel plot', 'unscaled bw parallel plot', 'unscaled color parallel plot')")
+```
+
+```{r 2numeric_11, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'path graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw path graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color path graph', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_11-1.png')
+cat("numeric = c('path graph', 'bw path graph', 'color path graph')")
+```
+
+```{r 2numeric_12, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'point-to-point graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw point-to-point graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color point-to-point graph', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_12-1.png')
+cat("numeric = c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')")
+```
+
+```{r 2numeric_13, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'point graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw point graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color point graph', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_13-1.png')
+cat("numeric = c('point graph', 'bw point graph', 'color point graph')")
+```
+
+```{r 2numeric_14, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'line graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'stepped line graph', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_14-1.png')
+cat("numeric = c('line graph', 'stepped line graph')")
+```
+
+```{r 2numeric_15, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'area graph', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_15-1.png')
+cat("numeric = c('area graph')")
+```
+
+```{r 2numeric_16, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'stepped area graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw stepped area graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color stepped area graph', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_16-1.png')
+cat("numeric = c('stepped area graph', 'bw stepped area graph', 'color stepped area graph')")
+```
+
+```{r 2numeric_17, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'blank', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw heatmap', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color heatmap', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_17-1.png')
+cat("numeric = c('blank', 'bw heatmap', 'color heatmap')")
+```
+
+```{r 2numeric_18, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'blank', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw seq. stripe graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color seq. stripe graph', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_18-1.png')
+cat("numeric = c('blank', 'bw seq. stripe graph', 'color seq. stripe graph')")
+```
+
+```{r 2numeric_19, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'histogram', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw histogram', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color histogram', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_19-1.png')
+cat("numeric = c('histogram', 'bw histogram', 'color histogram')")
+```
+
+```{r 2numeric_20, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'freq. polygon', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_20-1.png')
+cat("numeric = c('freq. polygon'))")
+```
+
+```{r 2numeric_21, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'density plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'filled density plot', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_21-1.png')
+cat("numeric = c('density plot', 'filled density plot')")
+```
+
+```{r 2numeric_22, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'violin plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'filled violin plot', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_22-1.png')
+cat("numeric = c('violin plot', 'filled violin plot')")
+```
+
+```{r 2numeric_23, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'box plot', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_23-1.png')
+cat("numeric = c('box plot'))")
+```
+
+```{r 2numeric_24, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'ecdf plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'point ecdf plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'stepped ecdf plot', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2numeric_24-1.png')
+cat("numeric = c('ecdf plot', 'point ecdf plot', 'stepped ecdf plot')")
+```

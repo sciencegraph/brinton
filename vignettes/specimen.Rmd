@@ -1,6 +1,5 @@
 ---
-title: "1v specimen"
-author: "Pere Millán-Martínez"
+title: "1 input variable specimen"
 output:
   html_document:
     df_print: paged
@@ -10,7 +9,56 @@ vignette: >
   %\usepackage[utf8]{inputenc}
 ---
 
-This is a specimen of the graphics that, up to now, are being considered by the brinton's `wideplot()`, `longplot()` and `plotup()` functions and that only require 1 input variable.
+<style>
+  .main-container {
+  max-width: 1200px !important;
+  }
+  h1.title {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  color: #4d4d4d;
+  margin-top: 100px;
+  }
+  h1 {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  color: 4d4d4d;
+  margin-top: 35px;
+  }
+  h2 {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  color: #4d4d4d;
+  margin-top: 25px;
+  font-weight: bold;
+  }
+  h3 {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #4d4d4d;
+  margin-top: 15px;
+  font-weight: bold;
+  }
+  h4 {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #4d4d4d;
+  margin-top: 10px;
+  font-style: oblique;
+  }
+  h4.author {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 10pt;
+  margin-top: 0px;
+  }
+  h4.date {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 10pt;
+  margin-top: 0px;
+  }
+</style>
+
+Specimen of the graphics that only require 1 input variable and that, up to now, are being considered by the brinton's `wideplot()`, `longplot()` and `plotup()` functions.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, comment=FALSE}
 knitr::opts_chunk$set(
@@ -29,7 +77,7 @@ knitr::opts_chunk$set(
 ```
 
 
-# Logical variables:
+# Logical variables
 
 ```{r logical_01, fig.width=12, fig.height=0.83}
 # data(ca2006, package = "pscl")
@@ -72,7 +120,7 @@ knitr::include_graphics('figures/logical_04-1.png')
 cat("logical = c('bar graph', 'bw bar graph', 'color bar graph')")
 ```
 
-# Ordered factor variables:
+# Ordered factor variables
 
 ```{r ordered_01, fig.width=12, fig.height=1.5}
 # gridExtra::grid.arrange(brinton::plotup(esoph, "agegp", "line graph", output = 'plots pane'), 
@@ -113,7 +161,7 @@ knitr::include_graphics('figures/ordered_04-1.png')
 cat("ordered = c('bar graph', 'bw bar graph', 'color bar graph')")
 ```
 
-# Factor variables:
+# Factor variables
 
 ```{r factor_01, fig.width=12, fig.height=1.17}
 # data(monica, package = "DAAG")
@@ -231,7 +279,7 @@ knitr::include_graphics('figures/factor_11-1.png')
 cat("datetime = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')")
 ```
 
-# Character variables:
+# Character variables
 
 ```{r character_01, fig.width=12, fig.height=3}
 # data(rockArt, package = "DAAG")
@@ -348,7 +396,7 @@ knitr::include_graphics('figures/character_11-1.png')
 cat("datetime = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')")
 ```
 
-# Datetime variables:
+# Datetime variables
 
 ```{r, eval = FALSE}
 # flights_dt <- nycflights13::flights %>%
@@ -375,7 +423,7 @@ cat("datetime = c('line graph', 'stepped line graph')")
 #                         brinton::plotup(flights_dt[1:50,], "departure", "stepped point-to-point graph", output = 'plots pane'),
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
-knitr::include_graphics('figures/datetime_03-1.png')
+knitr::include_graphics('figures/datetime_02-1.png')
 cat("datetime = c('point-to-point graph', 'stepped point-to-point graph')")
 ```
 
@@ -383,7 +431,7 @@ cat("datetime = c('point-to-point graph', 'stepped point-to-point graph')")
 # gridExtra::grid.arrange(brinton::plotup(flights_dt[1:50,], "departure", "point graph", output = 'plots pane'),
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
-knitr::include_graphics('figures/datetime_03-1.png')
+knitr::include_graphics('figures/datetime_05-1.png')
 cat("datetime = c('point graph')")
 ```
 
@@ -393,7 +441,7 @@ cat("datetime = c('point graph')")
 #                         brinton::plotup(flights_dt[1:50,], "departure", "color binned heatmap", output = 'plots pane'), 
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
-knitr::include_graphics('figures/datetime_04-1.png')
+knitr::include_graphics('figures/datetime_03-1.png')
 cat("datetime = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
 ```
 
@@ -406,17 +454,38 @@ knitr::include_graphics('figures/datetime_04-1.png')
 cat("datetime = c('bw heatmap', 'color heatmap')")
 ```
 
-# Numeric variables:
+# Numeric variables
 
 ```{r numeric_01, fig.width=12, fig.height=2.4}
 # data(midwest, package = "ggplot2")
+# midwest <- as.data.frame(midwest)
 # 
-# gridExtra::grid.arrange(brinton::plotup(midwest[1:50,], "area", "area graph", output = 'plots pane'), 
-#                         brinton::plotup(midwest[1:50,], "area", "stepped area graph", output = 'plots pane'), 
+# gridExtra::grid.arrange(brinton::plotup(midwest[1:50,], "area", "area graph", output = 'plots pane'),
+#                         # brinton::plotup(midwest[1:50,], "area", "stepped area graph", output = 'plots pane'),
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/numeric_01-1.png')
-cat("numeric = c('area graph', 'stepped area graph')")
+cat("numeric = c('area graph')")
+```
+
+```{r numeric_17, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(midwest[1:50,], "area", "stepped area graph", output = 'plots pane'),
+#                         brinton::plotup(midwest[1:50,], "area", "bw stepped area graph", output = 'plots pane'),
+#                         brinton::plotup(midwest[1:50,], "area", "color stepped area graph", output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/numeric_17-1.png')
+cat("numeric = c('stepped area graph', 'bw stepped area graph', 'color stepped area graph')")
+```
+
+```{r numeric_18, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(midwest[1:50,], "area", "seq. stripe graph", output = 'plots pane'),
+#                         brinton::plotup(midwest[1:50,], "area", "bw seq. stripe graph", output = 'plots pane'),
+#                         brinton::plotup(midwest[1:50,], "area", "color seq. stripe graph", output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/numeric_18-1.png')
+cat("numeric = c('seq. stripe graph', 'bw seq. stripe graph', 'color seq. stripe graph')")
 ```
 
 ```{r numeric_02, fig.width=12, fig.height=2.4}
@@ -560,5 +629,15 @@ cat("numeric = c('violin plot', 'filled violin plot')")
 #                         ncol=5)
 knitr::include_graphics('figures/numeric_14-1.png')
 cat("numeric = c('box plot', '3 uniaxial', 'qq plot')")
+```
+
+```{r numeric_19, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(midwest, "area", "ecdf plot", output = 'plots pane'),
+#                         brinton::plotup(midwest, "area", "point ecdf plot", output = 'plots pane'),
+#                         brinton::plotup(midwest, "area", "stepped ecdf plot", output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/numeric_19-1.png')
+cat("numeric = c('ecdf plot', 'point ecdf plot', 'stepped ecdf plot')")
 ```
 
