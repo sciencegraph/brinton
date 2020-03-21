@@ -1,8 +1,9 @@
 #' Presents a specific graphic explicitly called by name.
 #'
-#' In order to present the graphic, the user must define a dataset, a
-#' variable whitin this dataset and a compatible type of graphic.
-#' Future work will include graphics that involve more than one variable.
+#' In order to present the graphic, the user must define a dataset, at
+#' least one variable whitin this dataset and a compatible type of graphic.
+#' Future work will include graphics that involve more number and
+#' combinations of types of variables.
 #'
 #' @param data Data.frame. Default dataset to use for plot. If not already a
 #' data.frame, it should be first coerced to by [as.data.frame()].
@@ -71,49 +72,133 @@ plotup <- function(data,
     long <- 4
   }
   else if (length(vars) == 2 &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           (is.numeric(unlist(data[, vars[1]])) == TRUE |
+            lubridate::is.instant(unlist(data[, vars[1]])) == TRUE) &
+           (is.numeric(unlist(data[, vars[2]])) == TRUE |
+            lubridate::is.instant(unlist(data[, vars[2]])) == TRUE)) {
     long <- 4
+  } else {
+    stop("This type of variable has not been yet considered")
   }
-  else {stop("This type of variable has not been yet considered")}
-    ### diagram
+  ### diagram
   string      <- " argument expects a character string"
-  if(length(vars) == 1 & lubridate::is.instant(unlist(data[, vars])) == TRUE & (diagram %in% datetime_v) == FALSE)
-  {stop(paste0("The 'diagram'", string, " which values can be :\n '",
-               paste0(head(datetime_v, 10), collapse = "'\n '"), "'\n  ...\n ", spmn1))
+  if (length(vars) == 1 &
+      lubridate::is.instant(unlist(data[, vars])) == TRUE &
+      (diagram %in% datetime_v) == FALSE)
+  {
+    stop(
+      paste0(
+        "The 'diagram'",
+        string,
+        " which values can be :\n '",
+        paste0(head(datetime_v, 10), collapse = "'\n '"),
+        "'\n  ...\n ",
+        spmn1
+      )
+    )
   }
-  if(length(vars) == 1 & is.logical(unlist(data[, vars])) == TRUE & (diagram %in% logical_v) == FALSE)
-  {stop(paste0("The 'diagram'", string, " which values can be :\n '",
-               paste0(head(logical_v, 10), collapse = "'\n '"), "'\n  ...\n ", spmn1))
+  if (length(vars) == 1 &
+      is.logical(unlist(data[, vars])) == TRUE &
+      (diagram %in% logical_v) == FALSE)
+  {
+    stop(
+      paste0(
+        "The 'diagram'",
+        string,
+        " which values can be :\n '",
+        paste0(head(logical_v, 10), collapse = "'\n '"),
+        "'\n  ...\n ",
+        spmn1
+      )
+    )
   }
-  if(length(vars) == 1 & is.ordered(unlist(data[, vars])) == TRUE & (diagram %in% ordered_v) == FALSE)
-  {stop(paste0("The 'diagram'", string, " which values can be :\n '",
-               paste0(head(ordered_v, 10), collapse = "'\n '"), "'\n  ...\n ", spmn1))
+  if (length(vars) == 1 &
+      is.ordered(unlist(data[, vars])) == TRUE &
+      (diagram %in% ordered_v) == FALSE)
+  {
+    stop(
+      paste0(
+        "The 'diagram'",
+        string,
+        " which values can be :\n '",
+        paste0(head(ordered_v, 10), collapse = "'\n '"),
+        "'\n  ...\n ",
+        spmn1
+      )
+    )
   }
-  if(length(vars) == 1 & is.factor(unlist(data[, vars])) == TRUE & is.ordered(unlist(data[, vars])) == FALSE & (diagram %in% factor_v) == FALSE)
-  {stop(paste0("The 'diagram'", string, " which values can be :\n '",
-               paste0(head(factor_v, 10), collapse = "'\n '"), "'\n  ...\n ", spmn1))
+  if (length(vars) == 1 &
+      is.factor(unlist(data[, vars])) == TRUE &
+      is.ordered(unlist(data[, vars])) == FALSE &
+      (diagram %in% factor_v) == FALSE)
+  {
+    stop(
+      paste0(
+        "The 'diagram'",
+        string,
+        " which values can be :\n '",
+        paste0(head(factor_v, 10), collapse = "'\n '"),
+        "'\n  ...\n ",
+        spmn1
+      )
+    )
   }
-  if(length(vars) == 1 & is.numeric(unlist(data[, vars])) == TRUE & (diagram %in% numeric_v == FALSE))
-  {stop(paste0("The 'diagram'", string, " which values can be :\n '",
-               paste0(head(numeric_v, 10), collapse = "'\n '"), "'\n  ...\n ", spmn1))
+  if (length(vars) == 1 &
+      is.numeric(unlist(data[, vars])) == TRUE &
+      (diagram %in% numeric_v == FALSE))
+  {
+    stop(
+      paste0(
+        "The 'diagram'",
+        string,
+        " which values can be :\n '",
+        paste0(head(numeric_v, 10), collapse = "'\n '"),
+        "'\n  ...\n ",
+        spmn1
+      )
+    )
   }
-  if(length(vars) == 2 & is.numeric(unlist(data[, vars])) == TRUE & (diagram %in% numeric2_v == FALSE))
-  {stop(paste0("The 'diagram'", string, " which values can be :\n '",
-               paste0(head(numeric2_v, 10), collapse = "'\n '"), "'\n  ...\n ", spmn2))
+  if (length(vars) == 2 &
+      is.numeric(unlist(data[, vars])) == TRUE &
+      (diagram %in% numeric2_v == FALSE))
+  {
+    stop(
+      paste0(
+        "The 'diagram'",
+        string,
+        " which values can be :\n '",
+        paste0(head(numeric2_v, 10), collapse = "'\n '"),
+        "'\n  ...\n ",
+        spmn2
+      )
+    )
   }
-  if(length(vars) == 1 & is.character(unlist(data[, vars])) == TRUE & (diagram %in% character_v) == FALSE)
-  {stop(paste0("The 'diagram'", string, " which values can be :\n '",
-               paste0(head(character_v, 10), collapse = "'\n '"), "'\n  ...\n ", spmn1))
+  if (length(vars) == 1 &
+      is.character(unlist(data[, vars])) == TRUE &
+      (diagram %in% character_v) == FALSE)
+  {
+    stop(
+      paste0(
+        "The 'diagram'",
+        string,
+        " which values can be :\n '",
+        paste0(head(character_v, 10), collapse = "'\n '"),
+        "'\n  ...\n ",
+        spmn1
+      )
+    )
   }
   ### output
   output_v <- c('html',
                 'plots pane',
-                'console'
-  )
-  if(length(output) != sum(output %in% output_v, na.rm = TRUE))
-  {stop(paste0("The 'output' argument expects a value that can be : '",
-               paste0(output_v, collapse = "', '"), "'"))
+                'console')
+  if (length(output) != sum(output %in% output_v, na.rm = TRUE))
+  {
+    stop(paste0(
+      "The 'output' argument expects a value that can be : '",
+      paste0(output_v, collapse = "', '"),
+      "'"
+    ))
   }
   theme <- "theme_set(theme_minimal())\n"
   theme_detail <- "theme(panel.grid = element_line(colour = NA),
@@ -130,6 +215,20 @@ plotup <- function(data,
   \x20\x20axis.title.y =element_text(color = NA),
   \x20\x20axis.ticks.x =element_line(color = 'black'),
   \x20\x20legend.position='none')\n"
+  theme_general <- 'pp_theme <- function(base_size = 11,
+                     base_family = "",
+                     base_line_size = base_size / 22,
+                     base_rect_size = base_size / 22){
+  theme_minimal(base_size = base_size,
+                base_family = base_family,
+                base_line_size = base_line_size) %+replace%
+    theme(
+      axis.ticks=element_line(color="black"),
+      panel.grid = element_line(colour = NA),
+      axis.title = element_text(colour = "#333333", size=base_size/1.2),
+  complete = TRUE
+  )
+  }'
   getdens2 <- "get_density <- function(x, y, ...) {
   dens <- MASS::kde2d(x, y, ...)
   ix <- findInterval(x, dens$x)
@@ -159,7 +258,8 @@ plotup <- function(data,
   }
   return(dens)
 }\n"
-  unfold <- eval("foo_df <- reshape(
+  unfold <- eval(
+    "foo_df <- reshape(
   \x20\x20data = {deparse(substitute(data))},
   \x20\x20direction = 'long',
   \x20\x20v.names = 'measure',
@@ -167,7 +267,8 @@ plotup <- function(data,
   \x20\x20idvar   = 'foo_id',
   \x20\x20varying = c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}'),
   \x20\x20times   = c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')
-  )\n")
+  )\n"
+  )
   reorder_freq <- paste0(deparse(substitute(data)),
                          "[['",
                          as.character(substitute(vars)),
@@ -214,7 +315,8 @@ plotup <- function(data,
            is.numeric(unlist(data[, vars])) == TRUE
   ) {
     vars <- vars[1]
-    p <- paste0("
+    p <- paste0(theme_general,
+                "
                 qqplot <- function (pp_df,
                 pp_var,
                 pp_size = 0.5) {
@@ -242,7 +344,8 @@ plotup <- function(data,
            is.numeric(unlist(data[, vars])) == TRUE
   ) {
     vars <- vars[1]
-    p <- paste0("
+    p <- paste0(theme_general,
+"
 pp_3uniaxial <- function(data,
                          variable,
                          pp_size = 2)  {
@@ -451,8 +554,7 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 1 &
            diagram == "bar graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           (is.numeric(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
       "{theme}
@@ -464,8 +566,7 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 1 &
            diagram == "bw bar graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           (is.numeric(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
       "{theme}
@@ -478,8 +579,7 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 1 &
            diagram == "color bar graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           (is.numeric(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
       "{theme}
@@ -1054,64 +1154,6 @@ pp_3uniaxial(",
       "
     )
   }
-  # else if (length(vars) == 1 &
-  #          diagram == "bw point graph" &
-  #          is.numeric(unlist(data[, vars])) == TRUE) {
-  #   vars <- vars[1]
-  #   p <- glue::glue(
-  #     "{theme}{getdens1}
-  #     ggplot({deparse(substitute(data))},
-  #     \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
-  #     \x20\x20geom_point(aes(color=add_density_1D({deparse(substitute(data))}, '{as.character(substitute(vars))}'))) +
-  #     \x20\x20{scale_bw_l} +
-  #     \x20\x20labs(x='seq') +
-  #     \x20\x20{theme_detail_z}"
-  #   )
-  # }
-  # else if (length(vars) == 1 &
-  #          diagram == "bw point graph with trend line" &
-  #          is.numeric(unlist(data[, vars])) == TRUE) {
-  #   vars <- vars[1]
-  #   p <- glue::glue(
-  #     "{theme}{getdens1}
-  #     ggplot({deparse(substitute(data))},
-  #     \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
-  #     \x20\x20geom_point(aes(color=add_density_1D({deparse(substitute(data))}, '{as.character(substitute(vars))}'))) +
-  #     \x20\x20geom_smooth(method = 'loess', size=0.5) +
-  #     \x20\x20{scale_bw_l} +
-  #     \x20\x20labs(x='seq') +
-  #     \x20\x20{theme_detail_z}"
-  #   )
-  # }
-  # else if (length(vars) == 1 &
-  #          diagram == "color point graph" &
-  #          is.numeric(unlist(data[, vars])) == TRUE) {
-  #   vars <- vars[1]
-  #   p <- glue::glue(
-  #     "{theme}{getdens1}
-  #     ggplot({deparse(substitute(data))},
-  #     \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
-  #     \x20\x20geom_point(aes(color=add_density_1D({deparse(substitute(data))}, '{as.character(substitute(vars))}'))) +
-  #     \x20\x20{scale_color_l} +
-  #     \x20\x20labs(x='seq') +
-  #     \x20\x20{theme_detail_z}"
-  #   )
-  # }
-  # else if (length(vars) == 1 &
-  #          diagram == "color point graph with trend line" &
-  #          is.numeric(unlist(data[, vars])) == TRUE) {
-  #   vars <- vars[1]
-  #   p <- glue::glue(
-  #     "{theme}{getdens1}
-  #     ggplot({deparse(substitute(data))},
-  #     \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
-  #     \x20\x20geom_point(aes(color=add_density_1D({deparse(substitute(data))}, '{as.character(substitute(vars))}'))) +
-  #     \x20\x20geom_smooth(method = 'loess', size=0.5) +
-  #     \x20\x20{scale_color_l} +
-  #     \x20\x20labs(x='seq') +
-  #     \x20\x20{theme_detail_z}"
-  #   )
-  # }
   else if (length(vars) == 1 &
            diagram == "bw point graph" &
            is.numeric(unlist(data[, vars])) == TRUE) {
@@ -1371,20 +1413,33 @@ pp_3uniaxial(",
       \x20\x20{theme_detail_yz}"
     )
   }
-
-
-
-
+###################################################################################################################
+### 2 variables 2 variables 2 variables 2 variables 2 variables 2 variables 2 variables 2 variables 2 variables ###
+###################################################################################################################
   else if (length(vars) == 2 &
            diagram == "scatter plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "{theme}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_point() +
+      \x20\x20{theme_detail}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "scatter plot with trend line" &
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "{theme}
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_point() +
+      \x20\x20geom_smooth() +
       \x20\x20{theme_detail}"
     )
   }
@@ -1418,8 +1473,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "binned scatter plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1431,8 +1486,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "bw binned scatter plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1445,8 +1500,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "color binned scatter plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1459,8 +1514,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "binned heatmap" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1472,8 +1527,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "bw binned heatmap" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1486,8 +1541,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "color binned heatmap" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1543,8 +1598,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "bw heatmap" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1557,8 +1612,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "color heatmap" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1571,8 +1626,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "contour plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1584,8 +1639,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "bw contour plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1598,8 +1653,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "color contour plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1612,8 +1667,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "contour plot with data points" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1752,10 +1807,10 @@ pp_3uniaxial(",
       \x20\x20{theme_detail_z}"
     )
   }
-  else if (length(vars) == 2 &
-           diagram == "path graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+  else if (length(vars) == 2 &&
+           diagram == "path graph" &&
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1767,8 +1822,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "bw path graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1781,8 +1836,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "color path graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1795,8 +1850,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "point-to-point graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1809,8 +1864,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "bw point-to-point graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1824,8 +1879,8 @@ pp_3uniaxial(",
   }
   else if (length(vars) == 2 &
            diagram == "color point-to-point graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1988,15 +2043,15 @@ pp_3uniaxial(",
     )
   }
   else if (length(vars) == 2 &
-           diagram == "bw heatmap" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           diagram == "bw seq. heatmap" &
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
       paste0(unfold2),
-      "ggplot(foo_df, aes_string(x = 'foo_id')) +
+      "ggplot(foo_df, aes_string(x = 'foo_id', y='measure')) +
       stat_density_2d(aes(fill = stat(density)), geom = 'raster', contour = FALSE) +
       {scale_bw_a} +
       labs(y = '', x = 'seq') +
@@ -2005,15 +2060,15 @@ pp_3uniaxial(",
     )
   }
   else if (length(vars) == 2 &
-           diagram == "color heatmap" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           diagram == "color seq. heatmap" &
+           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
+           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
       paste0(unfold2),
-      "ggplot(foo_df, aes_string(x = 'foo_id')) +
+      "ggplot(foo_df, aes_string(x = 'foo_id', y='measure')) +
       stat_density_2d(aes(fill = stat(density)), geom = 'raster', contour = FALSE) +
       {scale_color_a} +
       labs(y = '', x = 'seq') +

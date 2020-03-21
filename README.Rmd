@@ -18,10 +18,10 @@ knitr::opts_chunk$set(
 This package introduces:
 
 + `wideplot()` graphics for exploring the structure of a dataset through a grid of variables and graphic types. 
-+ `longplot()` graphics, which present the entire catalog of available graphics for representing a particular variable using a grid of graphic types and variations on these types. 
-+ `plotup()` function, which complements the previous two functions in that it presents a particular graphic for a specific variable of a dataset.
++ `longplot()` graphics, which present the entire catalog of available graphics for representing one particular variable or a limited number of variables using a grid of graphic types and variations on these types. 
++ `plotup()` function, which complements the previous two functions in that it presents a particular graphic for a specific variable or a limited number of variables of a dataset.
 
-Future work will include the hability to draw `longplot()` and `plotup()` from a selection of a limited number of variables within a dataset.
+Future work will include the ability to draw `longplot()` and `plotup()` graphics from a selection of a wider number and combinations of types of variables within a dataset.
 
 ## Installation
 
@@ -73,14 +73,23 @@ wideplot(infert,
          ncol = 3)
 ```
 
-If the user is interested in one particular graphic, then the function `plotup()` is useful. 
-```{r plotup, eval = FALSE}
+If the user is interested in one particular graphic then the function `plotup()` is useful. 
+```{r plotup1, eval = FALSE}
 plotup(infert, "pooled.stratum", "color binned stripe graph")
 ```
 
-The default output is still a html file but, the `plotup()` function allows also to plot the graphic in the plots pane or the console:
-```{r plotspane, out.width = '40%'}
+Or, as example of a graphic that requires more than one input variable:
+```{r plotup2, eval = FALSE}
+plotup(faithful, c("waiting", "eruptions"), "color scatter plot")
+```
+
+The default output is still a html file but the `plotup()` function allows to plot the graphic in the plots pane or the console:
+```{r plotspane1, out.width = '40%'}
 plotup(infert, "pooled.stratum", "color binned stripe graph", output = "plots pane")
+```
+
+```{r plotspane2, out.width = '40%'}
+plotup(faithful, c("waiting", "eruptions"), "color scatter plot", output = "plots pane")
 ```
 
 ```{r console}

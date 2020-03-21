@@ -12,21 +12,6 @@
 utils::globalVariables(c("..level..", "..count..", "pp_dens", "reshape", "pp_id", "head"))
 
 pp_theme <- function(base_size = 11,
-                      base_family = "",
-                      base_line_size = base_size / 22,
-                      base_rect_size = base_size / 22){
-  theme_minimal(base_size = base_size,
-                base_family = base_family,
-                base_line_size = base_line_size) %+replace%
-    theme(
-      axis.ticks=element_line(color="black"),
-      panel.grid = element_line(colour = NA),
-      axis.title = element_text(colour = "#333333", size=base_size/1.2),
-      complete = TRUE
-    )
-}
-
-pp_theme <- function(base_size = 11,
                      base_family = "",
                      base_line_size = base_size / 22,
                      base_rect_size = base_size / 22){

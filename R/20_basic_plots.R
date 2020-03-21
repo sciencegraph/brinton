@@ -449,7 +449,7 @@ pp_1DD_stripegraph <- function(pp_df,
   pp_df$pp_dens <- add_density_1D(pp_df, pp_var)
 
   p_labs <- labs(y=names(pp_df[pp_var]), x="seq")
-  p_plot <- ggplot(pp_df, aes(x=seq_along(pp_var)), environment = environment()) + pp_theme() + amb.y
+  p_plot <- ggplot(pp_df, aes(x=seq_along(pp_var)), environment = environment()) + p_labs + pp_theme() + amb.y
   p_tile <- geom_tile(aes_string(y=1), fill = "black")
   p_tile_c <- geom_tile(aes_string(y=1, fill=pp_var))
 
@@ -512,7 +512,6 @@ pp_scatterplot <- function(pp_df,
                            pp_var1,
                            pp_var2,
                            pp_size = 1,
-                           pp_coord = "xy",
                            pp_color = "black",
                            pp_smooth = "false") {
   pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
@@ -520,29 +519,19 @@ pp_scatterplot <- function(pp_df,
 
   p_labs          <- labs(y=names(pp_df[pp_var2]), x=names(pp_df[pp_var1]))
   p_plot          <- ggplot(pp_df, aes_string(y=pp_var2), environment = environment()) + p_labs + pp_theme()
-  pp_df$pp_dens   <- get_density(pp_df$pp_var1, pp_df$pp_var2, n = 100)
+  if (is.numeric(pp_df$pp_var1) == TRUE & is.numeric(pp_df$pp_var2) == TRUE) {pp_df$pp_dens   <- get_density(pp_df$pp_var1, pp_df$pp_var2, n = 100)}
   p_point         <- geom_point(data = pp_df, aes(x=pp_var1), size=pp_size)
   p_point_c       <- geom_point(data = pp_df, aes_(x=~pp_var1, color=~pp_dens), size=pp_size)
   p_smooth        <- geom_smooth(aes(x=pp_var1), method = "loess", size=0.5)
 
-  if (pp_coord == "yx" & pp_color == "black" & pp_smooth == "false") {
+  if (pp_color == "black" & pp_smooth == "false") {
     p_plot + p_point
-  } else if (pp_coord == "yx" & pp_color == "black" & pp_smooth == "true") {
+  } else if (pp_color == "black" & pp_smooth == "true") {
     p_plot + p_point + p_smooth
-  } else if (pp_coord == "yx" & pp_color == "bw" & pp_smooth == "false") {
+  } else if (pp_color == "bw" & pp_smooth == "false") {
     p_plot + p_point_c + p_scale_gray_l + amb.z
-  } else if (pp_coord == "yx" & pp_color == "bw" & pp_smooth == "true") {
-    p_plot + p_point_c + p_smooth + p_scale_gray_l + amb.z
-  } else if (pp_coord == "yx" & pp_color == "color" & pp_smooth == "false") {
+  } else if (pp_color == "color" & pp_smooth == "false") {
     p_plot + p_point_c + p_scale_color_l + amb.z
-  } else if (pp_coord == "yx" & pp_color == "color" & pp_smooth == "true") {
-    p_plot + p_point_c + p_smooth + p_scale_color_l + amb.z
-  } else if (pp_coord == "xy" & pp_color == "black") {
-    p_plot + p_point + coord_flip()
-  } else if (pp_coord == "xy" & pp_color == "bw") {
-    p_plot + p_point_c + p_scale_gray_l + coord_flip() + amb.z
-  } else if (pp_coord == "xy" & pp_color == "color") {
-    p_plot + p_point_c + p_scale_color_l + coord_flip() + amb.z
   } else {stop(warning_general)}
 }
 
@@ -550,80 +539,59 @@ pp_binnedpointgraph <- function(pp_df,
                                 pp_var1,
                                 pp_var2,
                                 pp_size = 1,
-                                pp_coord = "xy",
                                 pp_color = "black")
 {
   pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
   pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
 
   p_labs    <- labs(y=names(pp_df[pp_var2]), x=names(pp_df[pp_var1]))
-  p_plot    <- ggplot(pp_df, aes_string(y=pp_var2), environment = environment()) + p_labs + pp_theme()
+  p_plot    <- ggplot(pp_df, aes_string(y=pp_var2), environment = environment()) + pp_theme()
   p_point   <- geom_point(data = pp_df, aes(x=pp_var1), size=pp_size, stat= "bin2d")
   p_point_c <- geom_point(data = pp_df, aes_(x=~pp_var1, color=~..count..), size=pp_size, stat= "bin2d")
 
-  if (pp_coord == "yx" & pp_color == "black") {
-    p_plot + p_point + amb.z
-  } else if (pp_coord == "yx" & pp_color == "bw") {
-    p_plot + p_point_c + p_scale_gray_l + amb.z
-  } else if (pp_coord == "yx" & pp_color == "color") {
-    p_plot + p_point_c + p_scale_color_l + amb.z
-  } else if (pp_coord == "xy" & pp_color == "black") {
-    p_plot + p_point + amb.z + coord_flip()
-  } else if (pp_coord == "xy" & pp_color == "bw") {
-    p_plot + p_point_c + p_scale_gray_l + coord_flip() + amb.z
-  } else if (pp_coord == "xy" & pp_color == "color") {
-    p_plot + p_point_c + p_scale_color_l + coord_flip() + amb.z
+  if (pp_color == "black") {
+    p_plot + p_point + amb.z + p_labs
+  } else if (pp_color == "bw") {
+    p_plot + p_point_c + p_scale_gray_l + amb.z + p_labs
+  } else if (pp_color == "color") {
+    p_plot + p_point_c + p_scale_color_l + amb.z + p_labs
   } else {stop(warning_general)}
 }
 
 pp_heatmap <- function(pp_df,
                        pp_var1,
                        pp_var2,
-                       pp_coord = "xy",
                        pp_color = "black",
                        edges = 4)
 {
   pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
   pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
 
-  p_labs        <- labs(y=names(pp_df[pp_var1]), x=names(pp_df[pp_var2]))
+  p_labs        <- labs(y=names(pp_df[pp_var2]), x=names(pp_df[pp_var1]))
   p_plot        <- ggplot(pp_df, aes_string(y=pp_var2), environment = environment()) + p_labs + pp_theme() + amb.z
   p_bin2d       <- geom_bin2d(data = pp_df, aes(x=pp_var1), fill = "black")
   p_bin2d_c     <- geom_bin2d(data = pp_df, aes(x=pp_var1))
   p_bin2dhex    <- stat_binhex(data = pp_df, aes(x=pp_var1), fill = "black")
   p_bin2dhex_c  <- stat_binhex(data = pp_df, aes(x=pp_var1, fill=..count..,  color=..count..))
 
-  if (pp_coord == "yx" & pp_color == "black" & edges == 4) {
+  if (pp_color == "black" & edges == 4) {
     p_plot + p_bin2d
-  } else if (pp_coord == "yx" & pp_color == "bw" & edges == 4) {
+  } else if (pp_color == "bw" & edges == 4) {
     p_plot + p_bin2d_c + p_scale_gray_a
-  } else if (pp_coord == "yx" & pp_color == "color" & edges == 4) {
+  } else if (pp_color == "color" & edges == 4) {
     p_plot + p_bin2d_c + p_scale_color_a
-  } else if (pp_coord == "xy" & pp_color == "black" & edges == 4) {
-    p_plot + p_bin2d + coord_flip()
-  } else if (pp_coord == "xy" & pp_color == "bw" & edges == 4) {
-    p_plot + p_bin2d_c + p_scale_gray_a + coord_flip()
-  } else if (pp_coord == "xy" & pp_color == "color" & edges == 4) {
-    p_plot + p_bin2d_c + p_scale_color_a + coord_flip()
-  } else if (pp_coord == "yx" & pp_color == "black" & edges == 6) {
+  } else if (pp_color == "black" & edges == 6) {
     p_plot + p_bin2dhex
-  } else if (pp_coord == "yx" & pp_color == "bw" & edges == 6) {
+  } else if (pp_color == "bw" & edges == 6) {
     p_plot + p_bin2dhex_c + p_scale_gray_a + p_scale_gray_l
-  } else if (pp_coord == "yx" & pp_color == "color" & edges == 6) {
+  } else if (pp_color == "color" & edges == 6) {
     p_plot + p_bin2dhex_c + p_scale_color_a + p_scale_color_l
-  } else if (pp_coord == "xy" & pp_color == "black" & edges == 6) {
-    p_plot + p_bin2dhex + coord_flip()
-  } else if (pp_coord == "xy" & pp_color == "bw" & edges == 6) {
-    p_plot + p_bin2dhex_c + p_scale_gray_a + p_scale_gray_l + coord_flip()
-  } else if (pp_coord == "xy" & pp_color == "color" & edges == 6) {
-    p_plot + p_bin2dhex_c + p_scale_color_a + p_scale_color_l + coord_flip()
   } else {stop(warning_general)}
 }
 
 pp_raster   <- function(pp_df,
                             pp_var1,
                             pp_var2,
-                            pp_coord = "xy",
                             pp_color = "bw")
 {
   pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
@@ -633,13 +601,9 @@ pp_raster   <- function(pp_df,
   p_plot <- ggplot(pp_df, aes_string(y=pp_var2), environment = environment()) + p_labs + pp_theme()
   p_raster  <- stat_density_2d(aes(x=pp_var1, fill = stat(density)), geom = 'raster', contour = FALSE)
 
-  if (pp_coord == "xy" & pp_color == "bw") {
-    p_plot + p_raster + p_scale_gray_a + coord_flip() + amb.z
-  } else if (pp_coord == "xy" & pp_color == "color") {
-    p_plot + p_raster + p_scale_color_a + coord_flip() + amb.z
-  } else if (pp_coord == "yx" & pp_color == "bw") {
+  if (pp_color == "bw") {
     p_plot + p_raster + p_scale_gray_a + amb.z
-  } else if (pp_coord == "yx" & pp_color == "color") {
+  } else if (pp_color == "color") {
     p_plot + p_raster + p_scale_color_a + amb.z
   } else {stop(warning_general)}
 }
@@ -647,46 +611,33 @@ pp_raster   <- function(pp_df,
 pp_contourmap <- function(pp_df,
                        pp_var1,
                        pp_var2,
-                       pp_coord = "xy",
                        pp_color = "black",
                        pp_size = 1,
                        pp_points = FALSE)
 {
   pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
   pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
-  pp_df$pp_dens   <- get_density(pp_df$pp_var1, pp_df$pp_var2, n = 100)
+  if (is.numeric(pp_df$pp_var1) == TRUE & is.numeric(pp_df$pp_var2) == TRUE) {pp_df$pp_dens   <- get_density(pp_df$pp_var1, pp_df$pp_var2, n = 100)}
 
-  p_labs        <- labs(y=names(pp_df[pp_var1]), x=names(pp_df[pp_var2]))
+  p_labs        <- labs(y=names(pp_df[pp_var2]), x=names(pp_df[pp_var1]))
   p_plot        <- ggplot(pp_df, aes_string(x=pp_var1, y=pp_var2), environment = environment()) + p_labs + pp_theme() + amb.z
   p_contour2d   <- geom_density_2d(color = "black", size=pp_size*0.2)
   p_contour2d_c <- geom_density_2d(aes(color=..level..), size=pp_size*0.2)
   p_point       <- geom_point(size=pp_size)
   p_point_c     <- geom_point(aes_(color=~pp_dens), size=pp_size)
 
-  if (pp_coord == "yx" & pp_color == "black" & pp_points == FALSE) {
+  if (pp_color == "black" & pp_points == FALSE) {
     p_plot + p_contour2d
-  } else if (pp_coord == "yx" & pp_color == "bw" & pp_points == FALSE) {
+  } else if (pp_color == "bw" & pp_points == FALSE) {
     p_plot + p_contour2d_c + p_scale_gray_l
-  } else if (pp_coord == "yx" & pp_color == "color" & pp_points == FALSE) {
+  } else if (pp_color == "color" & pp_points == FALSE) {
     p_plot + p_contour2d_c + p_scale_color_l
-  } else if (pp_coord == "xy" & pp_color == "black" & pp_points == FALSE) {
-    p_plot + p_contour2d + coord_flip()
-  } else if (pp_coord == "xy" & pp_color == "bw" & pp_points == FALSE) {
-    p_plot + p_contour2d_c + p_scale_gray_l + coord_flip()
-  } else if (pp_coord == "xy" & pp_color == "color" & pp_points == FALSE) {
-    p_plot + p_contour2d_c + p_scale_color_l + coord_flip()
-  } else if (pp_coord == "yx" & pp_color == "black" & pp_points == TRUE) {
-    p_plot + p_contour2d + p_point
-  } else if (pp_coord == "yx" & pp_color == "bw" & pp_points == TRUE) {
+  } else if (pp_color == "black" & pp_points == TRUE) {
+    p_plot + p_contour2d  + p_point
+  } else if (pp_color == "bw" & pp_points == TRUE) {
     p_plot + p_contour2d_c + p_point_c + p_scale_gray_l
-  } else if (pp_coord == "yx" & pp_color == "color" & pp_points == TRUE) {
+  } else if (pp_color == "color" & pp_points == TRUE) {
     p_plot + p_contour2d_c + p_point_c + p_scale_color_l
-  } else if (pp_coord == "xy" & pp_color == "black" & pp_points == TRUE) {
-    p_plot + p_contour2d  + p_point + coord_flip()
-  } else if (pp_coord == "xy" & pp_color == "bw" & pp_points == TRUE) {
-    p_plot + p_contour2d_c + p_point_c + p_scale_gray_l + coord_flip()
-  } else if (pp_coord == "xy" & pp_color == "color" & pp_points == TRUE) {
-    p_plot + p_contour2d_c + p_point_c + p_scale_color_l + coord_flip()
   } else {stop(warning_general)}
 }
 
@@ -853,62 +804,72 @@ pp_unfolded <- function(pp_df,
 }
 
 pp_unf_raster <- function(pp_df,
-                        pp_var1,
-                        pp_var2,
-                        pp_size = 0.5,
-                        pp_geom = "heat",
-                        pp_color = "bw")
+                          pp_var1,
+                          pp_var2,
+                          pp_size = 0.5,
+                          pp_geom = "heat",
+                          pp_color = "bw")
 {
-  pp_df    <- reshape(data = pp_df,
-                      direction = "long",
-                      varying = c(pp_var1, pp_var2),
-                      times   = c(pp_var1, pp_var2),
-                      v.names = "measure",
-                      timevar = "variable",
-                      idvar   = "pp_id"
+  pp_df    <- reshape(
+    data = pp_df,
+    direction = "long",
+    varying = c(pp_var1, pp_var2),
+    times   = c(pp_var1, pp_var2),
+    v.names = "measure",
+    timevar = "variable",
+    idvar   = "pp_id"
   )
-  p_labs    <- labs(y='', x='seq')
-  p_plot    <- ggplot(pp_df, aes_string(y='measure'), environment = environment()) +
+  p_labs    <- labs(y = '', x = 'seq')
+  p_plot    <-
+    ggplot(pp_df, aes_string(y = 'measure'), environment = environment()) +
     p_labs +
     pp_theme() +
-    facet_grid(variable~., switch = "both")
-  p_raster    <- stat_density_2d(aes(x=pp_id, fill = stat(density)), geom = 'raster', contour = FALSE)
+    facet_grid(variable ~ ., switch = "both")
+  p_raster    <-
+    stat_density_2d(aes(x = pp_id, fill = stat(density)),
+                    geom = 'raster',
+                    contour = FALSE)
 
   if (pp_geom ==  "heat" & pp_color == "bw") {
     p_plot + p_raster + p_scale_gray_a + amb.z
   } else if (pp_geom ==  "heat" & pp_color == "color") {
     p_plot + p_raster + p_scale_color_a + amb.z
-  } else {stop(warning_general)}
+  } else {
+    stop(warning_general)
+  }
 }
 
 pp_unf_tile <- function(pp_df,
-                          pp_var1,
-                          pp_var2,
-                          pp_size = 0.5,
-                          pp_geom = "tile",
-                          pp_color = "bw")
+                        pp_var1,
+                        pp_var2,
+                        pp_size = 0.5,
+                        pp_geom = "tile",
+                        pp_color = "bw")
 {
-  pp_df    <- reshape(data = pp_df,
-                      direction = "long",
-                      varying = c(pp_var1, pp_var2),
-                      times   = c(pp_var1, pp_var2),
-                      v.names = "measure",
-                      timevar = "variable",
-                      idvar   = "pp_id"
+  pp_df    <- reshape(
+    data = pp_df,
+    direction = "long",
+    varying = c(pp_var1, pp_var2),
+    times   = c(pp_var1, pp_var2),
+    v.names = "measure",
+    timevar = "variable",
+    idvar   = "pp_id"
   )
-  p_labs    <- labs(y='', x='seq')
-  p_plot    <- ggplot(pp_df, aes_string(y=1), environment = environment()) +
+  p_labs    <- labs(y = '', x = 'seq')
+  p_plot    <-
+    ggplot(pp_df, aes_string(y = 1), environment = environment()) +
     p_labs +
     pp_theme() +
-    facet_grid(variable~., switch = "both")
-  p_tile    <- geom_tile(aes_string(x='pp_id', fill = 'measure'))
-
+    facet_grid(variable ~ ., switch = "both")
+  p_tile    <- geom_tile(aes_string(x = 'pp_id', fill = 'measure'))
 
   if (pp_geom ==  "tile" & pp_color == "bw") {
     p_plot + p_tile + p_scale_gray_a + amb.z + amb.y
   } else if (pp_geom ==  "tile" & pp_color == "color") {
     p_plot + p_tile + p_scale_color_a + amb.z + amb.y
-  } else {stop(warning_general)}
+  } else {
+    stop(warning_general)
+  }
 }
 
 pp_unf_yuxt <- function(pp_df,

@@ -77,7 +77,7 @@ knitr::opts_chunk$set(
 # library(dplyr)
 ```
 
-# 2 numeric variables
+# 2 numeric
 
 ```{r 2numeric_01, fig.width=12, fig.height=2.4}
 # gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'scatter plot', output = 'plots pane'),
@@ -86,7 +86,7 @@ knitr::opts_chunk$set(
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_01-1.png')
-cat("numeric = c('scatter plot', 'bw scatter plot', 'color scatter plot')")
+cat("2 numeric = c('scatter plot', 'bw scatter plot', 'color scatter plot')")
 ```
 
 ```{r 2numeric_03, fig.width=12, fig.height=2.4}
@@ -96,7 +96,7 @@ cat("numeric = c('scatter plot', 'bw scatter plot', 'color scatter plot')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_03-1.png')
-cat("numeric = c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')")
+cat("2 numeric = c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')")
 ```
 
 ```{r 2numeric_04, fig.width=12, fig.height=2.4}
@@ -106,7 +106,7 @@ cat("numeric = c('binned scatter plot', 'bw binned scatter plot', 'color binned 
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_04-1.png')
-cat("numeric = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
+cat("2 numeric = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
 ```
 
 ```{r 2numeric_05, fig.width=12, fig.height=2.4}
@@ -116,7 +116,7 @@ cat("numeric = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')"
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_05-1.png')
-cat("numeric = c('hexagonal binned heatmap', 'bw hexagonal binned heatmap', 'color hexagonal binned heatmap')")
+cat("2 numeric = c('hexagonal binned heatmap', 'bw hexagonal binned heatmap', 'color hexagonal binned heatmap')")
 ```
 
 ```{r 2numeric_06, fig.width=12, fig.height=2.4}
@@ -126,7 +126,7 @@ cat("numeric = c('hexagonal binned heatmap', 'bw hexagonal binned heatmap', 'col
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_06-1.png')
-cat("numeric = c('blank', 'bw heatmap', 'color heatmap')")
+cat("2 numeric = c('blank', 'bw heatmap', 'color heatmap')")
 ```
 
 ```{r 2numeric_07, fig.width=12, fig.height=2.4}
@@ -136,7 +136,7 @@ cat("numeric = c('blank', 'bw heatmap', 'color heatmap')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_07-1.png')
-cat("numeric = c('contour plot', 'bw contour plot', 'color contour plot')")
+cat("2 numeric = c('contour plot', 'bw contour plot', 'color contour plot')")
 ```
 
 ```{r 2numeric_08, fig.width=12, fig.height=2.4}
@@ -146,7 +146,7 @@ cat("numeric = c('contour plot', 'bw contour plot', 'color contour plot')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_08-1.png')
-cat("numeric = c('contour plot with data points', 'bw contour plot with data points', 'color contour plot with data points')")
+cat("2 numeric = c('contour plot with data points', 'bw contour plot with data points', 'color contour plot with data points')")
 ```
 
 ```{r 2numeric_09, fig.width=12, fig.height=2.4}
@@ -156,7 +156,7 @@ cat("numeric = c('contour plot with data points', 'bw contour plot with data poi
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_09-1.png')
-cat("numeric = c('parallel plot', 'bw parallel plot', 'color parallel plot')")
+cat("2 numeric = c('parallel plot', 'bw parallel plot', 'color parallel plot')")
 ```
 
 ```{r 2numeric_10, fig.width=12, fig.height=2.4}
@@ -166,7 +166,7 @@ cat("numeric = c('parallel plot', 'bw parallel plot', 'color parallel plot')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_10-1.png')
-cat("numeric = c('unscaled parallel plot', 'unscaled bw parallel plot', 'unscaled color parallel plot')")
+cat("2 numeric = c('unscaled parallel plot', 'unscaled bw parallel plot', 'unscaled color parallel plot')")
 ```
 
 ```{r 2numeric_11, fig.width=12, fig.height=2.4}
@@ -176,7 +176,7 @@ cat("numeric = c('unscaled parallel plot', 'unscaled bw parallel plot', 'unscale
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_11-1.png')
-cat("numeric = c('path graph', 'bw path graph', 'color path graph')")
+cat("2 numeric = c('path graph', 'bw path graph', 'color path graph')")
 ```
 
 ```{r 2numeric_12, fig.width=12, fig.height=2.4}
@@ -186,7 +186,7 @@ cat("numeric = c('path graph', 'bw path graph', 'color path graph')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_12-1.png')
-cat("numeric = c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')")
+cat("2 numeric = c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')")
 ```
 
 ```{r 2numeric_13, fig.width=12, fig.height=2.4}
@@ -196,7 +196,7 @@ cat("numeric = c('point-to-point graph', 'bw point-to-point graph', 'color point
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_13-1.png')
-cat("numeric = c('point graph', 'bw point graph', 'color point graph')")
+cat("2 numeric = c('point graph', 'bw point graph', 'color point graph')")
 ```
 
 ```{r 2numeric_14, fig.width=12, fig.height=2.4}
@@ -205,7 +205,7 @@ cat("numeric = c('point graph', 'bw point graph', 'color point graph')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_14-1.png')
-cat("numeric = c('line graph', 'stepped line graph')")
+cat("2 numeric = c('line graph', 'stepped line graph')")
 ```
 
 ```{r 2numeric_15, fig.width=12, fig.height=2.4}
@@ -213,7 +213,7 @@ cat("numeric = c('line graph', 'stepped line graph')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_15-1.png')
-cat("numeric = c('area graph')")
+cat("2 numeric = c('area graph')")
 ```
 
 ```{r 2numeric_16, fig.width=12, fig.height=2.4}
@@ -223,17 +223,17 @@ cat("numeric = c('area graph')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_16-1.png')
-cat("numeric = c('stepped area graph', 'bw stepped area graph', 'color stepped area graph')")
+cat("2 numeric = c('stepped area graph', 'bw stepped area graph', 'color stepped area graph')")
 ```
 
 ```{r 2numeric_17, fig.width=12, fig.height=2.4}
 # gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'blank', output = 'plots pane'),
-#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw heatmap', output = 'plots pane'),
-#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color heatmap', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw seq. heatmap', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color seq. heatmap', output = 'plots pane'),
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_17-1.png')
-cat("numeric = c('blank', 'bw heatmap', 'color heatmap')")
+cat("2 numeric = c('blank', 'bw heatmap', 'color heatmap')")
 ```
 
 ```{r 2numeric_18, fig.width=12, fig.height=2.4}
@@ -243,7 +243,7 @@ cat("numeric = c('blank', 'bw heatmap', 'color heatmap')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_18-1.png')
-cat("numeric = c('blank', 'bw seq. stripe graph', 'color seq. stripe graph')")
+cat("2 numeric = c('blank', 'bw seq. stripe graph', 'color seq. stripe graph')")
 ```
 
 ```{r 2numeric_19, fig.width=12, fig.height=2.4}
@@ -253,7 +253,7 @@ cat("numeric = c('blank', 'bw seq. stripe graph', 'color seq. stripe graph')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_19-1.png')
-cat("numeric = c('histogram', 'bw histogram', 'color histogram')")
+cat("2 numeric = c('histogram', 'bw histogram', 'color histogram')")
 ```
 
 ```{r 2numeric_20, fig.width=12, fig.height=2.4}
@@ -261,7 +261,7 @@ cat("numeric = c('histogram', 'bw histogram', 'color histogram')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_20-1.png')
-cat("numeric = c('freq. polygon'))")
+cat("2 numeric = c('freq. polygon'))")
 ```
 
 ```{r 2numeric_21, fig.width=12, fig.height=2.4}
@@ -270,7 +270,7 @@ cat("numeric = c('freq. polygon'))")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_21-1.png')
-cat("numeric = c('density plot', 'filled density plot')")
+cat("2 numeric = c('density plot', 'filled density plot')")
 ```
 
 ```{r 2numeric_22, fig.width=12, fig.height=2.4}
@@ -279,15 +279,15 @@ cat("numeric = c('density plot', 'filled density plot')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_22-1.png')
-cat("numeric = c('violin plot', 'filled violin plot')")
+cat("2 numeric = c('violin plot', 'filled violin plot')")
 ```
 
 ```{r 2numeric_23, fig.width=12, fig.height=2.4}
 # gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'box plot', output = 'plots pane'),
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
-knitr::include_graphics('figures/2numeric_23-1.png')
-cat("numeric = c('box plot'))")
+knitr::include_graphics('figures/2numeric_23-1.png') 
+cat("2 numeric = c('box plot'))")
 ```
 
 ```{r 2numeric_24, fig.width=12, fig.height=2.4}
@@ -297,5 +297,157 @@ cat("numeric = c('box plot'))")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/2numeric_24-1.png')
-cat("numeric = c('ecdf plot', 'point ecdf plot', 'stepped ecdf plot')")
+cat("2 numeric = c('ecdf plot', 'point ecdf plot', 'stepped ecdf plot')")
 ```
+
+# 2 datetime
+
+```{r}
+# library(nycflights13)
+# library(lubridate)
+# library(dplyr)
+# 
+# make_datetime_100 <- function(year, month, day, time) {
+#   make_datetime(year, month, day, time %/% 100, time %% 100)
+# }
+# 
+# flights_dt <- flights %>% 
+#   filter(!is.na(dep_time), !is.na(arr_time)) %>% 
+#   mutate(
+#     dep_time = make_datetime_100(year, month, day, dep_time),
+#     arr_time = make_datetime_100(year, month, day, arr_time),
+#     sched_dep_time = make_datetime_100(year, month, day, sched_dep_time),
+#     sched_arr_time = make_datetime_100(year, month, day, sched_arr_time)
+#   ) %>% 
+#   select(origin, dest, ends_with("delay"), ends_with("time"))
+# 
+# flights_dt <- as.data.frame(flights_dt)
+# 
+# ds <- data.frame("dep_time" = flights_dt[abs(round(rnorm(100)*100)),5], "arr_time" = flights_dt[abs(round(rnorm(100)*100)),6])
+
+```
+
+
+```{r 2datetime_01, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(ds, c('dep_time', 'arr_time'), 'scatter plot', output = 'plots pane'),
+#                         brinton::plotup(ds, c('dep_time', 'arr_time'), 'scatter plot with trend line', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2datetime_01-1.png')
+cat("2 datetime = c('scatter plot', 'scatter plot with trend line')")
+```
+
+```{r 2datetime_02, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(ds, c('dep_time', 'arr_time'), 'binned heatmap', output = 'plots pane'),
+#                         brinton::plotup(ds, c('dep_time', 'arr_time'), 'bw binned scatter plot', output = 'plots pane'),
+#                         brinton::plotup(ds, c('dep_time', 'arr_time'), 'color binned scatter plot', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2datetime_02-1.png')
+cat("2 datetime = c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')")
+```
+
+```{r 2datetime_03, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(ds, c('dep_time', 'arr_time'), 'blank', output = 'plots pane'),
+#                         brinton::plotup(ds, c('dep_time', 'arr_time'), 'bw heatmap', output = 'plots pane'),
+#                         brinton::plotup(ds, c('dep_time', 'arr_time'), 'color heatmap', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2datetime_03-1.png')
+cat("2 datetime = c('blank', 'bw heatmap', 'color heatmap')")
+```
+
+```{r 2datetime_04, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(ds, c('dep_time', 'arr_time'), 'contour plot with data points', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2datetime_04-1.png')
+cat("2 datetime = c('contour plot with data points')")
+```
+
+```{r 2datetime_05, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(ds, c('dep_time', 'arr_time'), 'path graph', output = 'plots pane'),
+#                         brinton::plotup(ds, c('dep_time', 'arr_time'), 'bw path graph', output = 'plots pane'),
+#                         brinton::plotup(ds, c('dep_time', 'arr_time'), 'color path graph', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2datetime_05-1.png')
+cat("2 datetime = c('path graph', 'bw path graph', 'color path graph')")
+```
+
+```{r 2datetime_06, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(ds, c('dep_time', 'arr_time'), 'point-to-point graph', output = 'plots pane'),
+#                         brinton::plotup(ds, c('dep_time', 'arr_time'), 'bw point-to-point graph', output = 'plots pane'),
+#                         brinton::plotup(ds, c('dep_time', 'arr_time'), 'color point-to-point graph', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/2datetime_06-1.png')
+cat("2 datetime = c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')")
+```
+
+# datetime~numeric
+
+```{r}
+# library("dlstats")
+# MASS <- cran_stats(c("MASS"))
+```
+
+
+```{r date-num_01, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(MASS, c('start', 'downloads'), 'scatter plot', output = 'plots pane'),
+#                         brinton::plotup(MASS, c('start', 'downloads'), 'scatter plot with trend line', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/date-num_01-1.png')
+cat("datetime~numeric = c('scatter plot', 'scatter plot with trend line')")
+```
+
+```{r date-num_02, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(MASS, c('start', 'downloads'), 'binned heatmap', output = 'plots pane'),
+#                         brinton::plotup(MASS, c('start', 'downloads'), 'bw binned scatter plot', output = 'plots pane'),
+#                         brinton::plotup(MASS, c('start', 'downloads'), 'color binned scatter plot', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/date-num_02-1.png')
+cat("datetime~numeric = c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')")
+```
+
+```{r date-num_03, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(MASS, c('start', 'downloads'), 'blank', output = 'plots pane'),
+#                         brinton::plotup(MASS, c('start', 'downloads'), 'bw heatmap', output = 'plots pane'),
+#                         brinton::plotup(MASS, c('start', 'downloads'), 'color heatmap', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/date-num_03-1.png')
+cat("datetime~numeric = c('blank', 'bw heatmap', 'color heatmap')")
+```
+
+```{r date-num_04, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(MASS, c('start', 'downloads'), 'contour plot with data points', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/date-num_04-1.png')
+cat("datetime~numeric = c('contour plot with data points')")
+```
+
+```{r date-num_05, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(MASS, c('start', 'downloads'), 'path graph', output = 'plots pane'),
+#                         brinton::plotup(MASS, c('start', 'downloads'), 'bw path graph', output = 'plots pane'),
+#                         brinton::plotup(MASS, c('start', 'downloads'), 'color path graph', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/date-num_05-1.png')
+cat("datetime~numeric = c('path graph', 'bw path graph', 'color path graph')")
+```
+
+```{r date-num_06, fig.width=12, fig.height=2.4}
+# gridExtra::grid.arrange(brinton::plotup(MASS, c('start', 'downloads'), 'point-to-point graph', output = 'plots pane'),
+#                         brinton::plotup(MASS, c('start', 'downloads'), 'bw point-to-point graph', output = 'plots pane'),
+#                         brinton::plotup(MASS, c('start', 'downloads'), 'color point-to-point graph', output = 'plots pane'),
+#                         heights=grid::unit(c(2.4), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/date-num_06-1.png')
+cat("datetime~numeric = c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')")
+```
+
+

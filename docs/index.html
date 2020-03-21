@@ -45,7 +45,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
       </span>
     </div>
 
@@ -100,11 +100,11 @@
 <li>
 <code><a href="reference/wideplot.html">wideplot()</a></code> graphics for exploring the structure of a dataset through a grid of variables and graphic types.</li>
 <li>
-<code><a href="reference/longplot.html">longplot()</a></code> graphics, which present the entire catalog of available graphics for representing a particular variable using a grid of graphic types and variations on these types.</li>
+<code><a href="reference/longplot.html">longplot()</a></code> graphics, which present the entire catalog of available graphics for representing one particular variable or a limited number of variables using a grid of graphic types and variations on these types.</li>
 <li>
-<code><a href="reference/plotup.html">plotup()</a></code> function, which complements the previous two functions in that it presents a particular graphic for a specific variable of a dataset.</li>
+<code><a href="reference/plotup.html">plotup()</a></code> function, which complements the previous two functions in that it presents a particular graphic for a specific variable or a limited number of variables of a dataset.</li>
 </ul>
-<p>Future work will include the hability to draw <code><a href="reference/longplot.html">longplot()</a></code> and <code><a href="reference/plotup.html">plotup()</a></code> from a selection of a limited number of variables within a dataset.</p>
+<p>Future work will include the ability to draw <code><a href="reference/longplot.html">longplot()</a></code> and <code><a href="reference/plotup.html">plotup()</a></code> graphics from a selection of a wider number and combinations of types of variables within a dataset.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -138,23 +138,27 @@
 <a class="sourceLine" id="cb7-3" title="3">         <span class="dt">numeric =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"point graph"</span>, <span class="st">"binned point graph"</span>, <span class="st">"binned heatmap"</span>),</a>
 <a class="sourceLine" id="cb7-4" title="4">         <span class="dt">label =</span> <span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb7-5" title="5">         <span class="dt">ncol =</span> <span class="dv">3</span>)</a></code></pre></div>
-<p>If the user is interested in one particular graphic, then the function <code><a href="reference/plotup.html">plotup()</a></code> is useful.</p>
+<p>If the user is interested in one particular graphic then the function <code><a href="reference/plotup.html">plotup()</a></code> is useful.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>)</a></code></pre></div>
-<p>The default output is still a html file but, the <code><a href="reference/plotup.html">plotup()</a></code> function allows also to plot the graphic in the plots pane or the console:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"plots pane"</span>)</a></code></pre></div>
-<p><img src="reference/figures/README-plotspane-1.png" width="40%"></p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"console"</span>)</a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="co">#&gt; theme_set(theme_minimal())</span></a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="co">#&gt; binwidth &lt;- (max(infert['pooled.stratum'], na.rm=TRUE)-min(infert['pooled.stratum'], na.rm=TRUE))/20</span></a>
-<a class="sourceLine" id="cb10-5" title="5"><span class="co">#&gt; ggplot(infert, aes(x=pooled.stratum)) +</span></a>
-<a class="sourceLine" id="cb10-6" title="6"><span class="co">#&gt;   geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +</span></a>
-<a class="sourceLine" id="cb10-7" title="7"><span class="co">#&gt;   scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3)) +</span></a>
-<a class="sourceLine" id="cb10-8" title="8"><span class="co">#&gt;   theme(panel.grid = element_line(colour = NA),</span></a>
-<a class="sourceLine" id="cb10-9" title="9"><span class="co">#&gt;     axis.text.y =element_text(color = NA),</span></a>
-<a class="sourceLine" id="cb10-10" title="10"><span class="co">#&gt;     axis.title.y =element_text(color = NA),</span></a>
-<a class="sourceLine" id="cb10-11" title="11"><span class="co">#&gt;     axis.ticks.x =element_line(color = 'black'),</span></a>
-<a class="sourceLine" id="cb10-12" title="12"><span class="co">#&gt;     legend.position='none')</span></a></code></pre></div>
+<p>Or, as example of a graphic that requires more than one input variable:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(faithful, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"waiting"</span>, <span class="st">"eruptions"</span>), <span class="st">"color scatter plot"</span>)</a></code></pre></div>
+<p>The default output is still a html file but the <code><a href="reference/plotup.html">plotup()</a></code> function allows to plot the graphic in the plots pane or the console:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"plots pane"</span>)</a></code></pre></div>
+<p><img src="reference/figures/README-plotspane1-1.png" width="40%"></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(faithful, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"waiting"</span>, <span class="st">"eruptions"</span>), <span class="st">"color scatter plot"</span>, <span class="dt">output =</span> <span class="st">"plots pane"</span>)</a></code></pre></div>
+<p><img src="reference/figures/README-plotspane2-1.png" width="40%"></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"console"</span>)</a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="co">#&gt; theme_set(theme_minimal())</span></a>
+<a class="sourceLine" id="cb12-3" title="3"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb12-4" title="4"><span class="co">#&gt; binwidth &lt;- (max(infert['pooled.stratum'], na.rm=TRUE)-min(infert['pooled.stratum'], na.rm=TRUE))/20</span></a>
+<a class="sourceLine" id="cb12-5" title="5"><span class="co">#&gt; ggplot(infert, aes(x=pooled.stratum)) +</span></a>
+<a class="sourceLine" id="cb12-6" title="6"><span class="co">#&gt;   geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +</span></a>
+<a class="sourceLine" id="cb12-7" title="7"><span class="co">#&gt;   scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3)) +</span></a>
+<a class="sourceLine" id="cb12-8" title="8"><span class="co">#&gt;   theme(panel.grid = element_line(colour = NA),</span></a>
+<a class="sourceLine" id="cb12-9" title="9"><span class="co">#&gt;     axis.text.y =element_text(color = NA),</span></a>
+<a class="sourceLine" id="cb12-10" title="10"><span class="co">#&gt;     axis.title.y =element_text(color = NA),</span></a>
+<a class="sourceLine" id="cb12-11" title="11"><span class="co">#&gt;     axis.ticks.x =element_line(color = 'black'),</span></a>
+<a class="sourceLine" id="cb12-12" title="12"><span class="co">#&gt;     legend.position='none')</span></a></code></pre></div>
 </div>
 </div>
   </div>

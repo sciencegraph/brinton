@@ -77,7 +77,7 @@ knitr::opts_chunk$set(
 ```
 
 
-# Logical variables
+# Logical
 
 ```{r logical_01, fig.width=12, fig.height=0.83}
 # data(ca2006, package = "pscl")
@@ -120,7 +120,7 @@ knitr::include_graphics('figures/logical_04-1.png')
 cat("logical = c('bar graph', 'bw bar graph', 'color bar graph')")
 ```
 
-# Ordered factor variables
+# Ordered factor
 
 ```{r ordered_01, fig.width=12, fig.height=1.5}
 # gridExtra::grid.arrange(brinton::plotup(esoph, "agegp", "line graph", output = 'plots pane'), 
@@ -161,7 +161,7 @@ knitr::include_graphics('figures/ordered_04-1.png')
 cat("ordered = c('bar graph', 'bw bar graph', 'color bar graph')")
 ```
 
-# Factor variables
+# Factor
 
 ```{r factor_01, fig.width=12, fig.height=1.17}
 # data(monica, package = "DAAG")
@@ -279,7 +279,7 @@ knitr::include_graphics('figures/factor_11-1.png')
 cat("datetime = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')")
 ```
 
-# Character variables
+# Character
 
 ```{r character_01, fig.width=12, fig.height=3}
 # data(rockArt, package = "DAAG")
@@ -396,7 +396,7 @@ knitr::include_graphics('figures/character_11-1.png')
 cat("datetime = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')")
 ```
 
-# Datetime variables
+# Datetime
 
 ```{r, eval = FALSE}
 # flights_dt <- nycflights13::flights %>%
@@ -454,7 +454,7 @@ knitr::include_graphics('figures/datetime_04-1.png')
 cat("datetime = c('bw heatmap', 'color heatmap')")
 ```
 
-# Numeric variables
+# Numeric
 
 ```{r numeric_01, fig.width=12, fig.height=2.4}
 # data(midwest, package = "ggplot2")

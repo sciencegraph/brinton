@@ -3,9 +3,9 @@ This is a submission of package not currently
 available on CRAN.
 
 ## Test environments
-* local Windows 10, R 3.4.4
+* local Windows 10, R 3.6.2
 * travis Ubuntu Xenial 16.04
-* R Under development (unstable) (2019-12-02 r77499)
+* R Under development (unstable) (2020-03-11 r77925)
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. Just one NOTE

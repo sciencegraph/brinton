@@ -30,9 +30,10 @@ This function can have three outputs: by default it produces a particular graphi
 but it can also be represented into the RStudio's plots pane, or can return the code to produce it.
 }
 \description{
-In order to present the graphic, the user must define a dataset, a
-variable whitin this dataset and a compatible type of graphic.
-Future work will include graphics that involve more than one variable.
+In order to present the graphic, the user must define a dataset, at
+least one variable whitin this dataset and a compatible type of graphic.
+Future work will include graphics that involve more number and
+combinations of types of variables.
 }
 \examples{
 if (interactive()) {

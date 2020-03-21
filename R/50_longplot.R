@@ -6,8 +6,8 @@
 #' row number in which  they appear.
 #'
 #' In order to present the range of graphics, the user must define a dataset and
-#' select one variable whitin it. Future work will include the ability to relate more
-#' than one variable.
+#' select at least one variable whitin it. Future work will include the ability to
+#' relate more number and combinations of types of variables.
 #'
 #' @param data Data.frame. Default dataset to use for plot. If not already a
 #' data.frame, it should be first coerced to by [as.data.frame()].
@@ -497,87 +497,137 @@ longplot <- function(data,
     if (label == TRUE) {add_label("numeric", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (length(vars) == 2 & is.numeric(unlist(data[, vars][1])) == TRUE & is.numeric(unlist(data[, vars][2])) == TRUE) {
+  } else if (length(vars) == 2 &
+             (lubridate::is.instant(unlist(data[, vars[1]])) == TRUE  &
+             lubridate::is.instant(unlist(data[, vars[2]])) == TRUE) |
+             (is.numeric(unlist(data[, vars[1]])) == TRUE  &
+              lubridate::is.instant(unlist(data[, vars[2]])) == TRUE) |
+             (lubridate::is.instant(unlist(data[, vars[1]])) == TRUE  &
+              is.numeric(unlist(data[, vars[2]])) == TRUE)) {
     # my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
     write(paste0("#+ numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
-    stripe <- c('scatter plot', 'bw scatter plot', 'color scatter plot')
-    p001 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'black', 'false')
-    p002 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'bw', 'false')
-    p003 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'color', 'false')
-    add_plots("p00", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
-    # stripe <- c('scatter plot with trend line', 'bw scatter plot with trend line', 'color scatter plot with trend line')
-    # p011 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'black', 'true')
-    # p012 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'bw', 'true')
-    # p013 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'color', 'true')
-    # add_plots("p01", 3)
-    # if (label == TRUE) {add_label("numeric", stripe)}
+    stripe <- c('scatter plot', 'scatter plot with trend line')
+    p001 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black', 'false')
+    p002 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black', 'true')
+    add_plots("p00", 2)
+    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
     stripe <- c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')
-    p021 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'black')
-    p022 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'bw')
-    p023 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'color')
+    p021 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black')
+    p022 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw')
+    p023 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'color')
     add_plots("p02", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
     stripe <- c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')
-    p031 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'black')
-    p032 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'bw')
-    p033 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'color')
+    p031 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black')
+    p032 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw')
+    p033 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color')
     add_plots("p03", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
-    stripe <- c('hexagonal binned heatmap', 'bw hexagonal binned heatmap', 'color hexagonal binned heatmap')
-    p041 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'black', 6)
-    p042 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'bw', 6)
-    p043 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'color', 6)
-    add_plots("p04", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
     stripe <- c('blank', 'bw heatmap', 'color heatmap')
     p051 <- blank2(data, colnames(data[vars][1]), colnames(data[vars][2]))
-    p052 <- pp_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'bw')
-    p053 <- pp_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'color')
+    p052 <- pp_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw')
+    p053 <- pp_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color')
     add_plots("p05", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
     stripe <- c('contour plot', 'bw contour plot', 'color contour plot')
-    p061 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'black')
-    p062 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'bw')
-    p063 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', pp_size = 3/ncol, 'color')
+    p061 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black')
+    p062 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw')
+    p063 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'color')
     add_plots("p06", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
-    stripe <- c('contour plot with data points', 'bw contour plot with data points', 'color contour plot with data points')
-    p071 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'black', pp_size = 3/ncol, 'TRUE')
-    p072 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'bw', pp_size = 3/ncol, 'TRUE')
-    p073 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'yx', 'color', pp_size = 3/ncol, 'TRUE')
-    add_plots("p07", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
-    stripe <- c('parallel plot', 'bw parallel plot', 'color parallel plot')
-    p081 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'black', pp_size = 3/ncol)
-    p082 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'bw', pp_size = 3/ncol)
-    p083 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'color', pp_size = 3/ncol)
-    add_plots("p08", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
-    stripe <- c('unscaled parallel plot', 'unscaled bw parallel plot', 'unscaled color parallel plot')
-    p091 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'black', pp_size = 3/ncol)
-    p092 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'bw', pp_size = 3/ncol)
-    p093 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'color', pp_size = 3/ncol)
-    add_plots("p09", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
+    stripe <- c('contour plot with data points')
+    p071 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, 'TRUE')
+    add_plots("p07", 1)
+    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
     stripe <- c('path graph', 'bw path graph', 'color path graph')
     p101 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'black', pp_size = 3/ncol)
     p102 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'bw', pp_size = 3/ncol)
     p103 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'color', pp_size = 3/ncol)
     add_plots("p10", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
     stripe <- c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')
     p111 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'black', pp_size = 3/ncol)
     p112 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'bw', pp_size = 3/ncol)
     p113 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'color', pp_size = 3/ncol)
     add_plots("p11", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
+  } else if (length(vars) == 2 & is.numeric(unlist(data[, vars])) == TRUE) {
+    # my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
+    write(paste0("#+ numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+    stripe <- c('scatter plot', 'bw scatter plot', 'color scatter plot')
+    p001 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black', 'false')
+    p002 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw', 'false')
+    p003 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'color', 'false')
+    add_plots("p00", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')
+    p021 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black')
+    p022 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw')
+    p023 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'color')
+    add_plots("p02", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')
+    p031 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black')
+    p032 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw')
+    p033 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color')
+    add_plots("p03", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('hexagonal binned heatmap', 'bw hexagonal binned heatmap', 'color hexagonal binned heatmap')
+    p041 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', 6)
+    p042 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 6)
+    p043 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 6)
+    add_plots("p04", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('blank', 'bw heatmap', 'color heatmap')
+    p051 <- blank2(data, colnames(data[vars][1]), colnames(data[vars][2]))
+    p052 <- pp_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw')
+    p053 <- pp_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color')
+    add_plots("p05", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('contour plot', 'bw contour plot', 'color contour plot')
+    p061 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black')
+    p062 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw')
+    p063 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'color')
+    add_plots("p06", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('contour plot with data points', 'bw contour plot with data points', 'color contour plot with data points')
+    p071 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, 'TRUE')
+    p072 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, 'TRUE')
+    p073 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, 'TRUE')
+    add_plots("p07", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('parallel plot', 'bw parallel plot', 'color parallel plot')
+    p081 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'black', pp_size = 3/ncol)
+    p082 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'bw', pp_size = 3/ncol)
+    p083 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'color', pp_size = 3/ncol)
+    add_plots("p08", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('unscaled parallel plot', 'unscaled bw parallel plot', 'unscaled color parallel plot')
+    p091 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'black', pp_size = 3/ncol)
+    p092 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'bw', pp_size = 3/ncol)
+    p093 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'color', pp_size = 3/ncol)
+    add_plots("p09", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('path graph', 'bw path graph', 'color path graph')
+    p101 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'black', pp_size = 3/ncol)
+    p102 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'bw', pp_size = 3/ncol)
+    p103 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'color', pp_size = 3/ncol)
+    add_plots("p10", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')
+    p111 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'black', pp_size = 3/ncol)
+    p112 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'bw', pp_size = 3/ncol)
+    p113 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'color', pp_size = 3/ncol)
+    add_plots("p11", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('point graph', 'bw point graph', 'color point graph')
     p121 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'point')
     p122 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, pp_geom = 'point')
     p123 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'point')
     add_plots("p12", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('line graph', 'stepped line graph')
     p131 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'line')
     p132 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'step')
@@ -586,25 +636,24 @@ longplot <- function(data,
     stripe <- c('area graph')
     p141 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'area')
     add_plots("p14", 1)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('stepped area graph', 'bw stepped area graph', 'color stepped area graph')
     p151 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'bar')
-    p152 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, pp_geom = 'bar')
     p153 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'bar')
     add_plots("p15", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
-    stripe <- c('blank', 'bw heatmap', 'color heatmap')
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('blank', 'bw seq. heatmap', 'color seq. heatmap')
     p161 <- blank2(data, colnames(data[vars][1]), colnames(data[vars][2]))
     p162 <- pp_unf_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, pp_geom = 'heat')
     p163 <- pp_unf_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'heat')
     add_plots("p16", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('blank', 'bw seq. stripe graph', 'color seq. stripe graph')
     p171 <- blank2(data, colnames(data[vars][1]), colnames(data[vars][2]))
     p172 <- pp_unf_tile(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, pp_geom = 'tile')
     p173 <- pp_unf_tile(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'tile')
     add_plots("p17", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('histogram', 'bw histogram', 'color histogram')
     p181 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'hist')
     p182 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, pp_geom = 'hist')
@@ -614,27 +663,27 @@ longplot <- function(data,
     stripe <- c('freq. polygon')
     p191 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'freq')
     add_plots("p19", 1)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('density plot', 'filled density plot')
     p201 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'dens')
     p202 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'fill', pp_size = 3/ncol, pp_geom = 'dens')
     add_plots("p20", 2)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('violin plot', 'filled violin plot')
     p211 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'viol')
     p212 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'fill', pp_size = 3/ncol, pp_geom = 'viol')
     add_plots("p21", 2)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('box plot')
     p221 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'box')
     add_plots("p22", 1)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('histogram', 'bw histogram', 'color histogram')
     p231 <- pp_unf_ecdf(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 1/ncol, pp_trans = 'line')
     p232 <- pp_unf_ecdf(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 1/ncol, pp_trans = 'point')
     p233 <- pp_unf_ecdf(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 1/ncol, pp_trans = 'step')
     add_plots("p23", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("2num", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
   }

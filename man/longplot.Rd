@@ -27,8 +27,8 @@ row number in which  they appear.
 }
 \details{
 In order to present the range of graphics, the user must define a dataset and
-select one variable whitin it. Future work will include the ability to relate more
-than one variable.
+select at least one variable whitin it. Future work will include the ability to
+relate more number and combinations of types of variables.
 }
 \examples{
 if (interactive()) {

@@ -8,15 +8,16 @@ This package introduces:
   - `wideplot()` graphics for exploring the structure of a dataset
     through a grid of variables and graphic types.
   - `longplot()` graphics, which present the entire catalog of available
-    graphics for representing a particular variable using a grid of
-    graphic types and variations on these types.
+    graphics for representing one particular variable or a limited
+    number of variables using a grid of graphic types and variations on
+    these types.
   - `plotup()` function, which complements the previous two functions in
-    that it presents a particular graphic for a specific variable of a
-    dataset.
+    that it presents a particular graphic for a specific variable or a
+    limited number of variables of a dataset.
 
-Future work will include the hability to draw `longplot()` and
-`plotup()` from a selection of a limited number of variables within a
-dataset.
+Future work will include the ability to draw `longplot()` and `plotup()`
+graphics from a selection of a wider number and combinations of types of
+variables within a dataset.
 
 ## Installation
 
@@ -91,21 +92,33 @@ wideplot(infert,
          ncol = 3)
 ```
 
-If the user is interested in one particular graphic, then the function
+If the user is interested in one particular graphic then the function
 `plotup()` is useful.
 
 ``` r
 plotup(infert, "pooled.stratum", "color binned stripe graph")
 ```
 
-The default output is still a html file but, the `plotup()` function
-allows also to plot the graphic in the plots pane or the console:
+Or, as example of a graphic that requires more than one input variable:
+
+``` r
+plotup(faithful, c("waiting", "eruptions"), "color scatter plot")
+```
+
+The default output is still a html file but the `plotup()` function
+allows to plot the graphic in the plots pane or the console:
 
 ``` r
 plotup(infert, "pooled.stratum", "color binned stripe graph", output = "plots pane")
 ```
 
-<img src="man/figures/README-plotspane-1.png" width="40%" />
+<img src="man/figures/README-plotspane1-1.png" width="40%" />
+
+``` r
+plotup(faithful, c("waiting", "eruptions"), "color scatter plot", output = "plots pane")
+```
+
+<img src="man/figures/README-plotspane2-1.png" width="40%" />
 
 ``` r
 plotup(infert, "pooled.stratum", "color binned stripe graph", output = "console")
