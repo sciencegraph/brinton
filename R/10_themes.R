@@ -50,10 +50,15 @@ amb.z <- theme(legend.position="none")
 
 # custom palettes
 
-scl_gry <- colorRampPalette(c("#E5E5E5", "#000000"))
-scl_col_cont <- colorRampPalette(rev(RColorBrewer::brewer.pal(4, "Spectral")))
-scl_col_disc <- colorRampPalette(rev(RColorBrewer::brewer.pal(9, "Set1")))
-p_scale_gray_l <- scale_color_gradientn(colours = scl_gry(2))
+scl_gry         <- colorRampPalette(c("#E5E5E5", "#000000"))
+scl_col_cont    <- colorRampPalette(rev(RColorBrewer::brewer.pal(4, "Spectral")))
+# scl_col_disc    <- colorRampPalette(rev(RColorBrewer::brewer.pal(9, "Set1")))
+scl_col_disc_l    <- scale_color_brewer(type = "qual", palette = "Set1")
+scl_col_disc_a    <- scale_fill_brewer(type = "qual", palette = "Set1")
+scl_gray_disc_l    <- scale_color_brewer(type = "seq", palette = "Greys")
+scl_gray_disc_a    <- scale_fill_brewer(type = "seq", palette = "Greys")
+p_scale_gray_l  <- scale_color_gradientn(colours = scl_gry(2))
 p_scale_color_l <- scale_color_gradientn(colours = scl_col_cont(3))
-p_scale_gray_a <- scale_fill_gradientn(colours = scl_gry(2))
+p_scale_gray_a  <- scale_fill_gradientn(colours = scl_gry(2))
 p_scale_color_a <- scale_fill_gradientn(colours = scl_col_cont(3))
+

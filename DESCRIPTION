@@ -1,6 +1,6 @@
 Package: brinton
 Type: Package
-Version: 0.1.5
+Version: 0.1.6
 Title: A Graphical EDA Tool
 Description: An automated graphical exploratory data analysis (EDA) tool that introduces: 
   a.) wideplot() graphics for exploring the structure of a dataset through a grid of variables 
@@ -15,7 +15,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Depends: ggplot2, gridExtra, rmarkdown, glue
-Imports: pander, lubridate, tibble, sm, RColorBrewer, forcats, stats, GGally
+Imports: pander, lubridate, tibble, sm, RColorBrewer, forcats, GGally
 RoxygenNote: 7.0.2
 Suggests: knitr, MASS, hexbin
 VignetteBuilder: knitr

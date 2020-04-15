@@ -1,21 +1,11 @@
-## NOTE
-This is a submission of package not currently 
+This is a submission of package currently 
 available on CRAN.
 
 ## Test environments
-* local Windows 10, R 3.6.2
-* travis Ubuntu Xenial 16.04
-* R Under development (unstable) (2020-03-11 r77925)
+* local Windows 10, R 3.6.3
+* travis Ubuntu xenial 16.04.6 LTS
+* R Under development (unstable) (2020-04-14 r78227)
 
 ## R CMD check results
-There were no ERRORs or WARNINGs. Just one NOTE
-while checking CRAN incoming feasibility.
-
-Examples that produce a html file, are now wrapped 
-into \dontrun{} in order to avoid leaving browser open
-while checking.
-
-The requirement of pandoc is now declared and used 
-conditionally. It has been tested on a machine 
-without pandoc and exits with a warning that reminds 
-that pandoc is requiered.
+There were no ERRORs, WARNINGs or NOTEs.
+ 

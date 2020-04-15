@@ -951,3 +951,93 @@ pp_unf_ecdf <- function(pp_df,
     p_plot + stat_ecdf(geom = "step", size=pp_size)
   } else {stop(warning_general)}
 }
+
+pp_basicgraph <- function(pp_df,
+                          pp_var1,
+                          pp_var2,
+                          pp_size = 1,
+                          pp_geom,
+                          pp_color = "black")
+{
+  pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
+  pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
+
+  p_labs    <- labs(y=names(pp_df[pp_var2]), x=names(pp_df[pp_var1]))
+  p_plot    <- ggplot(pp_df, aes_string(x=pp_var1, y=pp_var2), environment = environment()) + p_labs + pp_theme()
+  p_path    <- geom_path(aes(group=1), size=0.5*pp_size)
+  p_point   <- geom_point(aes(group=1), size=3*pp_size)
+  p_tile    <- geom_tile()
+  p_box     <- geom_boxplot(size=0.5*pp_size)
+  p_violin  <- geom_violin(aes(group=pp_var2), size=0.5*pp_size)
+  p_violi_f <- geom_violin(aes(group=pp_var2), fill="black")
+  p_bin2d   <- geom_bin2d(data = pp_df, fill = "black")
+  p_bin2d_c <- geom_bin2d(data = pp_df)
+
+  if (pp_geom == "line") {
+    p_plot + p_path
+  } else if (pp_geom == "point") {
+    p_plot + p_point
+  } else if (pp_geom == "tile") {
+    p_plot + p_tile
+  } else if (pp_geom == "box") {
+    p_plot + p_box
+  } else if (pp_geom == "violin") {
+    p_plot + p_violin
+  } else if (pp_geom == "violin filled") {
+    p_plot + p_violi_f
+  } else if (pp_geom == "bin" & pp_color == "black") {
+    p_plot + p_bin2d
+  } else if (pp_geom == "bin" & pp_color == "bw") {
+    p_plot + p_bin2d_c + p_scale_gray_a + amb.z
+  } else if (pp_geom == "bin" & pp_color == "color") {
+    p_plot + p_bin2d_c + p_scale_color_a + amb.z
+  } else {stop(warning_general)}
+}
+
+pp_density2 <- function(pp_df,
+                        pp_var1,
+                        pp_var2,
+                        pp_size = 0.5,
+                        pp_aes = "line",
+                        pp_color = "color")  {
+  pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
+  pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
+
+  p_labs  <- labs(x=names(pp_df[pp_var1]))
+  p_plot_b <- ggplot(pp_df, aes_string(x=pp_var1, group = pp_var2), environment = environment()) + p_labs + pp_theme()
+  p_plot_c <- ggplot(pp_df, aes_string(x=pp_var1, color = pp_var2), environment = environment()) + p_labs + pp_theme()
+  p_plot_f <- ggplot(pp_df, aes_string(x=pp_var1, fill = pp_var2), environment = environment()) + p_labs + pp_theme()
+  if (pp_aes == "line" & pp_color == "bw") {
+    p_plot_b + geom_density(size=pp_size, color = "black")
+  } else if (pp_aes == "area" & pp_color == "bw") {
+    p_plot_b + geom_density(size=0.5*pp_size, alpha = 0.3, fill = "black", color = "white")
+  } else if (pp_aes == "line" & pp_color == "color") {
+    p_plot_c + geom_density(size=pp_size, alpha = 0.5) + scl_col_disc_l + amb.z
+  } else if (pp_aes == "area" & pp_color == "color") {
+    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.5, color = "white") + scl_col_disc_a + amb.z
+  } else {stop(warning_general)}
+}
+
+pp_histogram2 <- function(pp_df,
+                          pp_var1,
+                          pp_var2,
+                          pp_color = "bw",
+                          pp_position = "stack")  {
+  pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
+  pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
+
+  p_labs    <- labs(x=names(pp_df[pp_var1]))
+  p_plot    <- ggplot(pp_df, aes_string(x=pp_var1, color=pp_var2, fill=pp_var2), environment = environment()) + p_labs + pp_theme()
+  p_hist_s  <- geom_histogram(center = 0, position = "stack")
+  p_hist_f  <- geom_histogram(center = 0, position = "fill")
+
+  if (pp_color == "bw" & pp_position == "stack") {
+    p_plot + p_hist_s + scl_gray_disc_a + scl_gray_disc_l + amb.z
+  } else if (pp_color == "color" & pp_position == "stack") {
+    p_plot + p_hist_s + scl_col_disc_a + scl_col_disc_l + amb.z
+  } else if (pp_color == "bw" & pp_position == "fill") {
+    p_plot + p_hist_f + scl_gray_disc_a + scl_gray_disc_l + amb.z + scale_y_continuous(breaks = c(0, 1), labels = c("0%", "100%"))
+  } else if (pp_color == "color" & pp_position == "fill") {
+    p_plot + p_hist_f + scl_col_disc_a + scl_col_disc_l + amb.z + scale_y_continuous(breaks = c(0, 1), labels = c("0%", "100%"))
+  } else {stop(warning_general)}
+}

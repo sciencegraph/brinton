@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -143,7 +143,7 @@
   margin-top: 0px;
   }
 </style>
-<p>Specimen of the graphics that require 2 input variables and that, up to now, are being considered by the brinton’s <code><a href="../reference/longplot.html">longplot()</a></code> and <code><a href="../reference/plotup.html">plotup()</a></code> functions.</p>
+<p>Specimen of the graphics that require 2 input variables and that, up to now, are being considered by the brinton’s <code><a href="../reference/longplot.html">longplot()</a></code> and <code><a href="../reference/plotup.html">brinton::plotup()</a></code> functions.</p>
 <div id="numeric" class="section level1">
 <h1 class="hasAnchor">
 <a href="#numeric" class="anchor"></a>2 numeric</h1>
@@ -210,21 +210,39 @@
 <p><img src="figures/2datetime_06-1.png" width="1152"></p>
 <pre><code>2 datetime = c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')</code></pre>
 </div>
-<div id="datetimenumeric" class="section level1">
+<div id="numericdatetime" class="section level1">
 <h1 class="hasAnchor">
-<a href="#datetimenumeric" class="anchor"></a>datetime~numeric</h1>
+<a href="#numericdatetime" class="anchor"></a>numeric~datetime</h1>
 <p><img src="figures/date-num_01-1.png" width="1152"></p>
-<pre><code>datetime~numeric = c('scatter plot', 'scatter plot with trend line')</code></pre>
+<pre><code>numeric~datetime = c('scatter plot', 'scatter plot with trend line')</code></pre>
 <p><img src="figures/date-num_02-1.png" width="1152"></p>
-<pre><code>datetime~numeric = c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')</code></pre>
+<pre><code>numeric~datetime = c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')</code></pre>
 <p><img src="figures/date-num_03-1.png" width="1152"></p>
-<pre><code>datetime~numeric = c('blank', 'bw heatmap', 'color heatmap')</code></pre>
+<pre><code>numeric~datetime = c('blank', 'bw heatmap', 'color heatmap')</code></pre>
 <p><img src="figures/date-num_04-1.png" width="1152"></p>
-<pre><code>datetime~numeric = c('contour plot with data points')</code></pre>
+<pre><code>numeric~datetime = c('contour plot with data points')</code></pre>
 <p><img src="figures/date-num_05-1.png" width="1152"></p>
-<pre><code>datetime~numeric = c('path graph', 'bw path graph', 'color path graph')</code></pre>
+<pre><code>numeric~datetime = c('path graph', 'bw path graph', 'color path graph')</code></pre>
 <p><img src="figures/date-num_06-1.png" width="1152"></p>
-<pre><code>datetime~numeric = c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')</code></pre>
+<pre><code>numeric~datetime = c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')</code></pre>
+</div>
+<div id="numericfactor" class="section level1">
+<h1 class="hasAnchor">
+<a href="#numericfactor" class="anchor"></a>numeric~factor</h1>
+<p><img src="figures/fac-num_01-1.png" width="1152"></p>
+<pre><code>numeric~factor = c('path graph', 'point graph', 'tile plot')</code></pre>
+<p><img src="figures/fac-num_02-1.png" width="1152"></p>
+<pre><code>numeric~factor = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')</code></pre>
+<p><img src="figures/fac-num_03-1.png" width="1152"></p>
+<pre><code>numeric~factor = c('blank', 'bw stacked histogram', 'color stacked histogram')</code></pre>
+<p><img src="figures/fac-num_04-1.png" width="1152"></p>
+<pre><code>numeric~factor = c('blank', 'bw 100% stacked histogram', 'color 100% stacked histogram')</code></pre>
+<p><img src="figures/fac-num_05-1.png" width="1152"></p>
+<pre><code>numeric~factor = c('density plot', 'color density plot', 'filled density plot', 'color filled density plot')</code></pre>
+<p><img src="figures/fac-num_06-1.png" width="1152"></p>
+<pre><code>numeric~factor = c('violin plot', 'filled violin plot')</code></pre>
+<p><img src="figures/fac-num_07-1.png" width="1152"></p>
+<pre><code>numeric~factor = c('box plot')</code></pre>
 </div>
   </div>
 
@@ -236,7 +254,8 @@
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#numeric">2 numeric</a></li>
       <li><a href="#datetime">2 datetime</a></li>
-      <li><a href="#datetimenumeric">datetime~numeric</a></li>
+      <li><a href="#numericdatetime">numeric~datetime</a></li>
+      <li><a href="#numericfactor">numeric~factor</a></li>
       </ul>
 </div>
       </div>

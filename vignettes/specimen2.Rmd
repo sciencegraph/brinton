@@ -58,7 +58,7 @@ vignette: >
   }
 </style>
 
-Specimen of the graphics that require 2 input variables and that, up to now, are being considered by the brinton's `longplot()` and `plotup()` functions.
+Specimen of the graphics that require 2 input variables and that, up to now, are being considered by the brinton's `longplot()` and `brinton::plotup()` functions.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, comment=FALSE}
 knitr::opts_chunk$set(
@@ -66,8 +66,7 @@ knitr::opts_chunk$set(
   warning=FALSE, 
   comment=NA, 
   dev='png', 
-  echo=FALSE#, 
-  # eval =FALSE
+  echo=FALSE
   )
 
 # length(unique(data$vars))/6 + 0.5
@@ -311,14 +310,14 @@ cat("2 numeric = c('ecdf plot', 'point ecdf plot', 'stepped ecdf plot')")
 #   make_datetime(year, month, day, time %/% 100, time %% 100)
 # }
 # 
-# flights_dt <- flights %>% 
-#   filter(!is.na(dep_time), !is.na(arr_time)) %>% 
+# flights_dt <- flights %>%
+#   filter(!is.na(dep_time), !is.na(arr_time)) %>%
 #   mutate(
 #     dep_time = make_datetime_100(year, month, day, dep_time),
 #     arr_time = make_datetime_100(year, month, day, arr_time),
 #     sched_dep_time = make_datetime_100(year, month, day, sched_dep_time),
 #     sched_arr_time = make_datetime_100(year, month, day, sched_arr_time)
-#   ) %>% 
+#   ) %>%
 #   select(origin, dest, ends_with("delay"), ends_with("time"))
 # 
 # flights_dt <- as.data.frame(flights_dt)
@@ -385,7 +384,7 @@ knitr::include_graphics('figures/2datetime_06-1.png')
 cat("2 datetime = c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')")
 ```
 
-# datetime~numeric
+# numeric~datetime
 
 ```{r}
 # library("dlstats")
@@ -399,7 +398,7 @@ cat("2 datetime = c('point-to-point graph', 'bw point-to-point graph', 'color po
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/date-num_01-1.png')
-cat("datetime~numeric = c('scatter plot', 'scatter plot with trend line')")
+cat("numeric~datetime = c('scatter plot', 'scatter plot with trend line')")
 ```
 
 ```{r date-num_02, fig.width=12, fig.height=2.4}
@@ -409,7 +408,7 @@ cat("datetime~numeric = c('scatter plot', 'scatter plot with trend line')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/date-num_02-1.png')
-cat("datetime~numeric = c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')")
+cat("numeric~datetime = c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')")
 ```
 
 ```{r date-num_03, fig.width=12, fig.height=2.4}
@@ -419,7 +418,7 @@ cat("datetime~numeric = c('binned scatter plot', 'bw binned scatter plot', 'colo
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/date-num_03-1.png')
-cat("datetime~numeric = c('blank', 'bw heatmap', 'color heatmap')")
+cat("numeric~datetime = c('blank', 'bw heatmap', 'color heatmap')")
 ```
 
 ```{r date-num_04, fig.width=12, fig.height=2.4}
@@ -427,7 +426,7 @@ cat("datetime~numeric = c('blank', 'bw heatmap', 'color heatmap')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/date-num_04-1.png')
-cat("datetime~numeric = c('contour plot with data points')")
+cat("numeric~datetime = c('contour plot with data points')")
 ```
 
 ```{r date-num_05, fig.width=12, fig.height=2.4}
@@ -437,7 +436,7 @@ cat("datetime~numeric = c('contour plot with data points')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/date-num_05-1.png')
-cat("datetime~numeric = c('path graph', 'bw path graph', 'color path graph')")
+cat("numeric~datetime = c('path graph', 'bw path graph', 'color path graph')")
 ```
 
 ```{r date-num_06, fig.width=12, fig.height=2.4}
@@ -447,7 +446,75 @@ cat("datetime~numeric = c('path graph', 'bw path graph', 'color path graph')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/date-num_06-1.png')
-cat("datetime~numeric = c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')")
+cat("numeric~datetime = c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')")
 ```
 
+# numeric~factor
 
+```{r fac-num_01, fig.width=12, fig.height=1}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Species', 'Petal.Width'), 'path graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'point graph', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'tile plot', output = 'plots pane'),
+#                         heights=grid::unit(c(1), c('in')),
+#                         ncol=5)
+knitr::include_graphics('figures/fac-num_01-1.png')
+cat("numeric~factor = c('path graph', 'point graph', 'tile plot')")
+```
+
+```{r fac-num_02, fig.width=12, fig.height=1}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Species', 'Petal.Width'), 'binned heatmap', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'bw binned heatmap', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'color binned heatmap', output = 'plots pane'),
+#                         heights=grid::unit(c(1), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/fac-num_02-1.png')
+cat("numeric~factor = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
+```
+
+```{r fac-num_03, fig.width=12, fig.height=1}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Species', 'Petal.Width'), 'blank', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'bw stacked histogram', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'color stacked histogram', output = 'plots pane'),
+#                         heights=grid::unit(c(1), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/fac-num_03-1.png')
+cat("numeric~factor = c('blank', 'bw stacked histogram', 'color stacked histogram')")
+```
+
+```{r fac-num_04, fig.width=12, fig.height=1}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Species', 'Petal.Width'), 'blank', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'bw 100% stacked histogram', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'color 100% stacked histogram', output = 'plots pane'),
+#                         heights=grid::unit(c(1), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/fac-num_04-1.png')
+cat("numeric~factor = c('blank', 'bw 100% stacked histogram', 'color 100% stacked histogram')")
+```
+
+```{r fac-num_05, fig.width=12, fig.height=1}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Species', 'Petal.Width'), 'density plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'color density plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'filled density plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'color filled density plot', output = 'plots pane'),
+#                         heights=grid::unit(c(1), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/fac-num_05-1.png')
+cat("numeric~factor = c('density plot', 'color density plot', 'filled density plot', 'color filled density plot')")
+```
+
+```{r fac-num_06, fig.width=12, fig.height=1}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Species', 'Petal.Width'), 'violin plot', output = 'plots pane'),
+#                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'filled violin plot', output = 'plots pane'),
+#                         heights=grid::unit(c(1), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/fac-num_06-1.png')
+cat("numeric~factor = c('violin plot', 'filled violin plot')")
+```
+
+```{r fac-num_07, fig.width=12, fig.height=1}
+# gridExtra::grid.arrange(brinton::plotup(iris, c('Species', 'Petal.Width'), 'box plot', output = 'plots pane'),
+#                         heights=grid::unit(c(1), c("in")),
+#                         ncol=5)
+knitr::include_graphics('figures/fac-num_07-1.png')
+cat("numeric~factor = c('box plot')")
+```
