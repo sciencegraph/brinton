@@ -1,6 +1,6 @@
 Package: brinton
 Type: Package
-Version: 0.1.6
+Version: 0.1.7
 Title: A Graphical EDA Tool
 Description: An automated graphical exploratory data analysis (EDA) tool that introduces: 
   a.) wideplot() graphics for exploring the structure of a dataset through a grid of variables 

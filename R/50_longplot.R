@@ -55,20 +55,36 @@ longplot <- function(data,
   if(length(vars) > 2) {
     stop("I am so sorry but, up to now, only one and two variables combinations have been considered.")
   } else {
-  if (
+  if (length(vars) == 1 & (
     is.logical(unlist(data[, vars])) == TRUE |
     is.factor(unlist(data[, vars])) == TRUE |
     is.ordered(unlist(data[, vars])) == TRUE |
-    is.character(unlist(data[, vars])) == TRUE
+    is.character(unlist(data[, vars])) == TRUE)
   ) {long <- length(unique(unlist(data[, vars])))/6 + 0.5}
   else if (length(vars) == 1 & (
     is.numeric(unlist(data[, vars])) == TRUE |
     lubridate::is.instant(unlist(data[, vars])) == TRUE)
-  ) {long <- 1.4}
+  ) {long <- 2}
   else if (length(vars) == 2 & (
-    is.numeric(unlist(data[, vars])) == TRUE |
-    is.factor(unlist(data[, vars])) == TRUE)
-  ) {long <- length(unique(unlist(data[, vars][sapply(data[, vars], is.factor)])))/6 + 0.5}
+    (lubridate::is.instant(unlist(data[, vars[1]])) == TRUE  &
+     lubridate::is.instant(unlist(data[, vars[2]])) == TRUE) |
+    (is.numeric(unlist(data[, vars[1]])) == TRUE  &
+     lubridate::is.instant(unlist(data[, vars[2]])) == TRUE) |
+    (lubridate::is.instant(unlist(data[, vars[1]])) == TRUE  &
+     is.numeric(unlist(data[, vars[2]])) == TRUE))
+  ) {long <- 2}
+    else if (length(vars) == 2 &
+             is.numeric(unlist(data[, vars[1]])) == TRUE &
+             is.numeric(unlist(data[, vars[2]])) == TRUE) {
+      long <- 2
+    }
+    else if (length(vars) == 2 & ((
+    is.numeric(unlist(data[, vars[1]])) == TRUE &
+    is.factor(unlist(data[, vars[2]])) == TRUE) |
+    (
+      is.numeric(unlist(data[, vars[2]])) == TRUE &
+      is.factor(unlist(data[, vars[1]])) == TRUE))
+  ) {long <- length(unique(unlist(sapply(data[, vars], is.factor))))/4 + 0.5}
   else {stop("This type of variable has not been yet considered")}
 
   my_env <- new.env()
@@ -501,13 +517,13 @@ longplot <- function(data,
     if (label == TRUE) {add_label("numeric", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (length(vars) == 2 &
+  } else if (length(vars) == 2 & (
              (lubridate::is.instant(unlist(data[, vars[1]])) == TRUE  &
              lubridate::is.instant(unlist(data[, vars[2]])) == TRUE) |
              (is.numeric(unlist(data[, vars[1]])) == TRUE  &
               lubridate::is.instant(unlist(data[, vars[2]])) == TRUE) |
              (lubridate::is.instant(unlist(data[, vars[1]])) == TRUE  &
-              is.numeric(unlist(data[, vars[2]])) == TRUE)) {
+              is.numeric(unlist(data[, vars[2]])) == TRUE))) {
     # my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
     write(paste0("#+ numeric_datetime, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     stripe <- c('scatter plot', 'scatter plot with trend line')
@@ -643,8 +659,8 @@ longplot <- function(data,
     if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('stepped area graph', 'bw stepped area graph', 'color stepped area graph')
     p151 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'bar')
-    p153 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'bar')
-    add_plots("p15", 3)
+    p152 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'bar')
+    add_plots("p15", 2)
     if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('blank', 'bw seq. heatmap', 'color seq. heatmap')
     p161 <- blank2(data, colnames(data[vars][1]), colnames(data[vars][2]))
@@ -690,9 +706,12 @@ longplot <- function(data,
     if (label == TRUE) {add_label("2num", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (length(vars) == 2 &
-             (is.numeric(unlist(data[, vars])) == TRUE |
-              is.factor(unlist(data[, vars])) == TRUE)) {
+  } else if (length(vars) == 2 & ((
+    is.numeric(unlist(data[, vars[1]])) == TRUE &
+    is.factor(unlist(data[, vars[2]])) == TRUE) |
+    (
+      is.numeric(unlist(data[, vars[2]])) == TRUE &
+      is.factor(unlist(data[, vars[1]])) == TRUE))) {
     write(paste0("#+ factor_numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     var1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     var2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
@@ -712,6 +731,16 @@ longplot <- function(data,
     ofnum43 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'bin', 'color')
     add_plots("ofnum4", 3)
     if (label == TRUE) {add_label("fac-num", stripe)}
+    stripe <- c('violin plot', 'filled violin plot')
+    ofnum21 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'violin')
+    ofnum22 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'violin filled')
+    add_plots("ofnum2", 2)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    stripe <- c('box plot')
+    ofnum31 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'box')
+    add_plots("ofnum3", 1)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    write(paste0("#+ factor_numeric2, fig.width=12, fig.height=2"), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     stripe <- c('blank',
                 'bw stacked histogram',
                 'color stacked histogram')
@@ -737,15 +766,6 @@ longplot <- function(data,
     ofnum73 <- pp_density2(data, var1, var2, 0.5, "area", "bw")
     ofnum74 <- pp_density2(data, var1, var2, 0.5, "area", "color")
     add_plots("ofnum7", 4)
-    if (label == TRUE) {add_label("fac-num", stripe)}
-    stripe <- c('violin plot', 'filled violin plot')
-    ofnum21 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'violin')
-    ofnum22 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'violin filled')
-    add_plots("ofnum2", 2)
-    if (label == TRUE) {add_label("fac-num", stripe)}
-    stripe <- c('box plot')
-    ofnum31 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'box')
-    add_plots("ofnum3", 1)
     if (label == TRUE) {add_label("fac-num", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))

@@ -256,6 +256,30 @@ numeric2_v <- c(
   'bw 100% stacked histogram',
   'color 100% stacked histogram'
 )
+
+fac.num_v1 <- c(
+  'blank',
+  'path graph',
+  'point graph',
+  'tile plot',
+  'binned heatmap',
+  'bw binned heatmap',
+  'color binned heatmap',
+  'violin plot', 'filled violin plot',
+  'box plot'
+)
+
+fac.num_v2 <- c(
+  'bw stacked histogram',
+  'color stacked histogram',
+  'bw 100% stacked histogram',
+  'color 100% stacked histogram',
+  'density plot',
+  'color density plot',
+  'filled density plot',
+  'color filled density plot'
+)
+
 #' @noRd
 output_up <- "#' ---
 #' title: 'plotup output'

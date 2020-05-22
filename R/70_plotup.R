@@ -78,15 +78,22 @@ plotup <- function(data,
     long <- 3.7
   }
   else if (length(vars) == 2 &
-           # (
-             # is.numeric(unlist(data[, vars])) == TRUE |
-             # is.factor(unlist(data[, vars])) == TRUE)
-           (is.numeric(unlist(data[, vars[1]])) == TRUE  &
+           any(fac.num_v1 == diagram) &
+           ((is.numeric(unlist(data[, vars[1]])) == TRUE  &
             is.factor(unlist(data[, vars[2]])) == TRUE) |
            (is.factor(unlist(data[, vars[1]])) == TRUE  &
-            is.numeric(unlist(data[, vars[2]])) == TRUE)
+            is.numeric(unlist(data[, vars[2]])) == TRUE))
            ) {
     long <- length(unique(unlist(data[, vars][sapply(data[, vars], is.factor)])))/6 + 0.5
+  }
+  else if (length(vars) == 2 &
+           any(fac.num_v2 == diagram) &
+           ((is.numeric(unlist(data[, vars[1]])) == TRUE  &
+            is.factor(unlist(data[, vars[2]])) == TRUE) |
+           (is.factor(unlist(data[, vars[1]])) == TRUE  &
+            is.numeric(unlist(data[, vars[2]])) == TRUE))
+  ) {
+    long <- 3.7
   } else {
     stop("This type of variable has not been yet considered")
   }
@@ -407,10 +414,28 @@ pp_3uniaxial(",
     )
   }
   else if (length(vars) == 1 &
-           diagram == "point-to-point graph") {
+           diagram == "point-to-point graph" &
+           (is.numeric(unlist(data[, vars])) == TRUE |
+            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
       "{theme}
+      ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
+      \x20\x20geom_path(aes(group=1)) +
+      \x20\x20geom_point() +
+      \x20\x20labs(x='seq') +
+      \x20\x20{theme_detail}"
+    )
+  }
+  else if (length(vars) == 1 &
+           diagram == "point-to-point graph" & (
+             is.logical(unlist(data[, vars])) == TRUE |
+             is.factor(unlist(data[, vars])) == TRUE |
+             is.character(unlist(data[, vars])) == TRUE
+           )) {
+    vars <- vars[1]
+    p <- glue::glue(
+      "{theme}{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20geom_point() +
@@ -457,10 +482,27 @@ pp_3uniaxial(",
     )
   }
   else if (length(vars) == 1 &
-           diagram == "point graph") {
+           diagram == "point graph" &
+           (is.numeric(unlist(data[, vars])) == TRUE |
+            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
       "{theme}
+      ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
+      \x20\x20geom_point() +
+      \x20\x20labs(x='seq') +
+      \x20\x20{theme_detail}"
+    )
+  }
+  else if (length(vars) == 1 &
+           diagram == "point graph" & (
+             is.logical(unlist(data[, vars])) == TRUE |
+             is.factor(unlist(data[, vars])) == TRUE |
+             is.character(unlist(data[, vars])) == TRUE
+           )) {
+    vars <- vars[1]
+    p <- glue::glue(
+      "{theme}{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
@@ -655,8 +697,8 @@ pp_3uniaxial(",
     vars <- vars[1]
     p <- glue::glue(
       "{theme}{reorder_freq}
-      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
-      \x20\x20geom_bar(stat='count', width=0.75) +
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
+      \x20\x20geom_bar(stat='count', width=0.75, fill='black') +
       \x20\x20{scale_bw_a} +
       \x20\x20coord_flip() +
       \x20\x20{theme_detail_z}"
@@ -697,9 +739,8 @@ pp_3uniaxial(",
     vars <- vars[1]
     p <- glue::glue(
       "{theme}{reorder_alphab}
-      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
-      \x20\x20geom_bar(stat='count', width=0.75) +
-      \x20\x20{scale_bw_a} +
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
+      \x20\x20geom_bar(stat='count', width=0.75, fill='black') +
       \x20\x20coord_flip() +
       \x20\x20{theme_detail_z}"
     )
@@ -809,7 +850,7 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "{theme}{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20{scale_bw_a} +

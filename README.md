@@ -116,6 +116,8 @@ plotup(infert, "pooled.stratum", "color binned stripe graph", output = "plots pa
 
 ``` r
 plotup(faithful, c("waiting", "eruptions"), "color scatter plot", output = "plots pane")
+#> Warning: Use of `faithful$waiting` is discouraged. Use `waiting` instead.
+#> Warning: Use of `faithful$eruptions` is discouraged. Use `eruptions` instead.
 ```
 
 <img src="man/figures/README-plotspane2-1.png" width="40%" />

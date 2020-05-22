@@ -45,7 +45,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -145,7 +145,9 @@
 <p>The default output is still a html file but the <code><a href="reference/plotup.html">plotup()</a></code> function allows to plot the graphic in the plots pane or the console:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"plots pane"</span>)</a></code></pre></div>
 <p><img src="reference/figures/README-plotspane1-1.png" width="40%"></p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(faithful, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"waiting"</span>, <span class="st">"eruptions"</span>), <span class="st">"color scatter plot"</span>, <span class="dt">output =</span> <span class="st">"plots pane"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(faithful, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"waiting"</span>, <span class="st">"eruptions"</span>), <span class="st">"color scatter plot"</span>, <span class="dt">output =</span> <span class="st">"plots pane"</span>)</a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="co">#&gt; Warning: Use of `faithful$waiting` is discouraged. Use `waiting` instead.</span></a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="co">#&gt; Warning: Use of `faithful$eruptions` is discouraged. Use `eruptions` instead.</span></a></code></pre></div>
 <p><img src="reference/figures/README-plotspane2-1.png" width="40%"></p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"console"</span>)</a>
 <a class="sourceLine" id="cb12-2" title="2"><span class="co">#&gt; theme_set(theme_minimal())</span></a>

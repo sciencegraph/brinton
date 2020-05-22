@@ -6,5 +6,6 @@
 ^Meta$
 ^docs$
 ^doc$
+^tests$
 pkgdown*
 vignettes/specimen2.Rmd
