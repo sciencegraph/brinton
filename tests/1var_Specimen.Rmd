@@ -2,7 +2,9 @@
 title: "1var_Specimen"
 author: "Pere Millán"
 date: "20/5/2020"
-output: html_document
+output:
+  html_document:
+    self_contained: no
 ---
 
 <style>
@@ -82,6 +84,7 @@ gridExtra::grid.arrange(plotup(ca2006, "open", "line graph", output = 'plots pan
                         plotup(ca2006, "open", "point-to-point graph", output = 'plots pane'),
                         heights=grid::unit(c(0.83), c("in")),
                         ncol=5)
+
 knitr::include_graphics('../vignettes/figures/logical_01-1.png')
 cat("logical = c('line graph', 'point graph', 'point-to-point graph')")
 ```

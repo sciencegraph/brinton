@@ -1,6 +1,6 @@
 my_env <- new.env(parent = emptyenv())
 
-#' Presents a wideplot in a html output.
+#' Displays a wideplot in a html file.
 #'
 #' A wideplot is a grid of graphics were the graphics within each row
 #' corresponds to graphical representations of each one of the variables
@@ -204,10 +204,10 @@ my_env <- new.env(parent = emptyenv())
 #' names of the graphics that are being displayed.
 #' @param dir Directory in which the files are stored.
 #'
-#' @return A html file that includes a grid of graphics. The variables of a
-#' dataset are first grouped by the type of data, then, each variable is
-#' graphically represented into a range of different graphics in one row of
-#' the matrix.
+#' @return Cause the side-effect of creating and displaying a temporary html
+#' file that includes a grid of graphics. The variables of a dataset are first
+#' grouped by the type of data, then, each variable is graphically represented
+#' into a range of different graphics in one row of the matrix.
 #' @export
 #'
 #' @examples

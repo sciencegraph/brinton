@@ -1,21 +1,24 @@
-#' Presents a longplot in a html output.
+#' Displays a longplot in a html file.
 #'
 #' A longplot is a range of suitable graphics that represent the relationship
 #' within the values of one, or a limited number, of variables in a dataset. Each
 #' graphic relates the values of all the selected variables and eventually the
-#' row number in which  they appear.
+#' row number in which they appear.
 #'
 #' In order to present the range of graphics, the user must define a dataset and
-#' select at least one variable whitin it. Future work will include the ability to
-#' relate more number and combinations of types of variables.
+#' select at least one variable whitin it. Future work will include graphics that
+#' can combine up to three variables.
 #'
 #' @param data Data.frame. Default dataset to use for plot. If not already a
 #' data.frame, it should be first coerced to by [as.data.frame()].
-#' @param vars Character. A specific variable within the dataset. Future work will allow to include a vector of variables.
-#' @param label Logical. If `TRUE` the output includes labels that show the names of the graphics that are being displayed.
+#' @param vars Character. A specific variable within the dataset.
+#' @param label Logical. If `TRUE` the output includes labels that show the names
+#' of the graphics that are being displayed.
 #' @param dir Directory in which the files are stored.
 #'
-#' @return A html file that includes a range of graphics suitable for this particular combination of variables.
+#' @return Cause the side-effect of creating and displaying a temporary html file
+#' that includes a range of graphics suitable for this particular combination of
+#' variables.
 #' @export
 #'
 #' @examples
@@ -577,9 +580,9 @@ longplot <- function(data,
     # my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
     write(paste0("#+ numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
     stripe <- c('scatter plot', 'bw scatter plot', 'color scatter plot')
-    p001 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black', 'false')
-    p002 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw', 'false')
-    p003 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'color', 'false')
+    p001 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black', FALSE)
+    p002 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw', FALSE)
+    p003 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'color', FALSE)
     add_plots("p00", 3)
     if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')
@@ -617,6 +620,18 @@ longplot <- function(data,
     p072 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, 'TRUE')
     p073 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, 'TRUE')
     add_plots("p07", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('scatter plot with confidence ellipse', 'bw scatter plot with confidence ellipse', 'color scatter plot with confidence ellipse')
+    p241 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black', FALSE, TRUE, FALSE)
+    p242 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw', FALSE, TRUE, FALSE)
+    p243 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'color', FALSE, TRUE, FALSE)
+    add_plots("p24", 3)
+    if (label == TRUE) {add_label("2num", stripe)}
+    stripe <- c('scatter plot with marginal rugs', 'bw scatter plot with marginal rugs', 'color scatter plot with marginal rugs')
+    p251 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black', FALSE, FALSE, TRUE)
+    p252 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw', FALSE, FALSE, TRUE)
+    p253 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'color', FALSE, FALSE, TRUE)
+    add_plots("p25", 3)
     if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('parallel plot', 'bw parallel plot', 'color parallel plot')
     p081 <- pp_parallel(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'black', pp_size = 3/ncol)

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Presents a wideplot in a html output. — wideplot • brinton</title>
+<title>Displays a wideplot in a html file. — wideplot • brinton</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,7 +42,7 @@
 
 
 
-<meta property="og:title" content="Presents a wideplot in a html output. — wideplot" />
+<meta property="og:title" content="Displays a wideplot in a html file. — wideplot" />
 <meta property="og:description" content="A wideplot is a grid of graphics were the graphics within each row
 corresponds to graphical representations of each one of the variables
 considered within a given dataset." />
@@ -79,7 +79,7 @@ considered within a given dataset." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -114,7 +114,12 @@ considered within a given dataset." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/sciencegraph/brinton">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -128,8 +133,8 @@ considered within a given dataset." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Presents a wideplot in a html output.</h1>
-    
+    <h1>Displays a wideplot in a html file.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/sciencegraph/brinton/blob/master/R/60_wideplot.R'><code>R/60_wideplot.R</code></a></small>
     <div class="hidden name"><code>wideplot.Rd</code></div>
     </div>
 
@@ -386,10 +391,10 @@ names of the graphics that are being displayed.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A html file that includes a grid of graphics. The variables of a
-dataset are first grouped by the type of data, then, each variable is
-graphically represented into a range of different graphics in one row of
-the matrix.</p>
+    <p>Cause the side-effect of creating and displaying a temporary html
+file that includes a grid of graphics. The variables of a dataset are first
+grouped by the type of data, then, each variable is graphically represented
+into a range of different graphics in one row of the matrix.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {

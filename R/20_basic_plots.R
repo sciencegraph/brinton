@@ -513,7 +513,9 @@ pp_scatterplot <- function(pp_df,
                            pp_var2,
                            pp_size = 1,
                            pp_color = "black",
-                           pp_smooth = "false") {
+                           pp_smooth = FALSE,
+                           pp_ellipse = FALSE,
+                           pp_rug = FALSE) {
   pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
   pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
 
@@ -523,15 +525,29 @@ pp_scatterplot <- function(pp_df,
   p_point         <- geom_point(data = pp_df, aes(x=pp_var1), size=pp_size)
   p_point_c       <- geom_point(data = pp_df, aes_(x=~pp_var1, color=~pp_dens), size=pp_size)
   p_smooth        <- geom_smooth(aes(x=pp_var1), method = "loess", size=0.5)
+  p_ellipse       <- stat_ellipse(aes(x=pp_var1), size=0.1, color = "blue", linetype = "dashed")
+  p_rug           <- geom_rug(aes(x=pp_var1), size=0.1, color = "blue")
 
-  if (pp_color == "black" & pp_smooth == "false") {
+  if (pp_color == "black" & pp_smooth == FALSE & pp_ellipse == FALSE & pp_rug == FALSE) {
     p_plot + p_point
-  } else if (pp_color == "black" & pp_smooth == "true") {
+  } else if (pp_color == "black" & pp_smooth == TRUE & pp_ellipse == FALSE & pp_rug == FALSE) {
     p_plot + p_point + p_smooth
-  } else if (pp_color == "bw" & pp_smooth == "false") {
+  } else if (pp_color == "bw" & pp_smooth == FALSE & pp_ellipse == FALSE & pp_rug == FALSE) {
     p_plot + p_point_c + p_scale_gray_l + amb.z
-  } else if (pp_color == "color" & pp_smooth == "false") {
+  } else if (pp_color == "color" & pp_smooth == FALSE & pp_ellipse == FALSE & pp_rug == FALSE) {
     p_plot + p_point_c + p_scale_color_l + amb.z
+  } else if (pp_color == "black" & pp_smooth == FALSE & pp_ellipse == TRUE & pp_rug == FALSE) {
+    p_plot + p_point + p_ellipse
+  } else if (pp_color == "bw" & pp_smooth == FALSE & pp_ellipse == TRUE & pp_rug == FALSE) {
+    p_plot + p_point_c + p_scale_gray_l + p_ellipse + amb.z
+  } else if (pp_color == "color" & pp_smooth == FALSE & pp_ellipse == TRUE & pp_rug == FALSE) {
+    p_plot + p_point_c + p_scale_color_l + p_ellipse + amb.z
+  } else if (pp_color == "black" & pp_smooth == FALSE & pp_ellipse == FALSE & pp_rug == TRUE) {
+    p_plot + p_point + p_rug
+  } else if (pp_color == "bw" & pp_smooth == FALSE & pp_ellipse == FALSE & pp_rug == TRUE) {
+    p_plot + p_point_c + p_scale_gray_l + p_rug + amb.z
+  } else if (pp_color == "color" & pp_smooth == FALSE & pp_ellipse == FALSE & pp_rug == TRUE) {
+    p_plot + p_point_c + p_scale_color_l + p_rug + amb.z
   } else {stop(warning_general)}
 }
 

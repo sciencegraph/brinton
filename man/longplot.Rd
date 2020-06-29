@@ -2,7 +2,7 @@
 % Please edit documentation in R/50_longplot.R
 \name{longplot}
 \alias{longplot}
-\title{Presents a longplot in a html output.}
+\title{Displays a longplot in a html file.}
 \usage{
 longplot(data, vars, label = TRUE, dir = tempdir())
 }
@@ -10,20 +10,24 @@ longplot(data, vars, label = TRUE, dir = tempdir())
 \item{data}{Data.frame. Default dataset to use for plot. If not already a
 data.frame, it should be first coerced to by [as.data.frame()].}
 
-\item{vars}{Character. A specific variable within the dataset. Future work will allow to include a vector of variables.}
+\item{vars}{Character. A specific variable within the dataset. Future work
+will allow to include a vector of variables.}
 
-\item{label}{Logical. If `TRUE` the output includes labels that show the names of the graphics that are being displayed.}
+\item{label}{Logical. If `TRUE` the output includes labels that show the names
+of the graphics that are being displayed.}
 
 \item{dir}{Directory in which the files are stored.}
 }
 \value{
-A html file that includes a range of graphics suitable for this particular combination of variables.
+Cause the side-effect of creating and displaying a temporary html file
+that includes a range of graphics suitable for this particular combination of
+variables.
 }
 \description{
 A longplot is a range of suitable graphics that represent the relationship
 within the values of one, or a limited number, of variables in a dataset. Each
 graphic relates the values of all the selected variables and eventually the
-row number in which  they appear.
+row number in which they appear.
 }
 \details{
 In order to present the range of graphics, the user must define a dataset and

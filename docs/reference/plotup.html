@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Presents a specific graphic explicitly called by name. — plotup • brinton</title>
+<title>Returns a ggplot object of a specific graphic explicitly called by name. — plotup • brinton</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,7 +42,7 @@
 
 
 
-<meta property="og:title" content="Presents a specific graphic explicitly called by name. — plotup" />
+<meta property="og:title" content="Returns a ggplot object of a specific graphic explicitly called by name. — plotup" />
 <meta property="og:description" content="In order to present the graphic, the user must define a dataset, at
 least one variable whitin this dataset and a compatible type of graphic.
 Future work will include graphics that involve more number and
@@ -80,7 +80,7 @@ combinations of types of variables." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -115,7 +115,12 @@ combinations of types of variables." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/sciencegraph/brinton">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -129,8 +134,8 @@ combinations of types of variables." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Presents a specific graphic explicitly called by name.</h1>
-    
+    <h1>Returns a ggplot object of a specific graphic explicitly called by name.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/sciencegraph/brinton/blob/master/R/70_plotup.R'><code>R/70_plotup.R</code></a></small>
     <div class="hidden name"><code>plotup.Rd</code></div>
     </div>
 
@@ -141,7 +146,7 @@ Future work will include graphics that involve more number and
 combinations of types of variables.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotup</span>(<span class='no'>data</span>, <span class='no'>vars</span>, <span class='no'>diagram</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"html"</span>, <span class='kw'>dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())</pre>
+    <pre class="usage"><span class='fu'>plotup</span>(<span class='no'>data</span>, <span class='no'>vars</span>, <span class='no'>diagram</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"plots pane"</span>, <span class='kw'>dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,9 +169,9 @@ arguments of the 'wideplot()' function.</p></td>
     <tr>
       <th>output</th>
       <td><p>Character. Type of output.</p><ul>
-<li><p><em>'html'</em>: default output is a html webpage.</p></li>
-<li><p><em>'plots pane'</em>: output in RStudio's plots pane.</p></li>
-<li><p><em>'console'</em>: shows the code that produces a particular graphic.</p></li>
+<li><p><em>'html'</em>: Creates and displays a html file with the specific graphic.</p></li>
+<li><p><em>'plots pane'</em>: Default output, a ggplot2 object in RStudio's plots pane.</p></li>
+<li><p><em>'console'</em>: Prints the code that produces the specific graphic.</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -177,22 +182,23 @@ arguments of the 'wideplot()' function.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>This function can have three outputs: by default it produces a particular graphic,
+    <p>This function returns a c('gg', 'ggplot') object, but if the 'output' argument
+is set to it 'html' or 'console', the function cause a side-effect: either creating and
+displaying a temporary html file, or printing the ggplot2 code to the console.</p>
+<p>the function cause a side-effect: either creating and displaying a temporary html file, or printing the ggplot2 code to the console.can have three outputs: by default it produces a particular graphic,
 but it can also be represented into the RStudio's plots pane, or can return the code to produce it.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {
-<span class='fu'>plotup</span>(<span class='no'>iris</span>, <span class='st'>"Petal.Width"</span>, <span class='st'>"color heatmap"</span>)
-}
-<span class='fu'>plotup</span>(<span class='no'>iris</span>, <span class='st'>"Petal.Width"</span>, <span class='st'>"color heatmap"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"console"</span>)</div><div class='output co'>#&gt; theme_set(theme_minimal())
-#&gt; 
-#&gt; ggplot(iris, aes(y=Petal.Width)) +
+    <pre class="examples"><div class='input'><span class='fu'>plotup</span>(<span class='no'>iris</span>, <span class='st'>"Petal.Width"</span>, <span class='st'>"color heatmap"</span>)</div><div class='img'><img src='plotup-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plotup</span>(<span class='no'>iris</span>, <span class='st'>"Petal.Width"</span>, <span class='st'>"color heatmap"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"console"</span>)</div><div class='output co'>#&gt; ggplot(iris, aes(y=Petal.Width)) +
 #&gt;   stat_density_2d(aes(x=seq_along(Petal.Width), fill = stat(density)), geom = 'raster', contour = FALSE) +
 #&gt;   scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3)) +
 #&gt;   labs(x='seq.') +
+#&gt;   theme_minimal() +
 #&gt;   theme(panel.grid = element_line(colour = NA),
 #&gt;     axis.ticks = element_line(color = 'black'),
-#&gt;     legend.position='none')</div></pre>
+#&gt;     legend.position='none')</div><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {
+<span class='fu'>plotup</span>(<span class='no'>iris</span>, <span class='st'>"Petal.Width"</span>, <span class='st'>"color heatmap"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"html"</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

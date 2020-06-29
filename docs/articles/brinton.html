@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -72,7 +72,14 @@
   </ul>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/sciencegraph/brinton">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -88,9 +95,9 @@
       <h1>Automated Graphical Data Analysis with brinton</h1>
                         <h4 class="author">Pere Millán-Martínez &amp; Ramon Oller Piqué</h4>
             
-            <h4 class="date">2020-05-22</h4>
+            <h4 class="date">2020-06-29</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/sciencegraph/brinton/blob/master/vignettes/brinton.Rmd"><code>vignettes/brinton.Rmd</code></a></small>
       <div class="hidden name"><code>brinton.Rmd</code></div>
 
     </div>
@@ -104,10 +111,6 @@
 <p>The library can be installed easily from the Comprehensive R Archive Network (CRAN) using the <strong>R</strong> console. When the library is loaded into memory, it provides a startup message that pays homage to Henry D. Hubbard’s enthusiastic introduction to the book Graphic Presentation by Willard Cope Brinton in 1939:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">'brinton'</span>)</a>
 <a class="sourceLine" id="cb1-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(brinton)</a></code></pre></div>
-<pre><code>## Loading required package: ggplot2</code></pre>
-<pre><code>## Loading required package: gridExtra</code></pre>
-<pre><code>## Loading required package: rmarkdown</code></pre>
-<pre><code>## Loading required package: glue</code></pre>
 <pre><code>## M a G i C i N G R a P H S</code></pre>
 </div>
 <div id="brintons-functions" class="section level1">
@@ -123,14 +126,14 @@
   group = NULL, ncol = 7, label = 'FALSE')</code></pre>
 <p>The only argument necessary to obtain a result is <code>data</code> that expects a <code>data-frame</code> class object; <code>ncol</code> filters the first <em>n</em> columns of the grid, between 3 and 7, which will be shown. The fewer columns displayed, the larger the size of the resulting graphics, a feature that is especially useful if the scale labels dwarf the graphics area; <code>label</code> adds to the grid a vector below each group of rows according to the variable type, with the names and order of the graphics; <code>logical</code>, <code>ordered</code>, <code>factor</code>, <code>character</code>, <code>datetime</code> and <code>numeric</code> make it possible to choose which graphics appear in the grid and in what order, for each variable type. Finally, <code>group</code> changes the selection of graphics that are shown by default according to the criteria of the table 1.</p>
 <p>The <code><a href="../reference/wideplot.html">wideplot()</a></code> function takes inspiration from this function, but instead of describing the dataset in textual or tabular form, it does it graphically. We can easily compare the results of these two functions, for example, with the dataset esoph from a case-control study of esophageal cancer in Ille-et-Vilaine, France. The dataset has three ordered factor-type variables and two numerical variables:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(esoph)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(esoph)</a></code></pre></div>
 <pre><code>## 'data.frame':    88 obs. of  5 variables:
 ##  $ agegp    : Ord.factor w/ 6 levels "25-34"&lt;"35-44"&lt;..: 1 1 1 1 1 1 1 1 1 1 ...
 ##  $ alcgp    : Ord.factor w/ 4 levels "0-39g/day"&lt;"40-79"&lt;..: 1 1 1 1 2 2 2 2 3 3 ...
 ##  $ tobgp    : Ord.factor w/ 4 levels "0-9g/day"&lt;"10-19"&lt;..: 1 2 3 4 1 2 3 4 1 2 ...
 ##  $ ncases   : num  0 0 0 0 0 0 0 0 0 0 ...
 ##  $ ncontrols: num  40 10 6 5 27 7 4 7 2 1 ...</code></pre>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="../reference/wideplot.html">wideplot</a></span>(esoph)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="../reference/wideplot.html">wideplot</a></span>(esoph)</a></code></pre></div>
 <div class="figure">
 <img src="figures/wideplot_esoph.png" alt="Figure 1" width="80%"><p class="caption">
 Figure 1
@@ -178,7 +181,7 @@ Figure 1
 <h2 class="hasAnchor">
 <a href="#the-longplot-function" class="anchor"></a>The longplot function</h2>
 <p>To facilitate economy of calculation, the <code><a href="../reference/wideplot.html">wideplot()</a></code> function presents a limited number of graphics in each row. If the user wants to expand the array of suggested graphics for a given variable, he or she should use the <code><a href="../reference/longplot.html">longplot()</a></code> function, which returns a grid with all of the graphics considered by the library for that variable. The structure of the function is very simple <code><a href="../reference/longplot.html">longplot(data, vars, label = TRUE)</a></code> and we can easily check the outcome of applying this function to the variable <code>alcgp</code> of the dataset <code>esoph</code>:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="../reference/longplot.html">longplot</a></span>(esoph, <span class="st">'alcgp'</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="../reference/longplot.html">longplot</a></span>(esoph, <span class="st">'alcgp'</span>)</a></code></pre></div>
 <div class="figure">
 <img src="figures/longplot_esoph_alcgp.png" alt="Figure 2" width="80%"><p class="caption">
 Figure 2
@@ -191,19 +194,18 @@ Figure 2
 <h2 class="hasAnchor">
 <a href="#the-plotup-function" class="anchor"></a>The plotup function</h2>
 <p>The <code><a href="../reference/plotup.html">plotup()</a></code> function has the following structure: <code><a href="../reference/plotup.html">plotup(data, vars, diagram, output = 'html')</a></code>. By default, this function returns an <strong>html</strong> document with a single graphic based on a variable from a given dataset and the name of the desired graphic, from among the names included by the specimen that we present in the next subsection. We can easily check the outcome of applying this function to produce a line graph from the variable <code>ncases</code> of the dataset <code>esoph</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw"><a href="../reference/plotup.html">plotup</a></span>(esoph, <span class="st">'ncases'</span>, <span class="st">'line graph'</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="../reference/plotup.html">plotup</a></span>(esoph, <span class="st">'ncases'</span>, <span class="st">'line graph'</span>)</a></code></pre></div>
 <div class="figure">
 <img src="figures/plotup_esoph_ncases_linegraph.png" alt="Figure 3" width="80%"><p class="caption">
 Figure 3
 </p>
 </div>
 <p>This function requires three arguments: <code>data</code>, <code>vars</code> and <code>diagram</code>. The fourth argument, <code>output</code>, is optional and has the default value of <strong>html</strong>. However, if it is set to <code>plots pane</code>, instead of generating a graphic in an <strong>html</strong> page, it generates a graphic in the plots pane of RStudio. If, instead, it is set to ’’console´´, the function returns the code used by the library to generate this precise graphic. This feature is especially useful to adapt the default graphic to the specific needs and preferences of the user.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="../reference/plotup.html">plotup</a></span>(<span class="dt">data =</span> esoph, <span class="dt">vars =</span> <span class="st">'ncases'</span>, <span class="dt">diagram =</span><span class="st">'line graph'</span>, <span class="dt">output =</span> <span class="st">'console'</span>)</a></code></pre></div>
-<pre><code>theme_set(theme_minimal())
-
-ggplot(esoph, aes(x=seq_along(ncases), y=ncases)) +
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="../reference/plotup.html">plotup</a></span>(<span class="dt">data =</span> esoph, <span class="dt">vars =</span> <span class="st">'ncases'</span>, <span class="dt">diagram =</span><span class="st">'line graph'</span>, <span class="dt">output =</span> <span class="st">'console'</span>)</a></code></pre></div>
+<pre><code>ggplot(esoph, aes(x=seq_along(ncases), y=ncases)) +
   geom_line() +
   labs(x='seq') +
+  theme_minimal() +
   theme(panel.grid = element_line(colour = NA),
     axis.ticks = element_line(color = 'black'))</code></pre>
 </div>

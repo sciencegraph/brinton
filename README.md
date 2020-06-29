@@ -9,8 +9,8 @@ This package introduces:
     through a grid of variables and graphic types.
   - `longplot()` graphics, which present the entire catalog of available
     graphics for representing one particular variable or a limited
-    number of variables using a grid of graphic types and variations on
-    these types.
+    selection of variables using a grid of graphic types and variations
+    on these types.
   - `plotup()` function, which complements the previous two functions in
     that it presents a particular graphic for a specific variable or a
     limited number of variables of a dataset.
@@ -32,10 +32,6 @@ And then load the functions included in the package:
 
 ``` r
 library(brinton)
-#> Loading required package: ggplot2
-#> Loading required package: gridExtra
-#> Loading required package: rmarkdown
-#> Loading required package: glue
 #> M a G i C i N G R a P H S
 ```
 
@@ -73,10 +69,12 @@ presented. If one wants to compare the output of some other specific
 graphics one can, for instance, run:
 
 ``` r
-wideplot(infert,
-         dataclass = c("numeric"),
-         numeric = c("point graph", "binned point graph", "binned heatmap"),
-         label = TRUE)
+wideplot(
+  infert,
+  dataclass = c("numeric"),
+  numeric = c("point graph", "binned point graph", "binned heatmap"),
+  label = TRUE
+)
 ```
 
 Sometimes, specially with character variables, there is not enought
@@ -85,11 +83,13 @@ of the columns in the matrix. The user can then modify the defalut value
 of the `ncol` argument:
 
 ``` r
-wideplot(infert,
-         dataclass = c("numeric"),
-         numeric = c("point graph", "binned point graph", "binned heatmap"),
-         label = TRUE,
-         ncol = 3)
+wideplot(
+  infert,
+  dataclass = c("numeric"),
+  numeric = c("point graph", "binned point graph", "binned heatmap"),
+  label = TRUE,
+  ncol = 3
+)
 ```
 
 If the user is interested in one particular graphic then the function
@@ -99,37 +99,36 @@ If the user is interested in one particular graphic then the function
 plotup(infert, "pooled.stratum", "color binned stripe graph")
 ```
 
+<img src="man/figures/README-plotup1-1.png" width="40%" />
+
 Or, as example of a graphic that requires more than one input variable:
 
 ``` r
 plotup(faithful, c("waiting", "eruptions"), "color scatter plot")
 ```
 
-The default output is still a html file but the `plotup()` function
-allows to plot the graphic in the plots pane or the console:
+<img src="man/figures/README-plotup2-1.png" width="40%" />
+
+The default output of the `plotup()` function is a `c("gg", "ggplot")`
+object but the `output` argument allows, as a side effect, to write and
+present the graphic in a html file or to print the ggplot2 function in
+the console:
 
 ``` r
-plotup(infert, "pooled.stratum", "color binned stripe graph", output = "plots pane")
+plotup(infert, "pooled.stratum", "color binned stripe graph", output = "html")
 ```
-
-<img src="man/figures/README-plotspane1-1.png" width="40%" />
 
 ``` r
-plotup(faithful, c("waiting", "eruptions"), "color scatter plot", output = "plots pane")
-#> Warning: Use of `faithful$waiting` is discouraged. Use `waiting` instead.
-#> Warning: Use of `faithful$eruptions` is discouraged. Use `eruptions` instead.
+plotup(faithful, c("waiting", "eruptions"), "color scatter plot", output = "html")
 ```
-
-<img src="man/figures/README-plotspane2-1.png" width="40%" />
 
 ``` r
 plotup(infert, "pooled.stratum", "color binned stripe graph", output = "console")
-#> theme_set(theme_minimal())
-#> 
 #> binwidth <- (max(infert['pooled.stratum'], na.rm=TRUE)-min(infert['pooled.stratum'], na.rm=TRUE))/20
 #> ggplot(infert, aes(x=pooled.stratum)) +
 #>   geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +
 #>   scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3)) +
+#>   theme_minimal() +
 #>   theme(panel.grid = element_line(colour = NA),
 #>     axis.text.y =element_text(color = NA),
 #>     axis.title.y =element_text(color = NA),

@@ -2,7 +2,7 @@
 % Please edit documentation in R/60_wideplot.R
 \name{wideplot}
 \alias{wideplot}
-\title{Presents a wideplot in a html output.}
+\title{Displays a wideplot in a html file.}
 \usage{
 wideplot(
   data,
@@ -230,10 +230,10 @@ names of the graphics that are being displayed.}
 \item{dir}{Directory in which the files are stored.}
 }
 \value{
-A html file that includes a grid of graphics. The variables of a
-dataset are first grouped by the type of data, then, each variable is
-graphically represented into a range of different graphics in one row of
-the matrix.
+Cause the side-effect of creating and displaying a temporary html
+file that includes a grid of graphics. The variables of a dataset are first
+grouped by the type of data, then, each variable is graphically represented
+into a range of different graphics in one row of the matrix.
 }
 \description{
 A wideplot is a grid of graphics were the graphics within each row

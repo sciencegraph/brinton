@@ -1,9 +1,8 @@
-#' Presents a specific graphic explicitly called by name.
+#' Returns a ggplot object of a specific graphic explicitly called by name.
 #'
 #' In order to present the graphic, the user must define a dataset, at
 #' least one variable whitin this dataset and a compatible type of graphic.
-#' Future work will include graphics that involve more number and
-#' combinations of types of variables.
+#' Future work will include graphics that can combine up to three variables.
 #'
 #' @param data Data.frame. Default dataset to use for plot. If not already a
 #' data.frame, it should be first coerced to by [as.data.frame()].
@@ -13,25 +12,28 @@
 #' arguments of the 'wideplot()' function.
 #' @param output Character. Type of output.
 #' \itemize{
-#'   \item \emph{'html'}: default output is a html webpage.
-#'   \item \emph{'plots pane'}: output in RStudio's plots pane.
-#'   \item \emph{'console'}: shows the code that produces a particular graphic.
+#'   \item \emph{'html'}: Creates and displays a html file with the specific graphic.
+#'   \item \emph{'plots pane'}: Default output, a ggplot2 object in RStudio's plots pane.
+#'   \item \emph{'console'}: Prints the code that produces the specific graphic.
 #' }
 #' @param dir Directory in which the files are stored.
 #'
-#' @return This function can have three outputs: by default it produces a particular graphic,
-#' but it can also be represented into the RStudio's plots pane, or can return the code to produce it.
+#' @return This function returns a c('gg', 'ggplot') object, but if the 'output' argument
+#' is set to it 'html' or 'console', the function cause a side-effect: either creating and
+#' displaying a temporary html file, or printing the ggplot2 code to the console.
+#'
 #' @export
 #'
 #' @examples
-#' if (interactive()) {
 #' plotup(iris, "Petal.Width", "color heatmap")
-#' }
 #' plotup(iris, "Petal.Width", "color heatmap", output = "console")
+#' if (interactive()) {
+#' plotup(iris, "Petal.Width", "color heatmap", output = "html")
+#' }
 plotup <- function(data,
                    vars,
                    diagram,
-                   output = 'html',
+                   output = 'plots pane',
                    dir = tempdir()
                    )
 {
@@ -217,7 +219,7 @@ plotup <- function(data,
       "'"
     ))
   }
-  theme <- "theme_set(theme_minimal())\n"
+  theme <- "theme_minimal()"
   theme_detail <- "theme(panel.grid = element_line(colour = NA),
   \x20\x20axis.ticks = element_line(color = 'black'))\n"
   theme_detail_y <- "theme(panel.grid = element_line(colour = NA),
@@ -232,20 +234,6 @@ plotup <- function(data,
   \x20\x20axis.title.y =element_text(color = NA),
   \x20\x20axis.ticks.x =element_line(color = 'black'),
   \x20\x20legend.position='none')\n"
-  theme_general <- 'pp_theme <- function(base_size = 11,
-                     base_family = "",
-                     base_line_size = base_size / 22,
-                     base_rect_size = base_size / 22){
-  theme_minimal(base_size = base_size,
-                base_family = base_family,
-                base_line_size = base_line_size) %+replace%
-    theme(
-      axis.ticks=element_line(color="black"),
-      panel.grid = element_line(colour = NA),
-      axis.title = element_text(colour = "#333333", size=base_size/1.2),
-  complete = TRUE
-  )
-  }'
   getdens2 <- "get_density <- function(x, y, ...) {
   dens <- MASS::kde2d(x, y, ...)
   ix <- findInterval(x, dens$x)
@@ -281,13 +269,13 @@ plotup <- function(data,
 }\n"
   unfold <- eval(
     "foo_df <- reshape(
-  \x20\x20data = {deparse(substitute(data))},
-  \x20\x20direction = 'long',
-  \x20\x20v.names = 'measure',
-  \x20\x20timevar = 'variable',
-  \x20\x20idvar   = 'foo_id',
-  \x20\x20varying = c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}'),
-  \x20\x20times   = c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')
+  data = {deparse(substitute(data))},
+  direction = 'long',
+  v.names = 'measure',
+  timevar = 'variable',
+  idvar   = 'foo_id',
+  varying = c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}'),
+  times   = c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')
   )\n"
   )
   reorder_freq <- paste0(deparse(substitute(data)),
@@ -321,14 +309,15 @@ plotup <- function(data,
   if (diagram == "blank") {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
-      ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
-      \x20\x20geom_blank() +
-      \x20\x20labs(x='seq') +
-      \x20\x20theme(axis.title=element_blank(),
-      \x20\x20\x20\x20axis.text=element_blank(),
-      \x20\x20\x20\x20axis.ticks=element_blank(),
-      \x20\x20\x20\x20panel.grid = element_line(colour = NA))"
+    "
+    ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
+    \x20\x20geom_blank() +
+    \x20\x20labs(x='seq') +
+    \x20\x20{theme} +
+    \x20\x20theme(axis.title=element_blank(),
+    \x20\x20\x20\x20axis.text=element_blank(),
+    \x20\x20\x20\x20axis.ticks=element_blank(),
+    \x20\x20\x20\x20panel.grid = element_line(colour = NA))"
     )
   }
   else if (length(vars) == 1 &
@@ -336,7 +325,7 @@ plotup <- function(data,
            is.numeric(unlist(data[, vars])) == TRUE
   ) {
     vars <- vars[1]
-    p <- paste0(theme_general,
+    p <- paste0(
                 "
                 qqplot <- function (pp_df,
                 pp_var,
@@ -351,8 +340,10 @@ plotup <- function(data,
                 stat_qq(size=pp_size) +
                 geom_abline(slope = slope, intercept = int, size=pp_size) +
                 labs(y=names(pp_df[pp_var])) +
-                pp_theme()
-                }
+                theme_minimal() +
+                theme(axis.ticks=element_line(color='black'),
+                panel.grid = element_line(colour = NA),
+                axis.title = element_text(colour = '#333333'))}
                 qqplot(",
                 deparse(substitute(data)),
                 ", '",
@@ -365,7 +356,7 @@ plotup <- function(data,
            is.numeric(unlist(data[, vars])) == TRUE
   ) {
     vars <- vars[1]
-    p <- paste0(theme_general,
+    p <- paste0(
 "
 pp_3uniaxial <- function(data,
                          variable,
@@ -379,9 +370,12 @@ pp_3uniaxial <- function(data,
     geom_point(aes(x=2), size=pp_size, alpha=.1) +
     geom_violin(aes(x=3), size=pp_size/4) +
     scale_x_continuous(breaks = c(1, 2, 3), labels = c('box', 'dot', 'violin')) +
-    theme(axis.title.y=element_blank()) +
     coord_flip() +
-    pp_theme()
+    theme_minimal() +
+    theme(axis.ticks=element_line(color='black'),
+      panel.grid = element_line(colour = NA),
+      axis.title.x = element_text(colour = '#333333'),
+      axis.title.y=element_blank())
     pp_plot
   }
 pp_3uniaxial(",
@@ -395,10 +389,11 @@ pp_3uniaxial(",
            diagram == "freq. reordered line graph") {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_freq}
+      "{reorder_freq}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -406,10 +401,11 @@ pp_3uniaxial(",
            diagram == "alphab. reordered line graph") {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_alphab}
+      "{reorder_alphab}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -419,11 +415,12 @@ pp_3uniaxial(",
             lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -435,11 +432,12 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_observ}
+      "{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -447,11 +445,12 @@ pp_3uniaxial(",
            diagram == "freq. reordered point-to-point graph") {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_freq}
+      "{reorder_freq}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -459,11 +458,12 @@ pp_3uniaxial(",
            diagram == "alphab. reordered point-to-point graph") {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_alphab}
+      "{reorder_alphab}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -472,12 +472,12 @@ pp_3uniaxial(",
            (is.numeric(unlist(data[, vars])) == TRUE |
             lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
-    p <- glue::glue(
-      "{theme}
+    p <- glue::glue("
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_step(aes(group=1)) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -487,10 +487,11 @@ pp_3uniaxial(",
             lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -502,10 +503,11 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_observ}
+      "{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -513,10 +515,11 @@ pp_3uniaxial(",
            diagram == "freq. reordered point graph") {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_freq}
+      "{reorder_freq}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -524,10 +527,11 @@ pp_3uniaxial(",
            diagram == "alphab. reordered point graph") {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_alphab}
+      "{reorder_alphab}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -536,11 +540,12 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_point() +
       \x20\x20geom_smooth(method = 'loess', size=0.5) +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -552,10 +557,11 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_observ}
+      "{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -567,10 +573,11 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_observ}
+      "{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_tile() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -582,10 +589,11 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_freq}
+      "{reorder_freq}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_tile() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -597,10 +605,11 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_alphab}
+      "{reorder_alphab}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_tile() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -609,10 +618,11 @@ pp_3uniaxial(",
            (is.numeric(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bar(stat='count', width=binwidth, fill='black', color='black', position = 'identity') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -621,11 +631,12 @@ pp_3uniaxial(",
            (is.numeric(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=binwidth, position = 'identity') +
       \x20\x20{scale_bw_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -634,11 +645,12 @@ pp_3uniaxial(",
            (is.numeric(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=binwidth, position = 'identity') +
       \x20\x20{scale_color_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -650,10 +662,11 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_observ}
+      "{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bar(stat='count', width=0.75, fill='black') +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -665,11 +678,12 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_observ}
+      "{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_bw_a} +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -682,11 +696,12 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_observ}
+      "{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_color_a} +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -696,11 +711,12 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_freq}
+      "{reorder_freq}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bar(stat='count', width=0.75, fill='black') +
       \x20\x20{scale_bw_a} +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -710,11 +726,12 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_freq}
+      "{reorder_freq}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_bw_a} +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -724,11 +741,12 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_freq}
+      "{reorder_freq}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_color_a} +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -738,10 +756,11 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_alphab}
+      "{reorder_alphab}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bar(stat='count', width=0.75, fill='black') +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -751,11 +770,12 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_alphab}
+      "{reorder_alphab}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_bw_a} +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -765,11 +785,12 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_alphab}
+      "{reorder_alphab}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_color_a} +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -782,11 +803,12 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_observ}
+      "{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(x=seq_along({substitute(vars)})), size=0.5) +
       \x20\x20geom_point(aes(x=seq_along({substitute(vars)})), size=1) +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -799,11 +821,12 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_freq}
+      "{reorder_freq}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(x=seq_along({substitute(vars)})), size=0.5) +
       \x20\x20geom_point(aes(x=seq_along({substitute(vars)})), size=1) +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -816,11 +839,12 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_alphab}
+      "{reorder_alphab}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(x=seq_along({substitute(vars)})), size=0.5) +
       \x20\x20geom_point(aes(x=seq_along({substitute(vars)})), size=1) +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -834,10 +858,11 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_observ}
+      "{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)})), fill = 'black') +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -850,11 +875,12 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_observ}
+      "{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20{scale_bw_a} +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -864,10 +890,11 @@ pp_3uniaxial(",
             lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)})), fill = 'black') +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -877,11 +904,12 @@ pp_3uniaxial(",
             lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20stat_density_2d(aes(x=seq_along({substitute(vars)}), fill = stat(density)), geom = 'raster', contour = FALSE) +
       \x20\x20{scale_bw_a} +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -891,11 +919,12 @@ pp_3uniaxial(",
             lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20stat_density_2d(aes(x=seq_along({substitute(vars)}), fill = stat(density)), geom = 'raster', contour = FALSE) +
       \x20\x20{scale_color_a} +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -905,11 +934,12 @@ pp_3uniaxial(",
             lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20{scale_bw_a} +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -922,11 +952,12 @@ pp_3uniaxial(",
            )) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_observ}
+      "{reorder_observ}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20{scale_color_a} +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -936,11 +967,12 @@ pp_3uniaxial(",
             lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20{scale_color_a} +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -950,10 +982,11 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_freq}
+      "{reorder_freq}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)})), fill = 'black') +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -963,11 +996,12 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_freq}
+      "{reorder_freq}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20labs(x='seq.') +
       \x20\x20{scale_bw_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -977,11 +1011,12 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_freq}
+      "{reorder_freq}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20labs(x='seq.') +
       \x20\x20{scale_color_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -991,10 +1026,11 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_alphab}
+      "{reorder_alphab}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)})), fill = 'black') +
       \x20\x20labs(x='seq.') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1004,11 +1040,12 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_alphab}
+      "{reorder_alphab}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20labs(x='seq.') +
       \x20\x20{scale_bw_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1018,11 +1055,12 @@ pp_3uniaxial(",
             is.character(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{reorder_alphab}
+      "{reorder_alphab}
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20labs(x='seq.') +
       \x20\x20{scale_color_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1032,10 +1070,11 @@ pp_3uniaxial(",
            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_step(direction = 'hv') +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1045,10 +1084,11 @@ pp_3uniaxial(",
            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_line() +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1057,10 +1097,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_area(fill = 'black') +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1069,10 +1110,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_bar(fill = 'black', width = 1, stat = 'identity') +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1081,11 +1123,12 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))}, fill={as.character(substitute(vars))})) +
       \x20\x20geom_bar(width = 1, stat = 'identity') +
       \x20\x20{scale_bw_a} +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1094,11 +1137,12 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))}, fill={as.character(substitute(vars))})) +
       \x20\x20geom_bar(width = 1, stat = 'identity') +
       \x20\x20{scale_color_a} +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1107,9 +1151,10 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_histogram(bins = 20, fill='black') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1118,10 +1163,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_histogram(bins = 20) +
       \x20\x20{scale_bw_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1130,10 +1176,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_histogram(bins = 20) +
       \x20\x20{scale_color_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1142,9 +1189,10 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_line(stat = 'bin', bins = 20, center = 0, size = 0.5) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1153,10 +1201,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = {as.character(substitute(vars))})) +
       \x20\x20geom_density(size = 0.5) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}
       "
     )
@@ -1166,10 +1215,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = {as.character(substitute(vars))})) +
       \x20\x20geom_density(fill = 'black') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}
       "
     )
@@ -1179,11 +1229,12 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = 0, y = {as.character(substitute(vars))})) +
       \x20\x20geom_violin(size = 0.5) +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_y}
       "
     )
@@ -1192,11 +1243,12 @@ pp_3uniaxial(",
               is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = 0, y = {as.character(substitute(vars))})) +
       \x20\x20geom_violin(fill = 'black') +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_y}
       "
     )
@@ -1206,12 +1258,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
       \x20\x20geom_point(aes(color={as.character(substitute(vars))})) +
       \x20\x20{scale_bw_l} +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1220,13 +1273,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
       \x20\x20geom_point(aes(color={as.character(substitute(vars))})) +
       \x20\x20geom_smooth(method = 'loess', size=0.5) +
       \x20\x20{scale_bw_l} +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1235,12 +1289,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
       \x20\x20geom_point(aes(color={as.character(substitute(vars))})) +
       \x20\x20{scale_color_l} +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1249,13 +1304,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
       \x20\x20geom_point(aes(color={as.character(substitute(vars))})) +
       \x20\x20geom_smooth(method = 'loess', size=0.5) +
       \x20\x20{scale_color_l} +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1265,11 +1321,12 @@ pp_3uniaxial(",
             is.numeric(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
       \x20\x20geom_point(color='black', stat= 'bin2d') +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1279,12 +1336,13 @@ pp_3uniaxial(",
             is.numeric(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
       \x20\x20geom_point(aes(color=..count..), stat= 'bin2d') +
       \x20\x20{scale_bw_l} +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1294,12 +1352,13 @@ pp_3uniaxial(",
             is.numeric(unlist(data[, vars])) == TRUE)) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
       \x20\x20geom_point(aes(color=..count..), stat= 'bin2d') +
       \x20\x20{scale_color_l} +
       \x20\x20labs(x='seq') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1308,11 +1367,12 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = 0, y = {as.character(substitute(vars))})) +
       \x20\x20geom_boxplot() +
       \x20\x20coord_flip() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_y}"
     )
   }
@@ -1321,10 +1381,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x = {as.character(substitute(vars))})) +
       \x20\x20stat_ecdf(geom = 'line', size=0.1) +
       \x20\x20labs(x = '{as.character(substitute(vars))}', y = 'p') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1333,10 +1394,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x = {as.character(substitute(vars))})) +
       \x20\x20stat_ecdf(geom = 'point', size=0.1) +
       \x20\x20labs(x = '{as.character(substitute(vars))}', y = 'p') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1345,10 +1407,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x = {as.character(substitute(vars))})) +
       \x20\x20stat_ecdf(geom = 'step', size=0.1) +
       \x20\x20labs(x = '{as.character(substitute(vars))}', y = 'p') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1357,9 +1420,10 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_linerange(aes(ymin=0, ymax=1)) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_y}"
     )
   }
@@ -1368,10 +1432,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{getdens1}
+      "{getdens1}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, color=add_density_1D({deparse(substitute(data))}, '{as.character(substitute(vars))}'))) +
       \x20\x20geom_linerange(aes(ymin=0, ymax=1)) +
       \x20\x20{scale_bw_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_yz}"
     )
   }
@@ -1380,10 +1445,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{getdens1}
+      "{getdens1}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, color=add_density_1D({deparse(substitute(data))}, '{as.character(substitute(vars))}'))) +
       \x20\x20geom_linerange(aes(ymin=0, ymax=1)) +
       \x20\x20{scale_color_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_yz}"
     )
   }
@@ -1392,10 +1458,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(y=1), binwidth = c(binwidth, 1), fill='black') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_y}"
     )
   }
@@ -1404,11 +1471,12 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +
       \x20\x20{scale_bw_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_yz}"
     )
   }
@@ -1417,11 +1485,12 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +
       \x20\x20{scale_color_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_yz}"
     )
   }
@@ -1430,9 +1499,10 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}))) +
       \x20\x20geom_tile(aes(y=1), fill = 'black') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_y}"
     )
   }
@@ -1441,10 +1511,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{getdens1}
+      "{getdens1}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}))) +
       \x20\x20geom_tile(aes(y=1, fill={as.character(substitute(vars))})) +
       \x20\x20{scale_bw_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_yz}"
     )
   }
@@ -1453,10 +1524,11 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars])) == TRUE) {
     vars <- vars[1]
     p <- glue::glue(
-      "{theme}{getdens1}
+      "{getdens1}
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}))) +
       \x20\x20geom_tile(aes(y=1, fill={as.character(substitute(vars))})) +
       \x20\x20{scale_color_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_yz}"
     )
   }
@@ -1470,9 +1542,10 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_point() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1483,10 +1556,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_point() +
       \x20\x20geom_smooth() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1497,10 +1571,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}{getdens2}
+      "{getdens2}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=get_density({deparse(substitute(data))}${as.character(substitute(vars1))}, {deparse(substitute(data))}${as.character(substitute(vars2))}))) +
       \x20\x20geom_point() +
       \x20\x20{scale_bw_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1511,10 +1586,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}{getdens2}
+      "{getdens2}
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=get_density({deparse(substitute(data))}${as.character(substitute(vars1))}, {deparse(substitute(data))}${as.character(substitute(vars2))}))) +
       \x20\x20geom_point() +
       \x20\x20{scale_color_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1525,9 +1601,10 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_point(stat= 'bin2d') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1538,10 +1615,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=..count..)) +
       \x20\x20geom_point(stat= 'bin2d') +
       \x20\x20{scale_bw_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1552,10 +1630,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=..count..)) +
       \x20\x20geom_point(stat= 'bin2d') +
       \x20\x20{scale_color_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1566,9 +1645,10 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d(fill = 'black') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1579,10 +1659,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d() +
       \x20\x20{scale_bw_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1593,10 +1674,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d() +
       \x20\x20{scale_color_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1607,9 +1689,10 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_binhex(fill = 'black') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1620,11 +1703,12 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_binhex(aes(fill=..count..,  color=..count..)) +
       \x20\x20{scale_bw_l} +
       \x20\x20{scale_bw_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1635,11 +1719,12 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_binhex(aes(fill=..count..,  color=..count..)) +
       \x20\x20{scale_color_l} +
       \x20\x20{scale_color_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1650,10 +1735,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(fill=stat(density)), geom = 'raster', contour = FALSE) +
       \x20\x20{scale_bw_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1664,10 +1750,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(fill=stat(density)), geom = 'raster', contour = FALSE) +
       \x20\x20{scale_color_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1678,9 +1765,10 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(color = 'black', size=0.2) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1691,10 +1779,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(color=..level..), size=0.2) +
       \x20\x20{scale_bw_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1705,10 +1794,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(color=..level..), size=0.2) +
       \x20\x20{scale_color_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1719,10 +1809,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(color = 'black', size=0.2) +
       \x20\x20geom_point() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1733,11 +1824,12 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(color=..level..), size=0.2) +
       \x20\x20geom_point(aes(color=get_density({deparse(substitute(data))}${as.character(substitute(vars1))}, {deparse(substitute(data))}${as.character(substitute(vars2))}))) +
       \x20\x20{scale_bw_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1748,11 +1840,12 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(color=..level..), size=0.2) +
       \x20\x20geom_point(aes(color=get_density({deparse(substitute(data))}${as.character(substitute(vars1))}, {deparse(substitute(data))}${as.character(substitute(vars2))}))) +
       \x20\x20{scale_color_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1763,9 +1856,10 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       GGally::ggparcoord({deparse(substitute(data))}, columns = 1:2, scale = 'uniminmax', alphaLines = 0.2, order = 'skewness') +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1776,7 +1870,7 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}{getdens2}
+      "{getdens2}
       GGally::ggparcoord(data.frame('{as.character(substitute(vars1))}' = {deparse(substitute(data))}${as.character(substitute(vars1))},
       \x20\x20'{as.character(substitute(vars2))}' = {deparse(substitute(data))}${as.character(substitute(vars2))},
       \x20\x20'dens' = get_density({deparse(substitute(data))}${as.character(substitute(vars1))},
@@ -1784,6 +1878,7 @@ pp_3uniaxial(",
       \x20\x20scale = 'uniminmax', alphaLines = 0.5, mapping=aes(color=dens), order = 'skewness') +
       \x20\x20{scale_bw_l} +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1794,7 +1889,7 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}{getdens2}
+      "{getdens2}
       GGally::ggparcoord(data.frame('{as.character(substitute(vars1))}' = {deparse(substitute(data))}${as.character(substitute(vars1))},
       \x20\x20'{as.character(substitute(vars2))}' = {deparse(substitute(data))}${as.character(substitute(vars2))},
       \x20\x20'dens' = get_density({deparse(substitute(data))}${as.character(substitute(vars1))},
@@ -1802,6 +1897,7 @@ pp_3uniaxial(",
       \x20\x20scale = 'uniminmax', alphaLines = 0.5, mapping=aes(color=dens), order = 'skewness') +
       \x20\x20{scale_color_l} +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1812,9 +1908,10 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       GGally::ggparcoord({deparse(substitute(data))}, columns = 1:2, scale = 'globalminmax', alphaLines = 0.2, order = 'skewness') +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1825,7 +1922,7 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}{getdens2}
+      "{getdens2}
       GGally::ggparcoord(data.frame('{as.character(substitute(vars1))}' = {deparse(substitute(data))}${as.character(substitute(vars1))},
       \x20\x20'{as.character(substitute(vars2))}' = {deparse(substitute(data))}${as.character(substitute(vars2))},
       \x20\x20'dens' = get_density({deparse(substitute(data))}${as.character(substitute(vars1))},
@@ -1833,6 +1930,7 @@ pp_3uniaxial(",
       \x20\x20scale = 'globalminmax', alphaLines = 0.5, mapping=aes(color=dens), order = 'skewness') +
       \x20\x20{scale_bw_l} +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1843,7 +1941,7 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}{getdens2}
+      "{getdens2}
       GGally::ggparcoord(data.frame('{as.character(substitute(vars1))}' = {deparse(substitute(data))}${as.character(substitute(vars1))},
       \x20\x20'{as.character(substitute(vars2))}' = {deparse(substitute(data))}${as.character(substitute(vars2))},
       \x20\x20'dens' = get_density({deparse(substitute(data))}${as.character(substitute(vars1))},
@@ -1851,6 +1949,7 @@ pp_3uniaxial(",
       \x20\x20scale = 'globalminmax', alphaLines = 0.5, mapping=aes(color=dens), order = 'skewness') +
       \x20\x20{scale_color_l} +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1861,9 +1960,10 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_path() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1874,10 +1974,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=seq_along({as.character(substitute(vars1))}))) +
       \x20\x20geom_path() +
       \x20\x20{scale_bw_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1888,10 +1989,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=seq_along({as.character(substitute(vars1))}))) +
       \x20\x20geom_path() +
       \x20\x20{scale_color_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1902,10 +2004,11 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_path() +
       \x20\x20geom_point() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -1916,11 +2019,12 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=seq_along({as.character(substitute(vars1))}))) +
       \x20\x20geom_path() +
       \x20\x20geom_point() +
       \x20\x20{scale_bw_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1931,11 +2035,12 @@ pp_3uniaxial(",
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=seq_along({as.character(substitute(vars1))}))) +
       \x20\x20geom_path() +
       \x20\x20geom_point() +
       \x20\x20{scale_color_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -1945,13 +2050,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x='foo_id')) +
       geom_point(aes_string(y='measure'), size=1) +
       labs(y='', x='seq') +
       facet_grid(variable~., switch = 'both') +
+      {theme} +
       {theme_detail}
       "
       )
@@ -1962,14 +2067,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x='foo_id')) +
       geom_point(aes_string(y='measure', color = 'measure'), size=1) +
       labs(y='', x='seq') +
       {scale_bw_l} +
       facet_grid(variable~., switch = 'both') +
+      {theme} +
       {theme_detail_z}
       "
     )
@@ -1980,14 +2085,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'foo_id')) +
       geom_point(aes_string(y = 'measure', color = 'measure'), size = 1) +
       labs(y = '', x = 'seq') +
       {scale_color_l} +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail_z}"
     )
   }
@@ -1997,13 +2102,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'foo_id', y = 'measure')) +
       geom_line(color = 'black') +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2013,13 +2118,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'foo_id', y = 'measure')) +
       geom_step(color = 'black') +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2029,13 +2134,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'foo_id', y = 'measure')) +
       geom_area(fill = 'black') +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2045,13 +2150,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'foo_id')) +
       geom_bar(aes_string(y='measure'), fill = 'black', width = 1, stat = 'identity') +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2061,14 +2166,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'foo_id')) +
       geom_bar(aes_string(y='measure', fill = 'measure'), width = 1, stat = 'identity') +
       {scale_bw_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail_z}"
     )
   }
@@ -2078,14 +2183,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'foo_id')) +
       geom_bar(aes_string(y='measure', fill = 'measure'), width = 1, stat = 'identity') +
       {scale_color_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail_z}"
     )
   }
@@ -2095,14 +2200,14 @@ pp_3uniaxial(",
            any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'foo_id', y='measure')) +
       stat_density_2d(aes(fill = stat(density)), geom = 'raster', contour = FALSE) +
       {scale_bw_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail_z}"
     )
   }
@@ -2112,14 +2217,14 @@ pp_3uniaxial(",
            any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'foo_id', y='measure')) +
       stat_density_2d(aes(fill = stat(density)), geom = 'raster', contour = FALSE) +
       {scale_color_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail_z}"
     )
   }
@@ -2129,14 +2234,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'foo_id', y = 1)) +
       geom_tile(aes_string(fill = 'measure')) +
       {scale_bw_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail_z}"
     )
   }
@@ -2146,14 +2251,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'foo_id', y = 1)) +
       geom_tile(aes_string(fill = 'measure')) +
       {scale_color_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail_z}"
     )
   }
@@ -2163,13 +2268,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'measure')) +
       geom_histogram(fill = 'black') +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2179,14 +2284,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'measure')) +
       geom_histogram(aes_(fill=~..count..)) +
       {scale_bw_a} +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail_z}"
     )
   }
@@ -2196,14 +2301,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'measure')) +
       geom_histogram(aes_(fill=~..count..)) +
       {scale_color_a} +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail_z}"
     )
   }
@@ -2213,13 +2318,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'measure')) +
       geom_line(stat = 'bin', bins = 20, center = 0, color = 'black', size = 0.1) +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2229,13 +2334,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'measure')) +
       geom_density(size = 0.1) +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2245,13 +2350,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'measure')) +
       geom_density(fill = 'black', size = 0.1) +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2261,14 +2366,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 0, y = 'measure')) +
       geom_violin(size = 0.1) +
       labs(x = '') +
       coord_flip() +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2278,14 +2383,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 0, y = 'measure')) +
       geom_violin(fill = 'black', size = 0.1) +
       labs(x = '') +
       coord_flip() +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2295,14 +2400,14 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df) +
       geom_boxplot(aes_string(x=0, y='measure'), size = 0.1) +
       labs(x = '') +
       coord_flip() +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail_y}"
     )
   }
@@ -2312,13 +2417,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'measure')) +
       geom_violin(fill = 'black', size = 0.1) +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail_y}"
     )
   }
@@ -2328,13 +2433,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'measure')) +
       stat_ecdf(geom = 'point', size=0.1) +
       labs(x = '', y = 'p') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2344,13 +2449,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'measure')) +
       stat_ecdf(geom = 'point', size=1) +
       labs(x = '', y = 'p') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2360,13 +2465,13 @@ pp_3uniaxial(",
            is.numeric(unlist(data[, vars[2]])) == TRUE) {
     vars1 <- vars[1]
     vars2 <- vars[2]
-    unfold2 <- paste0("{theme}", unfold)
     p <- glue::glue(
-      paste0(unfold2),
+      paste0(unfold),
       "ggplot(foo_df, aes_string(x = 'measure')) +
       stat_ecdf(geom = 'step', size=0.1) +
       labs(x = '', y = 'p') +
       facet_grid(variable ~ ., switch = 'both') +
+      {theme} +
       {theme_detail}"
     )
   }
@@ -2377,9 +2482,10 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_path(aes(group=1), size=0.5) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -2390,9 +2496,10 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_point(aes(group=1)) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -2403,9 +2510,10 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_tile() +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -2416,9 +2524,10 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d(fill = 'black') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -2429,10 +2538,11 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d() +
       \x20\x20{scale_bw_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -2443,10 +2553,11 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d() +
       \x20\x20{scale_color_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -2457,11 +2568,12 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_histogram(center = 0, position = 'stack') +
       \x20\x20{scl_gray_disc_l} +
       \x20\x20{scl_gray_disc_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -2472,11 +2584,12 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_histogram(center = 0, position = 'stack') +
       \x20\x20{scl_color_disc_l} +
       \x20\x20{scl_color_disc_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -2487,12 +2600,13 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_histogram(center = 0, position = 'fill') +
       \x20\x20scale_y_continuous(breaks = c(0, 1), labels = c('0%', '100%')) +
       \x20\x20{scl_gray_disc_l} +
       \x20\x20{scl_gray_disc_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -2503,12 +2617,13 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_histogram(center = 0, position = 'fill') +
       \x20\x20scale_y_continuous(breaks = c(0, 1), labels = c('0%', '100%')) +
       \x20\x20{scl_color_disc_l} +
       \x20\x20{scl_color_disc_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -2519,9 +2634,10 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, group={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -2532,10 +2648,11 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5) +
       \x20\x20{scl_color_disc_l} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -2546,9 +2663,10 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, group={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5, alpha = 0.3, fill = 'black', color = 'white') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -2559,10 +2677,11 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5, alpha = 0.3, color = 'white') +
       \x20\x20{scl_color_disc_a} +
+      \x20\x20{theme} +
       \x20\x20{theme_detail_z}"
     )
   }
@@ -2573,9 +2692,10 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, group={as.character(substitute(vars2))})) +
       \x20\x20geom_violin(size=0.5) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -2586,9 +2706,10 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, group={as.character(substitute(vars2))})) +
       \x20\x20geom_violin(fill='black') +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }
@@ -2599,9 +2720,10 @@ pp_3uniaxial(",
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
-      "{theme}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_boxplot(size=0.5) +
+      \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
   }

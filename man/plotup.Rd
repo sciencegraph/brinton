@@ -2,9 +2,9 @@
 % Please edit documentation in R/70_plotup.R
 \name{plotup}
 \alias{plotup}
-\title{Presents a specific graphic explicitly called by name.}
+\title{Returns a ggplot object of a specific graphic explicitly called by name.}
 \usage{
-plotup(data, vars, diagram, output = "html", dir = tempdir())
+plotup(data, vars, diagram, output = "plots pane", dir = tempdir())
 }
 \arguments{
 \item{data}{Data.frame. Default dataset to use for plot. If not already a
@@ -18,15 +18,19 @@ arguments of the 'wideplot()' function.}
 
 \item{output}{Character. Type of output.
 \itemize{
-  \item \emph{'html'}: default output is a html webpage.
-  \item \emph{'plots pane'}: output in RStudio's plots pane.
-  \item \emph{'console'}: shows the code that produces a particular graphic.
+  \item \emph{'html'}: Creates and displays a html file with the specific graphic.
+  \item \emph{'plots pane'}: Default output, a ggplot2 object in RStudio's plots pane.
+  \item \emph{'console'}: Prints the code that produces the specific graphic.
 }}
 
 \item{dir}{Directory in which the files are stored.}
 }
 \value{
-This function can have three outputs: by default it produces a particular graphic,
+This function returns a c('gg', 'ggplot') object, but if the 'output' argument
+is set to it 'html' or 'console', the function cause a side-effect: either creating and
+displaying a temporary html file, or printing the ggplot2 code to the console.
+
+the function cause a side-effect: either creating and displaying a temporary html file, or printing the ggplot2 code to the console.can have three outputs: by default it produces a particular graphic,
 but it can also be represented into the RStudio's plots pane, or can return the code to produce it.
 }
 \description{
@@ -36,8 +40,9 @@ Future work will include graphics that involve more number and
 combinations of types of variables.
 }
 \examples{
-if (interactive()) {
 plotup(iris, "Petal.Width", "color heatmap")
-}
 plotup(iris, "Petal.Width", "color heatmap", output = "console")
+if (interactive()) {
+plotup(iris, "Petal.Width", "color heatmap", output = "html")
+}
 }
