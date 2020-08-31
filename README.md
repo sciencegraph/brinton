@@ -11,6 +11,9 @@ This package introduces:
     graphics for representing one particular variable or a limited
     selection of variables using a grid of graphic types and variations
     on these types.
+  - `matrixplot()` graphics, a generalization of a matrix plot in the
+    sense that the graphic that is replicated in each cell of the matrix
+    can be selected from the catalogue of bivariate graphics.
   - `plotup()` function, which complements the previous two functions in
     that it presents a particular graphic for a specific variable or a
     limited number of variables of a dataset.
@@ -32,6 +35,11 @@ And then load the functions included in the package:
 
 ``` r
 library(brinton)
+#> Registered S3 methods overwritten by 'ggplot2':
+#>   method         from 
+#>   [.quosures     rlang
+#>   c.quosures     rlang
+#>   print.quosures rlang
 #> M a G i C i N G R a P H S
 ```
 
@@ -92,6 +100,24 @@ wideplot(
 )
 ```
 
+While the wideplot function displays a grid of univariate graphics, if a
+matrix of bivariate graphics is intended for variables of one particular
+type, the matrixplot() function is useful. Type for instance the
+following
+code:
+
+``` r
+matrixplot(esoph, dataclass = "numeric", diagram = "bw contour plot with data points")
+```
+
+Same thing if the desired matrix has to include graphics from variables
+of two different types (note that the graphic type has to be
+compatible):
+
+``` r
+matrixplot(esoph, dataclass = c("numeric", "factor"), diagram = "box plot")
+```
+
 If the user is interested in one particular graphic then the function
 `plotup()` is useful.
 
@@ -112,7 +138,8 @@ plotup(faithful, c("waiting", "eruptions"), "color scatter plot")
 The default output of the `plotup()` function is a `c("gg", "ggplot")`
 object but the `output` argument allows, as a side effect, to write and
 present the graphic in a html file or to print the ggplot2 function in
-the console:
+the
+console:
 
 ``` r
 plotup(infert, "pooled.stratum", "color binned stripe graph", output = "html")

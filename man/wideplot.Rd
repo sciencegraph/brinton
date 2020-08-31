@@ -4,20 +4,9 @@
 \alias{wideplot}
 \title{Displays a wideplot in a html file.}
 \usage{
-wideplot(
-  data,
-  dataclass = NULL,
-  logical = NULL,
-  ordered = NULL,
-  factor = NULL,
-  character = NULL,
-  datetime = NULL,
-  numeric = NULL,
-  group = NULL,
-  ncol = 7,
-  label = "FALSE",
-  dir = tempdir()
-)
+wideplot(data, dataclass = NULL, logical = NULL, ordered = NULL,
+  factor = NULL, character = NULL, datetime = NULL, numeric = NULL,
+  group = NULL, ncol = 7, label = "FALSE", dir = tempdir())
 }
 \arguments{
 \item{data}{Data.frame. Default dataset to use for plot. Unquoted. If not
@@ -236,7 +225,7 @@ grouped by the type of data, then, each variable is graphically represented
 into a range of different graphics in one row of the matrix.
 }
 \description{
-A wideplot is a grid of graphics were the graphics within each row
+A wideplot is a grid of graphics where the graphics within each row
 corresponds to graphical representations of each one of the variables
 considered within a given dataset.
 }

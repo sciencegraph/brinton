@@ -13,9 +13,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="A Graphical EDA Tool">
 <meta property="og:description" content="An automated graphical exploratory data analysis (EDA) tool that introduces: 
   a.) wideplot() graphics for exploring the structure of a dataset through a grid of variables 
@@ -33,7 +32,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -45,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -53,7 +52,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -82,7 +81,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/sciencegraph/brinton">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fa fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -95,12 +94,16 @@
 <!--/.navbar -->
 
       
-
       </header><div class="row">
-  <div class="contents col-md-9">
-<div id="brinton-" class="section level1">
+  <div class="col-md-9 contents">
+    
+
+    
+    
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<div id="brinton" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#brinton-" class="anchor"></a>brinton <img src="reference/figures/logo.png" align="right" alt="" width="60">
+<a href="#brinton" class="anchor"></a>brinton <img src="reference/figures/logo.png" align="right" alt="" width="60">
 </h1></div>
 <p>This package introduces:</p>
 <ul>
@@ -109,6 +112,8 @@
 <li>
 <code><a href="reference/longplot.html">longplot()</a></code> graphics, which present the entire catalog of available graphics for representing one particular variable or a limited selection of variables using a grid of graphic types and variations on these types.</li>
 <li>
+<code><a href="reference/matrixplot.html">matrixplot()</a></code> graphics, a generalization of a matrix plot in the sense that the graphic that is replicated in each cell of the matrix can be selected from the catalogue of bivariate graphics.</li>
+<li>
 <code><a href="reference/plotup.html">plotup()</a></code> function, which complements the previous two functions in that it presents a particular graphic for a specific variable or a limited number of variables of a dataset.</li>
 </ul>
 <p>Future work will include the ability to draw <code><a href="reference/longplot.html">longplot()</a></code> and <code><a href="reference/plotup.html">plotup()</a></code> graphics from a selection of a wider number and combinations of types of variables within a dataset.</p>
@@ -116,55 +121,64 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the released version of brinton from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"brinton"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"brinton"</span>)</a></code></pre></div>
 <p>And then load the functions included in the package:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(brinton)</a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="co">#&gt; M a G i C i N G R a P H S</span></a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(brinton)</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="co">#&gt; Registered S3 methods overwritten by 'ggplot2':</span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="co">#&gt;   method         from </span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="co">#&gt;   [.quosures     rlang</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="co">#&gt;   c.quosures     rlang</span></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="co">#&gt;   print.quosures rlang</span></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="co">#&gt; M a G i C i N G R a P H S</span></a></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<p>When a new dataset comes up, R users use to call the <code><a href="https://rdrr.io/r/utils/str.html">str()</a></code> function that describes textually the main characteristics of this dataset. The new <code><a href="reference/wideplot.html">wideplot()</a></code> function does the same but graphically. As an example, just run:</p>
+<p>When a new dataset comes up, R users use to call the <code><a href="https://www.rdocumentation.org/packages/utils/topics/str">str()</a></code> function that describes textually the main characteristics of this dataset. The new <code><a href="reference/wideplot.html">wideplot()</a></code> function does the same but graphically. As an example, just run:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="reference/wideplot.html">wideplot</a></span>(infert)</a></code></pre></div>
 <p>This function includes the argument <code>dataclass</code> that sets the types of variables to be included in the grid as well as the order in which they are listed. As an example, the following line will plot only the numeric variables included in the iris dataset:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="reference/wideplot.html">wideplot</a></span>(infert, <span class="dt">dataclass =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"numeric"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="reference/wideplot.html">wideplot</a></span>(infert, <span class="dt">dataclass =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"numeric"</span>))</a></code></pre></div>
 <p>Although, the <code><a href="reference/wideplot.html">wideplot()</a></code> function shows only a small set of the graphics suitable for each type of data. If the user wants to see all the available graphics for some specific variable included in the dataset, then the <code><a href="reference/longplot.html">longplot()</a></code> is useful. As an example, just run:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="reference/longplot.html">longplot</a></span>(infert, <span class="st">"pooled.stratum"</span>)</a></code></pre></div>
 <p>Any of the graphics presented in the <code><a href="reference/longplot.html">longplot()</a></code> output can also be presented. If one wants to compare the output of some other specific graphics one can, for instance, run:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="reference/wideplot.html">wideplot</a></span>(</a>
 <a class="sourceLine" id="cb6-2" title="2">  infert,</a>
-<a class="sourceLine" id="cb6-3" title="3">  <span class="dt">dataclass =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"numeric"</span>),</a>
-<a class="sourceLine" id="cb6-4" title="4">  <span class="dt">numeric =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"point graph"</span>, <span class="st">"binned point graph"</span>, <span class="st">"binned heatmap"</span>),</a>
+<a class="sourceLine" id="cb6-3" title="3">  <span class="dt">dataclass =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"numeric"</span>),</a>
+<a class="sourceLine" id="cb6-4" title="4">  <span class="dt">numeric =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"point graph"</span>, <span class="st">"binned point graph"</span>, <span class="st">"binned heatmap"</span>),</a>
 <a class="sourceLine" id="cb6-5" title="5">  <span class="dt">label =</span> <span class="ot">TRUE</span></a>
 <a class="sourceLine" id="cb6-6" title="6">)</a></code></pre></div>
 <p>Sometimes, specially with character variables, there is not enought space for the graphic area, and the user may want to increase the width of the columns in the matrix. The user can then modify the defalut value of the <code>ncol</code> argument:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="reference/wideplot.html">wideplot</a></span>(</a>
 <a class="sourceLine" id="cb7-2" title="2">  infert,</a>
-<a class="sourceLine" id="cb7-3" title="3">  <span class="dt">dataclass =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"numeric"</span>),</a>
-<a class="sourceLine" id="cb7-4" title="4">  <span class="dt">numeric =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"point graph"</span>, <span class="st">"binned point graph"</span>, <span class="st">"binned heatmap"</span>),</a>
+<a class="sourceLine" id="cb7-3" title="3">  <span class="dt">dataclass =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"numeric"</span>),</a>
+<a class="sourceLine" id="cb7-4" title="4">  <span class="dt">numeric =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"point graph"</span>, <span class="st">"binned point graph"</span>, <span class="st">"binned heatmap"</span>),</a>
 <a class="sourceLine" id="cb7-5" title="5">  <span class="dt">label =</span> <span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb7-6" title="6">  <span class="dt">ncol =</span> <span class="dv">3</span></a>
 <a class="sourceLine" id="cb7-7" title="7">)</a></code></pre></div>
+<p>While the wideplot function displays a grid of univariate graphics, if a matrix of bivariate graphics is intended for variables of one particular type, the matrixplot() function is useful. Type for instance the following code:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="reference/matrixplot.html">matrixplot</a></span>(esoph, <span class="dt">dataclass =</span> <span class="st">"numeric"</span>, <span class="dt">diagram =</span> <span class="st">"bw contour plot with data points"</span>)</a></code></pre></div>
+<p>Same thing if the desired matrix has to include graphics from variables of two different types (note that the graphic type has to be compatible):</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="reference/matrixplot.html">matrixplot</a></span>(esoph, <span class="dt">dataclass =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"numeric"</span>, <span class="st">"factor"</span>), <span class="dt">diagram =</span> <span class="st">"box plot"</span>)</a></code></pre></div>
 <p>If the user is interested in one particular graphic then the function <code><a href="reference/plotup.html">plotup()</a></code> is useful.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>)</a></code></pre></div>
 <p><img src="reference/figures/README-plotup1-1.png" width="40%"></p>
 <p>Or, as example of a graphic that requires more than one input variable:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(faithful, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"waiting"</span>, <span class="st">"eruptions"</span>), <span class="st">"color scatter plot"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(faithful, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"waiting"</span>, <span class="st">"eruptions"</span>), <span class="st">"color scatter plot"</span>)</a></code></pre></div>
 <p><img src="reference/figures/README-plotup2-1.png" width="40%"></p>
-<p>The default output of the <code><a href="reference/plotup.html">plotup()</a></code> function is a <code><a href="https://rdrr.io/r/base/c.html">c("gg", "ggplot")</a></code> object but the <code>output</code> argument allows, as a side effect, to write and present the graphic in a html file or to print the ggplot2 function in the console:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"html"</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(faithful, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"waiting"</span>, <span class="st">"eruptions"</span>), <span class="st">"color scatter plot"</span>, <span class="dt">output =</span> <span class="st">"html"</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"console"</span>)</a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="co">#&gt; binwidth &lt;- (max(infert['pooled.stratum'], na.rm=TRUE)-min(infert['pooled.stratum'], na.rm=TRUE))/20</span></a>
-<a class="sourceLine" id="cb12-3" title="3"><span class="co">#&gt; ggplot(infert, aes(x=pooled.stratum)) +</span></a>
-<a class="sourceLine" id="cb12-4" title="4"><span class="co">#&gt;   geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +</span></a>
-<a class="sourceLine" id="cb12-5" title="5"><span class="co">#&gt;   scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3)) +</span></a>
-<a class="sourceLine" id="cb12-6" title="6"><span class="co">#&gt;   theme_minimal() +</span></a>
-<a class="sourceLine" id="cb12-7" title="7"><span class="co">#&gt;   theme(panel.grid = element_line(colour = NA),</span></a>
-<a class="sourceLine" id="cb12-8" title="8"><span class="co">#&gt;     axis.text.y =element_text(color = NA),</span></a>
-<a class="sourceLine" id="cb12-9" title="9"><span class="co">#&gt;     axis.title.y =element_text(color = NA),</span></a>
-<a class="sourceLine" id="cb12-10" title="10"><span class="co">#&gt;     axis.ticks.x =element_line(color = 'black'),</span></a>
-<a class="sourceLine" id="cb12-11" title="11"><span class="co">#&gt;     legend.position='none')</span></a></code></pre></div>
+<p>The default output of the <code><a href="reference/plotup.html">plotup()</a></code> function is a <code><a href="https://www.rdocumentation.org/packages/base/topics/c">c("gg", "ggplot")</a></code> object but the <code>output</code> argument allows, as a side effect, to write and present the graphic in a html file or to print the ggplot2 function in the console:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"html"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(faithful, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"waiting"</span>, <span class="st">"eruptions"</span>), <span class="st">"color scatter plot"</span>, <span class="dt">output =</span> <span class="st">"html"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="kw"><a href="reference/plotup.html">plotup</a></span>(infert, <span class="st">"pooled.stratum"</span>, <span class="st">"color binned stripe graph"</span>, <span class="dt">output =</span> <span class="st">"console"</span>)</a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="co">#&gt; binwidth &lt;- (max(infert['pooled.stratum'], na.rm=TRUE)-min(infert['pooled.stratum'], na.rm=TRUE))/20</span></a>
+<a class="sourceLine" id="cb14-3" title="3"><span class="co">#&gt; ggplot(infert, aes(x=pooled.stratum)) +</span></a>
+<a class="sourceLine" id="cb14-4" title="4"><span class="co">#&gt;   geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +</span></a>
+<a class="sourceLine" id="cb14-5" title="5"><span class="co">#&gt;   scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3)) +</span></a>
+<a class="sourceLine" id="cb14-6" title="6"><span class="co">#&gt;   theme_minimal() +</span></a>
+<a class="sourceLine" id="cb14-7" title="7"><span class="co">#&gt;   theme(panel.grid = element_line(colour = NA),</span></a>
+<a class="sourceLine" id="cb14-8" title="8"><span class="co">#&gt;     axis.text.y =element_text(color = NA),</span></a>
+<a class="sourceLine" id="cb14-9" title="9"><span class="co">#&gt;     axis.title.y =element_text(color = NA),</span></a>
+<a class="sourceLine" id="cb14-10" title="10"><span class="co">#&gt;     axis.ticks.x =element_line(color = 'black'),</span></a>
+<a class="sourceLine" id="cb14-11" title="11"><span class="co">#&gt;     legend.position='none')</span></a></code></pre></div>
 </div>
 </div>
   </div>
@@ -195,7 +209,8 @@
 </ul>
 </div>
 
-  </div>
+      </div>
+
 </div>
 
 
@@ -204,14 +219,12 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
-
       </footer>
 </div>
 
   
-
 
   </body>
 </html>

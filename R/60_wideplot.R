@@ -2,7 +2,7 @@ my_env <- new.env(parent = emptyenv())
 
 #' Displays a wideplot in a html file.
 #'
-#' A wideplot is a grid of graphics were the graphics within each row
+#' A wideplot is a grid of graphics where the graphics within each row
 #' corresponds to graphical representations of each one of the variables
 #' considered within a given dataset.
 #'
@@ -501,7 +501,6 @@ if (length(data[sapply(data, is.logical)])>0)
                                              assign(lgi", letters[j], ",
                                              blank(pp, colnames(pp[i])), envir=my_env)
                                              } else {print(warning_wrong)}")))}
-
       line <- eval(parse(
         text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" lgi", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
       write(paste0("#+ logical", i, ", fig.width=13, fig.height=", long), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra

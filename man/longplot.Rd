@@ -10,8 +10,7 @@ longplot(data, vars, label = TRUE, dir = tempdir())
 \item{data}{Data.frame. Default dataset to use for plot. If not already a
 data.frame, it should be first coerced to by [as.data.frame()].}
 
-\item{vars}{Character. A specific variable within the dataset. Future work
-will allow to include a vector of variables.}
+\item{vars}{Character. A specific variable within the dataset.}
 
 \item{label}{Logical. If `TRUE` the output includes labels that show the names
 of the graphics that are being displayed.}
@@ -31,8 +30,8 @@ row number in which they appear.
 }
 \details{
 In order to present the range of graphics, the user must define a dataset and
-select at least one variable whitin it. Future work will include the ability to
-relate more number and combinations of types of variables.
+select at least one variable whitin it. Future work will include graphics that
+can combine up to three variables.
 }
 \examples{
 if (interactive()) {

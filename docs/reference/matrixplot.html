@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • brinton</title>
+<title>Displays a matrix of a particular graphic for bivariate data in a html file. — matrixplot • brinton</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -37,7 +37,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Displays a matrix of a particular graphic for bivariate data in a html file. — matrixplot" />
+
+<meta property="og:description" content="A matrixplot is a grid of a particular graphic showing bivariate relationships
+between all pairs of variables of a certain(s) type(s) in a multivariate data set." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -57,7 +60,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -122,60 +125,78 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Displays a matrix of a particular graphic for bivariate data in a html file.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/sciencegraph/brinton/blob/master/R/80_matrixplot.R'><code>R/80_matrixplot.R</code></a></small>
+    <div class="hidden name"><code>matrixplot.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>A matrixplot is a grid of a particular graphic showing bivariate relationships
+between all pairs of variables of a certain(s) type(s) in a multivariate data set.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="longplot.html">longplot()</a></code> </p>
-        </td>
-        <td><p>Displays a longplot in a html file.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="matrixplot.html">matrixplot()</a></code> </p>
-        </td>
-        <td><p>Displays a matrix of a particular graphic for bivariate data in a html file.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plotup.html">plotup()</a></code> </p>
-        </td>
-        <td><p>Returns a ggplot object of a specific graphic explicitly called by name.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="wideplot.html">wideplot()</a></code> </p>
-        </td>
-        <td><p>Displays a wideplot in a html file.</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>matrixplot</span>(<span class='no'>data</span>, <span class='kw'>dataclass</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diagram</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>())</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>Data.frame. Default dataset to use for plot. Unquoted. If not
+already a data.frame, it should be first coerced to by <em>as.data.frame()</em>.</p></td>
+    </tr>
+    <tr>
+      <th>dataclass</th>
+      <td><p>Character vector.
+The types of data to be considered among the following:</p><ul>
+<li><p><em>'logical'</em></p></li>
+<li><p><em>'ordered'</em></p></li>
+<li><p><em>'factor'</em></p></li>
+<li><p><em>'numeric'</em></p></li>
+<li><p><em>'datetime'</em></p></li>
+<li><p><em>'character'</em></p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>diagram</th>
+      <td><p>Character. A specific graphic to be presented within the ones
+considered in the 2 input variables specimen available at
+https://sciencegraph.github.io/brinton/articles/specimen2.html.</p></td>
+    </tr>
+    <tr>
+      <th>dir</th>
+      <td><p>Directory in which the files are stored.</p></td>
+    </tr>
     </table>
-  </div>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>Cause the side-effect of creating and displaying a temporary html
+file that includes a grid of graphics. The variables of a dataset are first
+grouped by the type of data, then, the variables matching the classes specified
+in the dataclass parameter, are represented in each row and/or column of the matrix.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/interactive'>interactive</a></span>()) {
+<span class='fu'>matrixplot</span>(<span class='no'>iris</span>, <span class='kw'>dataclass</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"numeric"</span>,<span class='st'>"numeric"</span>),
+<span class='kw'>diagram</span><span class='kw'>=</span><span class='st'>"bw contour plot with data points"</span>)
+}</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 

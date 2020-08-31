@@ -2664,10 +2664,11 @@ pp_3uniaxial(",
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
       "
-      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, group={as.character(substitute(vars2))})) +
-      \x20\x20geom_density(size=0.5, alpha = 0.3, fill = 'black', color = 'white') +
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_density(size=0.5, alpha = 0.7, color = 'black') +
+      \x20\x20{scl_gray_disc_a} +
       \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_detail_z}"
     )
   }
   else if (length(vars) == 2 &
@@ -2689,12 +2690,13 @@ pp_3uniaxial(",
            diagram == "violin plot" &
            (is.numeric(unlist(data[, vars])) == TRUE |
             is.factor(unlist(data[, vars])) == TRUE)) {
-    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
-    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     p <- glue::glue(
       "
-      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, group={as.character(substitute(vars2))})) +
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_violin(size=0.5) +
+      \x20\x20coord_flip() +
       \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
@@ -2703,12 +2705,13 @@ pp_3uniaxial(",
            diagram == "filled violin plot" &
            (is.numeric(unlist(data[, vars])) == TRUE |
             is.factor(unlist(data[, vars])) == TRUE)) {
-    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
-    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     p <- glue::glue(
       "
-      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, group={as.character(substitute(vars2))})) +
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_violin(fill='black') +
+      \x20\x20coord_flip() +
       \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )
@@ -2717,12 +2720,13 @@ pp_3uniaxial(",
            diagram == "box plot" &
            (is.numeric(unlist(data[, vars])) == TRUE |
             is.factor(unlist(data[, vars])) == TRUE)) {
-    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
-    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_boxplot(size=0.5) +
+      \x20\x20coord_flip() +
       \x20\x20{theme} +
       \x20\x20{theme_detail}"
     )

@@ -984,8 +984,8 @@ pp_basicgraph <- function(pp_df,
   p_point   <- geom_point(aes(group=1), size=3*pp_size)
   p_tile    <- geom_tile()
   p_box     <- geom_boxplot(size=0.5*pp_size)
-  p_violin  <- geom_violin(aes(group=pp_var2), size=0.5*pp_size)
-  p_violi_f <- geom_violin(aes(group=pp_var2), fill="black")
+  p_violin  <- geom_violin(size=0.5*pp_size)
+  p_violi_f <- geom_violin(fill="black")
   p_bin2d   <- geom_bin2d(data = pp_df, fill = "black")
   p_bin2d_c <- geom_bin2d(data = pp_df)
 
@@ -996,11 +996,11 @@ pp_basicgraph <- function(pp_df,
   } else if (pp_geom == "tile") {
     p_plot + p_tile
   } else if (pp_geom == "box") {
-    p_plot + p_box
+    p_plot + p_box + coord_flip()
   } else if (pp_geom == "violin") {
-    p_plot + p_violin
+    p_plot + p_violin + coord_flip()
   } else if (pp_geom == "violin filled") {
-    p_plot + p_violi_f
+    p_plot + p_violi_f + coord_flip()
   } else if (pp_geom == "bin" & pp_color == "black") {
     p_plot + p_bin2d
   } else if (pp_geom == "bin" & pp_color == "bw") {
@@ -1022,11 +1022,11 @@ pp_density2 <- function(pp_df,
   p_labs  <- labs(x=names(pp_df[pp_var1]))
   p_plot_b <- ggplot(pp_df, aes_string(x=pp_var1, group = pp_var2), environment = environment()) + p_labs + pp_theme()
   p_plot_c <- ggplot(pp_df, aes_string(x=pp_var1, color = pp_var2), environment = environment()) + p_labs + pp_theme()
-  p_plot_f <- ggplot(pp_df, aes_string(x=pp_var1, fill = pp_var2), environment = environment()) + p_labs + pp_theme()
+  p_plot_f <- ggplot(pp_df, aes_string(x=pp_var2, fill = pp_var1), environment = environment()) + p_labs + pp_theme()
   if (pp_aes == "line" & pp_color == "bw") {
     p_plot_b + geom_density(size=pp_size, color = "black")
   } else if (pp_aes == "area" & pp_color == "bw") {
-    p_plot_b + geom_density(size=0.5*pp_size, alpha = 0.3, fill = "black", color = "white")
+    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.7, color = "black") + scl_gray_disc_a + amb.z
   } else if (pp_aes == "line" & pp_color == "color") {
     p_plot_c + geom_density(size=pp_size, alpha = 0.5) + scl_col_disc_l + amb.z
   } else if (pp_aes == "area" & pp_color == "color") {

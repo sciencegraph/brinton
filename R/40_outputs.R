@@ -257,6 +257,70 @@ numeric2_v <- c(
   'color 100% stacked histogram'
 )
 
+numeric2_v2 <- c(
+  'scatter plot',
+  'scatter plot with trend line',
+  'bw scatter plot',
+  'color scatter plot',
+  'binned scatter plot',
+  'bw binned scatter plot',
+  'color binned scatter plot',
+  'binned heatmap',
+  'bw binned heatmap',
+  'color binned heatmap',
+  'hexagonal binned heatmap',
+  'bw hexagonal binned heatmap',
+  'color hexagonal binned heatmap',
+  'bw heatmap',
+  'color heatmap',
+  'contour plot',
+  'bw contour plot',
+  'color contour plot',
+  'contour plot with data points',
+  'bw contour plot with data points',
+  'color contour plot with data points',
+  'path graph',
+  'bw path graph',
+  'color path graph',
+  'point-to-point graph',
+  'bw point-to-point graph',
+  'color point-to-point graph'
+)
+
+datetime2_v  <- c(
+  'scatter plot',
+  'scatter plot with trend line',
+  'binned scatter plot',
+  'bw binned scatter plot',
+  'color binned scatter plot',
+  'bw heatmap',
+  'color heatmap',
+  'contour plot with data points',
+  'path graph',
+  'bw path graph',
+  'color path graph',
+  'point-to-point graph',
+  'bw point-to-point graph',
+  'color point-to-point graph'
+)
+
+datenum_v  <- c(
+  'scatter plot',
+  'scatter plot with trend line',
+  'binned scatter plot',
+  'bw binned scatter plot',
+  'color binned scatter plot',
+  'bw heatmap',
+  'color heatmap',
+  'contour plot with data points',
+  'path graph',
+  'bw path graph',
+  'color path graph',
+  'point-to-point graph',
+  'bw point-to-point graph',
+  'color point-to-point graph'
+)
+
 fac.num_v1 <- c(
   'blank',
   'path graph',
@@ -339,6 +403,34 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev=
 #' @noRd
 output_long <- "#' ---
 #' title: 'longplot graphic'
+#' author: 'by brinton R package'
+#' date: ''
+#' ---
+#' <style>
+#'   .main-container {
+#'   max-width: 1200px !important;
+#'   }
+#'   h1.title {
+#'   font-family: monospace;
+#'   font-size: 20px;
+#'   color: black;
+#'   }
+#'   h4.author{
+#'   font-family: monospace;
+#'   font-size: 10pt;
+#'   }
+#'   h4.date{
+#'   font-family: monospace;
+#'   font-size: 10pt;
+#'   }
+#' </style>
+#+ preamble, echo=FALSE, message=FALSE
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev='png')
+"
+
+#' @noRd
+output_matrix <- "#' ---
+#' title: 'matrixplot graphic'
 #' author: 'by brinton R package'
 #' date: ''
 #' ---

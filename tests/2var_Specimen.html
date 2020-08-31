@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
 <meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Pere Millán" />
@@ -84,6 +84,7 @@ code {
 }
 img {
   max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -145,7 +146,6 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
-  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -157,6 +157,18 @@ summary {
   display: none;
 }
 </style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
 
 <!-- code folding -->
 
@@ -235,100 +247,100 @@ summary {
 <p>Specimen of the graphics that only require 1 input variable and that, up to now, are being considered by the brinton’s <code>wideplot()</code>, <code>longplot()</code> and <code>brinton::plotup()</code> functions.</p>
 <div id="numeric" class="section level1">
 <h1>2 numeric</h1>
-<p><img src="2var_Specimen_files/figure-html/2numeric_01-1.png" width="1152" /><img src="../vignettes/figures/2numeric_01-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_01-1.png" width="1152" /><img src="../vignettes/figures/2numeric_01-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;scatter plot&#39;, &#39;bw scatter plot&#39;, &#39;color scatter plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_03-1.png" width="1152" /><img src="../vignettes/figures/2numeric_03-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_03-1.png" width="1152" /><img src="../vignettes/figures/2numeric_03-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;binned scatter plot&#39;, &#39;bw binned scatter plot&#39;, &#39;color binned scatter plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_04-1.png" width="1152" /><img src="../vignettes/figures/2numeric_04-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_04-1.png" width="1152" /><img src="../vignettes/figures/2numeric_04-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;binned heatmap&#39;, &#39;bw binned heatmap&#39;, &#39;color binned heatmap&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_05-1.png" width="1152" /><img src="../vignettes/figures/2numeric_05-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_05-1.png" width="1152" /><img src="../vignettes/figures/2numeric_05-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;hexagonal binned heatmap&#39;, &#39;bw hexagonal binned heatmap&#39;, &#39;color hexagonal binned heatmap&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_06-1.png" width="1152" /><img src="../vignettes/figures/2numeric_06-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_06-1.png" width="1152" /><img src="../vignettes/figures/2numeric_06-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;blank&#39;, &#39;bw heatmap&#39;, &#39;color heatmap&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_07-1.png" width="1152" /><img src="../vignettes/figures/2numeric_07-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_07-1.png" width="1152" /><img src="../vignettes/figures/2numeric_07-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;contour plot&#39;, &#39;bw contour plot&#39;, &#39;color contour plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_08-1.png" width="1152" /><img src="../vignettes/figures/2numeric_08-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_08-1.png" width="1152" /><img src="../vignettes/figures/2numeric_08-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;contour plot with data points&#39;, &#39;bw contour plot with data points&#39;, &#39;color contour plot with data points&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_09-1.png" width="1152" /><img src="../vignettes/figures/2numeric_09-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_09-1.png" width="1152" /><img src="../vignettes/figures/2numeric_09-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;parallel plot&#39;, &#39;bw parallel plot&#39;, &#39;color parallel plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_10-1.png" width="1152" /><img src="../vignettes/figures/2numeric_10-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_10-1.png" width="1152" /><img src="../vignettes/figures/2numeric_10-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;unscaled parallel plot&#39;, &#39;unscaled bw parallel plot&#39;, &#39;unscaled color parallel plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_11-1.png" width="1152" /><img src="../vignettes/figures/2numeric_11-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_11-1.png" width="1152" /><img src="../vignettes/figures/2numeric_11-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;path graph&#39;, &#39;bw path graph&#39;, &#39;color path graph&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_12-1.png" width="1152" /><img src="../vignettes/figures/2numeric_12-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_12-1.png" width="1152" /><img src="../vignettes/figures/2numeric_12-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;point-to-point graph&#39;, &#39;bw point-to-point graph&#39;, &#39;color point-to-point graph&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_13-1.png" width="1152" /><img src="../vignettes/figures/2numeric_13-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_13-1.png" width="1152" /><img src="../vignettes/figures/2numeric_13-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;point graph&#39;, &#39;bw point graph&#39;, &#39;color point graph&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_14-1.png" width="1152" /><img src="../vignettes/figures/2numeric_14-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_14-1.png" width="1152" /><img src="../vignettes/figures/2numeric_14-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;line graph&#39;, &#39;stepped line graph&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_15-1.png" width="1152" /><img src="../vignettes/figures/2numeric_15-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_15-1.png" width="1152" /><img src="../vignettes/figures/2numeric_15-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;area graph&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_16-1.png" width="1152" /><img src="../vignettes/figures/2numeric_16-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_16-1.png" width="1152" /><img src="../vignettes/figures/2numeric_16-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;stepped area graph&#39;, &#39;bw stepped area graph&#39;, &#39;color stepped area graph&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_17-1.png" width="1152" /><img src="../vignettes/figures/2numeric_17-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_17-1.png" width="1152" /><img src="../vignettes/figures/2numeric_17-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;blank&#39;, &#39;bw heatmap&#39;, &#39;color heatmap&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_18-1.png" width="1152" /><img src="../vignettes/figures/2numeric_18-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_18-1.png" width="1152" /><img src="../vignettes/figures/2numeric_18-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;blank&#39;, &#39;bw seq. stripe graph&#39;, &#39;color seq. stripe graph&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_19-1.png" width="1152" /><img src="../vignettes/figures/2numeric_19-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_19-1.png" width="1152" /><img src="../vignettes/figures/2numeric_19-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;histogram&#39;, &#39;bw histogram&#39;, &#39;color histogram&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_20-1.png" width="1152" /><img src="../vignettes/figures/2numeric_20-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_20-1.png" width="1152" /><img src="../vignettes/figures/2numeric_20-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;freq. polygon&#39;))</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_21-1.png" width="1152" /><img src="../vignettes/figures/2numeric_21-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_21-1.png" width="1152" /><img src="../vignettes/figures/2numeric_21-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;density plot&#39;, &#39;filled density plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_22-1.png" width="1152" /><img src="../vignettes/figures/2numeric_22-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_22-1.png" width="1152" /><img src="../vignettes/figures/2numeric_22-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;violin plot&#39;, &#39;filled violin plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_23-1.png" width="1152" /><img src="../vignettes/figures/2numeric_23-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_23-1.png" width="1152" /><img src="../vignettes/figures/2numeric_23-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;box plot&#39;))</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2numeric_24-1.png" width="1152" /><img src="../vignettes/figures/2numeric_24-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2numeric_24-1.png" width="1152" /><img src="../vignettes/figures/2numeric_24-1.png" /><!-- --></p>
 <pre><code>2 numeric = c(&#39;ecdf plot&#39;, &#39;point ecdf plot&#39;, &#39;stepped ecdf plot&#39;)</code></pre>
 </div>
 <div id="datetime" class="section level1">
 <h1>2 datetime</h1>
-<p><img src="2var_Specimen_files/figure-html/2datetime_01-1.png" width="1152" /><img src="../vignettes/figures/2datetime_01-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2datetime_01-1.png" width="1152" /><img src="../vignettes/figures/2datetime_01-1.png" /><!-- --></p>
 <pre><code>2 datetime = c(&#39;scatter plot&#39;, &#39;scatter plot with trend line&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2datetime_02-1.png" width="1152" /><img src="../vignettes/figures/2datetime_02-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2datetime_02-1.png" width="1152" /><img src="../vignettes/figures/2datetime_02-1.png" /><!-- --></p>
 <pre><code>2 datetime = c(&#39;binned scatter plot&#39;, &#39;bw binned scatter plot&#39;, &#39;color binned scatter plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2datetime_03-1.png" width="1152" /><img src="../vignettes/figures/2datetime_03-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2datetime_03-1.png" width="1152" /><img src="../vignettes/figures/2datetime_03-1.png" /><!-- --></p>
 <pre><code>2 datetime = c(&#39;blank&#39;, &#39;bw heatmap&#39;, &#39;color heatmap&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2datetime_04-1.png" width="1152" /><img src="../vignettes/figures/2datetime_04-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2datetime_04-1.png" width="1152" /><img src="../vignettes/figures/2datetime_04-1.png" /><!-- --></p>
 <pre><code>2 datetime = c(&#39;contour plot with data points&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2datetime_05-1.png" width="1152" /><img src="../vignettes/figures/2datetime_05-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2datetime_05-1.png" width="1152" /><img src="../vignettes/figures/2datetime_05-1.png" /><!-- --></p>
 <pre><code>2 datetime = c(&#39;path graph&#39;, &#39;bw path graph&#39;, &#39;color path graph&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2datetime_06-1.png" width="1152" /><img src="../vignettes/figures/2datetime_06-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/2datetime_06-1.png" width="1152" /><img src="../vignettes/figures/2datetime_06-1.png" /><!-- --></p>
 <pre><code>2 datetime = c(&#39;point-to-point graph&#39;, &#39;bw point-to-point graph&#39;, &#39;color point-to-point graph&#39;)</code></pre>
 </div>
 <div id="numericdatetime" class="section level1">
 <h1>numeric~datetime</h1>
-<p><img src="2var_Specimen_files/figure-html/date-num_01-1.png" width="1152" /><img src="../vignettes/figures/date-num_01-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/date-num_01-1.png" width="1152" /><img src="../vignettes/figures/date-num_01-1.png" /><!-- --></p>
 <pre><code>numeric~datetime = c(&#39;scatter plot&#39;, &#39;scatter plot with trend line&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/date-num_02-1.png" width="1152" /><img src="../vignettes/figures/date-num_02-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/date-num_02-1.png" width="1152" /><img src="../vignettes/figures/date-num_02-1.png" /><!-- --></p>
 <pre><code>numeric~datetime = c(&#39;binned scatter plot&#39;, &#39;bw binned scatter plot&#39;, &#39;color binned scatter plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/date-num_03-1.png" width="1152" /><img src="../vignettes/figures/date-num_03-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/date-num_03-1.png" width="1152" /><img src="../vignettes/figures/date-num_03-1.png" /><!-- --></p>
 <pre><code>numeric~datetime = c(&#39;blank&#39;, &#39;bw heatmap&#39;, &#39;color heatmap&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/date-num_04-1.png" width="1152" /><img src="../vignettes/figures/date-num_04-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/date-num_04-1.png" width="1152" /><img src="../vignettes/figures/date-num_04-1.png" /><!-- --></p>
 <pre><code>numeric~datetime = c(&#39;contour plot with data points&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/date-num_05-1.png" width="1152" /><img src="../vignettes/figures/date-num_05-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/date-num_05-1.png" width="1152" /><img src="../vignettes/figures/date-num_05-1.png" /><!-- --></p>
 <pre><code>numeric~datetime = c(&#39;path graph&#39;, &#39;bw path graph&#39;, &#39;color path graph&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/date-num_06-1.png" width="1152" /><img src="../vignettes/figures/date-num_06-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/date-num_06-1.png" width="1152" /><img src="../vignettes/figures/date-num_06-1.png" /><!-- --></p>
 <pre><code>numeric~datetime = c(&#39;point-to-point graph&#39;, &#39;bw point-to-point graph&#39;, &#39;color point-to-point graph&#39;)</code></pre>
 </div>
 <div id="numericfactor" class="section level1">
 <h1>numeric~factor</h1>
-<p><img src="2var_Specimen_files/figure-html/fac-num_01-1.png" width="1152" /><img src="../vignettes/figures/fac-num_01-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/fac-num_01-1.png" width="1152" /><img src="../vignettes/figures/fac-num_01-1.png" /><!-- --></p>
 <pre><code>numeric~factor = c(&#39;path graph&#39;, &#39;point graph&#39;, &#39;tile plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/fac-num_02-1.png" width="1152" /><img src="../vignettes/figures/fac-num_02-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/fac-num_02-1.png" width="1152" /><img src="../vignettes/figures/fac-num_02-1.png" /><!-- --></p>
 <pre><code>numeric~factor = c(&#39;binned heatmap&#39;, &#39;bw binned heatmap&#39;, &#39;color binned heatmap&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/fac-num_06-1.png" width="1152" /><img src="../vignettes/figures/fac-num_06-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/fac-num_06-1.png" width="1152" /><img src="../vignettes/figures/fac-num_06-1.png" /><!-- --></p>
 <pre><code>numeric~factor = c(&#39;violin plot&#39;, &#39;filled violin plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/fac-num_07-1.png" width="1152" /><img src="../vignettes/figures/fac-num_07-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/fac-num_07-1.png" width="1152" /><img src="../vignettes/figures/fac-num_07-1.png" /><!-- --></p>
 <pre><code>numeric~factor = c(&#39;box plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/fac-num_03-1.png" width="1152" /><img src="../vignettes/figures/fac-num_03-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/fac-num_03-1.png" width="1152" /><img src="../vignettes/figures/fac-num_03-1.png" /><!-- --></p>
 <pre><code>numeric~factor = c(&#39;blank&#39;, &#39;bw stacked histogram&#39;, &#39;color stacked histogram&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/fac-num_04-1.png" width="1152" /><img src="../vignettes/figures/fac-num_04-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/fac-num_04-1.png" width="1152" /><img src="../vignettes/figures/fac-num_04-1.png" /><!-- --></p>
 <pre><code>numeric~factor = c(&#39;blank&#39;, &#39;bw 100% stacked histogram&#39;, &#39;color 100% stacked histogram&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/fac-num_05-1.png" width="1152" /><img src="../vignettes/figures/fac-num_05-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/fac-num_05-1.png" width="1152" /><img src="../vignettes/figures/fac-num_05-1.png" /><!-- --></p>
 <pre><code>numeric~factor = c(&#39;density plot&#39;, &#39;blank&#39;, &#39;color density plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/fac-num_08-1.png" width="1152" /><img src="../vignettes/figures/fac-num_08-1.png" width="1152" /></p>
+<p><img src="2var_Specimen_files/figure-html/fac-num_08-1.png" width="1152" /><img src="../vignettes/figures/fac-num_08-1.png" /><!-- --></p>
 <pre><code>numeric~factor = c(&#39;blank&#39;, &#39;filled density plot&#39;, &#39;color filled density plot&#39;)</code></pre>
 </div>
 
@@ -349,23 +361,6 @@ $(document).ready(function () {
 
 
 </script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
-<!-- code folding -->
-
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

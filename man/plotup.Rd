@@ -29,15 +29,11 @@ arguments of the 'wideplot()' function.}
 This function returns a c('gg', 'ggplot') object, but if the 'output' argument
 is set to it 'html' or 'console', the function cause a side-effect: either creating and
 displaying a temporary html file, or printing the ggplot2 code to the console.
-
-the function cause a side-effect: either creating and displaying a temporary html file, or printing the ggplot2 code to the console.can have three outputs: by default it produces a particular graphic,
-but it can also be represented into the RStudio's plots pane, or can return the code to produce it.
 }
 \description{
 In order to present the graphic, the user must define a dataset, at
 least one variable whitin this dataset and a compatible type of graphic.
-Future work will include graphics that involve more number and
-combinations of types of variables.
+Future work will include graphics that can combine up to three variables.
 }
 \examples{
 plotup(iris, "Petal.Width", "color heatmap")
