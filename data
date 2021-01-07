@@ -1,0 +1,1 @@
+grid.arrange(grobs = lapply(list(plot), set_panel_size, width = 3, height = 3), ncol=2)

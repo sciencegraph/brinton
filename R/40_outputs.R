@@ -257,7 +257,8 @@ numeric2_v <- c(
   'color 100% stacked histogram'
 )
 
-numeric2_v2 <- c(
+matrixplot_2num <- c(
+  'blank',
   'scatter plot',
   'scatter plot with trend line',
   'bw scatter plot',
@@ -279,6 +280,12 @@ numeric2_v2 <- c(
   'contour plot with data points',
   'bw contour plot with data points',
   'color contour plot with data points',
+  'scatter plot with confidence ellipse',
+  'bw scatter plot with confidence ellipse',
+  'color scatter plot with confidence ellipse',
+  'scatter plot with marginal rugs',
+  'bw scatter plot with marginal rugs',
+  'color scatter plot with marginal rugs',
   'path graph',
   'bw path graph',
   'color path graph',
@@ -287,7 +294,8 @@ numeric2_v2 <- c(
   'color point-to-point graph'
 )
 
-datetime2_v  <- c(
+matrixplot_2dt  <- c(
+  'blank',
   'scatter plot',
   'scatter plot with trend line',
   'binned scatter plot',
@@ -295,6 +303,9 @@ datetime2_v  <- c(
   'color binned scatter plot',
   'bw heatmap',
   'color heatmap',
+  'contour plot',
+  'bw contour plot',
+  'color contour plot',
   'contour plot with data points',
   'path graph',
   'bw path graph',
@@ -305,6 +316,7 @@ datetime2_v  <- c(
 )
 
 datenum_v  <- c(
+  'blank',
   'scatter plot',
   'scatter plot with trend line',
   'binned scatter plot',
@@ -324,25 +336,236 @@ datenum_v  <- c(
 fac.num_v1 <- c(
   'blank',
   'path graph',
+  'freq. reordered path graph',
+  'alphab. reordered path graph',
   'point graph',
+  'freq. reordered point graph',
+  'alphab. reordered point graph',
   'tile plot',
+  'freq. reordered tile plot',
+  'alphab. reordered tile plot',
   'binned heatmap',
+  'freq. reordered binned heatmap',
+  'alphab. reordered binned heatmap',
   'bw binned heatmap',
+  'bw freq. reordered binned heatmap',
+  'bw alphab. reordered binned heatmap',
   'color binned heatmap',
-  'violin plot', 'filled violin plot',
-  'box plot'
+  'color freq. reordered binned heatmap',
+  'color alphab. reordered binned heatmap',
+  'violin plot',
+  'freq. reordered violin plot',
+  'alphab. reordered violin plot',
+  'filled violin plot',
+  'freq. reordered filled violin plot',
+  'alphab. reordered filled violin plot',
+  'box plot',
+  'freq. reordered box plot',
+  'alphab. reordered box plot'
 )
 
 fac.num_v2 <- c(
+  'blank',
   'bw stacked histogram',
   'color stacked histogram',
   'bw 100% stacked histogram',
   'color 100% stacked histogram',
   'density plot',
+  'bw density plot',
   'color density plot',
   'filled density plot',
+  'bw filled density plot',
   'color filled density plot'
 )
+
+matrixplot_fac.num <- c(
+  'blank',
+  'path graph',
+  'point graph',
+  'tile plot',
+  'binned heatmap',
+  'bw binned heatmap',
+  'color binned heatmap',
+  'violin plot',
+  'filled violin plot',
+  'box plot'
+)
+
+matrixplot_ord.num <- c(
+  'blank',
+  'path graph',
+  'point graph',
+  'tile plot',
+  'binned heatmap',
+  'bw binned heatmap',
+  'color binned heatmap',
+  'violin plot',
+  'filled violin plot',
+  'box plot'
+)
+
+ord.num_v1 <- c(
+  'blank',
+  'path graph',
+  'point graph',
+  'tile plot',
+  'binned heatmap',
+  'bw binned heatmap',
+  'color binned heatmap',
+  'violin plot',
+  'filled violin plot',
+  'box plot'
+)
+
+ord.num_v2 <- c(
+  'blank',
+  'bw stacked histogram',
+  'color stacked histogram',
+  'bw 100% stacked histogram',
+  'color 100% stacked histogram',
+  'density plot',
+  'bw density plot',
+  'color density plot',
+  'bw filled density plot',
+  'color filled density plot'
+)
+
+ord.ord_v0 <- c(
+  'blank',
+  'bw stacked bar graph',
+  'color stacked bar graph',
+  'bw 100% stacked bar graph',
+  'color 100% stacked bar graph'
+)
+
+ord.ord_v1 <- c(
+  'blank',
+  'transposed bw stacked bar graph',
+  'transposed color stacked bar graph',
+  'transposed bw 100% stacked bar graph',
+  'transposed color 100% stacked bar graph'
+  )
+
+ord.ord_v2 <- c(
+  'blank',
+  'bw heatmap',
+  'color heatmap',
+  'color residuals heatmap',
+  'bw contribution to x2 heatmap',
+  'color contribution to x2 heatmap',
+  'bw balloon plot',
+  'color balloon plot',
+  'color residuals balloon plot',
+  'bw contribution to x2 balloon plot',
+  'color contribution to x2 balloon plot'
+)
+
+fac.ord_v0 <- c(
+  'blank',
+  'bw stacked bar graph',
+  'bw freq. reordered stacked bar graph',
+  'bw alphab. reordered stacked bar graph',
+  'color stacked bar graph',
+  'color freq. reordered stacked bar graph',
+  'color alphab. reordered stacked bar graph',
+  'bw 100% stacked bar graph',
+  'bw freq. reordered 100% stacked bar graph',
+  'bw alphab. reordered 100% stacked bar graph',
+  'color 100% stacked bar graph',
+  'color freq. reordered 100% stacked bar graph',
+  'color alphab. reordered 100% stacked bar graph'
+)
+
+fac.ord_v1 <- c(
+  'blank',
+  'transposed color stacked bar graph',
+  'transposed color 100% stacked bar graph'
+)
+
+fac.ord_v2 <- c(
+  'blank',
+  'bw heatmap',
+  'bw freq. reordered heatmap',
+  'bw alphab. reordered heatmap',
+  'color heatmap',
+  'color freq. reordered heatmap',
+  'color alphab. reordered heatmap',
+  'color residuals heatmap',
+  'color freq. reordered residuals heatmap',
+  'color alphab. reordered residuals heatmap',
+  'bw contribution to x2 heatmap',
+  'bw freq. reordered contribution to x2 heatmap',
+  'bw alphab. reordered contribution to x2 heatmap',
+  'color contribution to x2 heatmap',
+  'color freq. reordered contribution to x2 heatmap',
+  'color alphab. reordered contribution to x2 heatmap',
+  'bw balloon plot',
+  'bw freq. reordered balloon plot',
+  'bw alphab. reordered balloon plot',
+  'color balloon plot',
+  'color freq. reordered balloon plot',
+  'color alphab. reordered balloon plot',
+  'color residuals balloon plot',
+  'color freq. reordered residuals balloon plot',
+  'color alphab. reordered residuals balloon plot',
+  'bw contribution to x2 balloon plot',
+  'bw freq. reordered contribution to x2 balloon plot',
+  'bw alphab. reordered contribution to x2 balloon plot',
+  'color contribution to x2 balloon plot',
+  'color freq. reordered contribution to x2 balloon plot',
+  'color alphab. reordered contribution to x2 balloon plot'
+)
+
+fac.fac_v0 <- c(
+  'blank',
+  'color stacked bar graph',
+  'color freq. reordered stacked bar graph',
+  'color alphab. reordered stacked bar graph',
+  'color 100% stacked bar graph',
+  'color freq. reordered 100% stacked bar graph',
+  'color alphab. reordered 100% stacked bar graph'
+)
+
+fac.fac_v1 <- c(
+  'blank',
+  'transposed color stacked bar graph',
+  'transposed color freq. reordered stacked bar graph',
+  'transposed color alphab. reordered stacked bar graph',
+  'transposed color 100% stacked bar graph',
+  'transposed color freq. reordered 100% stacked bar graph',
+  'transposed color alphab. reordered 100% stacked bar graph'
+)
+
+fac.fac_v2 <- c(
+  'blank',
+  'bw heatmap',
+  'color heatmap',
+  'bw freq. reordered heatmap',
+  'color freq. reordered heatmap',
+  'bw alphab. reordered heatmap',
+  'color alphab. reordered heatmap',
+  'color residuals heatmap',
+  'color freq. reordered residuals heatmap',
+  'color alphab. reordered residuals heatmap',
+  'bw contribution to x2 heatmap',
+  'color contribution to x2 heatmap',
+  'bw freq. reordered contribution to x2 heatmap',
+  'color freq. reordered contribution to x2 heatmap',
+  'bw alphab. reordered contribution to x2 heatmap',
+  'color alphab. reordered contribution to x2 heatmap',
+  'bw balloon plot', 'color balloon plot',
+  'bw freq. reordered balloon plot', 'color freq. reordered balloon plot',
+  'bw alphab. reordered balloon plot', 'color alphab. reordered balloon plot',
+  'color residuals balloon plot',
+  'color freq. reordered residuals balloon plot',
+  'color alphab. reordered residuals balloon plot',
+  'bw contribution to x2 balloon plot',
+  'color contribution to x2 balloon plot',
+  'bw freq. reordered contribution to x2 balloon plot',
+  'color freq. reordered contribution to x2 balloon plot',
+  'bw alphab. reordered contribution to x2 balloon plot',
+  'color alphab. reordered contribution to x2 balloon plot'
+  )
 
 #' @noRd
 output_up <- "#' ---

@@ -80,178 +80,178 @@ knitr::opts_chunk$set(
 
 ```{r logical_01, fig.width=12, fig.height=0.83}
 knitr::include_graphics('figures/logical_01-1.png')
-cat("logical = c('line graph', 'point graph', 'point-to-point graph')")
+cat("lgc = c('line graph', 'point graph', 'point-to-point graph')")
 ```
 
 ```{r logical_02, fig.width=12, fig.height=0.83}
 knitr::include_graphics('figures/logical_02-1.png')
-cat("logical = c('tile plot', 'linerange graph')")
+cat("lgc = c('tile plot', 'linerange graph')")
 ```
 
 ```{r logical_03, fig.width=12, fig.height=0.83}
 knitr::include_graphics('figures/logical_03-1.png')
-cat("logical = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
+cat("lgc = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
 ```
 
 ```{r logical_04, fig.width=12, fig.height=0.83}
 knitr::include_graphics('figures/logical_04-1.png')
-cat("logical = c('bar graph', 'bw bar graph', 'color bar graph')")
+cat("lgc = c('bar graph', 'bw bar graph', 'color bar graph')")
 ```
 
 # Ordered factor
 
 ```{r ordered_01, fig.width=12, fig.height=1.5}
 knitr::include_graphics('figures/ordered_01-1.png')
-cat("ordered = c('line graph', 'point graph', 'point-to-point graph')")
+cat("ord = c('line graph', 'point graph', 'point-to-point graph')")
 ```
 
 ```{r ordered_02, fig.width=12, fig.height=1.5}
 knitr::include_graphics('figures/ordered_02-1.png')
-cat("ordered = c('tile plot', 'linerange graph')")
+cat("ord = c('tile plot', 'linerange graph')")
 ```
 
 ```{r ordered_03, fig.width=12, fig.height=1.5}
 knitr::include_graphics('figures/ordered_03-1.png')
-cat("logical = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
+cat("lgc = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
 ```
 
 ```{r ordered_04, fig.width=12, fig.height=1.5}
 knitr::include_graphics('figures/ordered_04-1.png')
-cat("ordered = c('bar graph', 'bw bar graph', 'color bar graph')")
+cat("ord = c('bar graph', 'bw bar graph', 'color bar graph')")
 ```
 
 # Factor
 
 ```{r factor_01, fig.width=12, fig.height=1.17}
 knitr::include_graphics('figures/factor_01-1.png')
-cat("factor = c('line graph', 'freq. reordered line graph', 'alphab. reordered line graph')")
+cat("fac = c('line graph', 'freq. reordered line graph', 'alphab. reordered line graph')")
 ```
 
 ```{r factor_02, fig.width=12, fig.height=1.17}
 knitr::include_graphics('figures/factor_02-1.png')
-cat("factor = c('point-to-point graph', 'freq. reordered point-to-point graph', 'alphab. reordered point-to-point graph')")
+cat("fac = c('point-to-point graph', 'freq. reordered point-to-point graph', 'alphab. reordered point-to-point graph')")
 ```
 
 ```{r factor_03, fig.width=12, fig.height=1.17}
 knitr::include_graphics('figures/factor_03-1.png')
-cat("factor = c('linerange graph', 'freq. reordered linerange graph', 'alphab. reordered linerange graph')")
+cat("fac = c('linerange graph', 'freq. reordered linerange graph', 'alphab. reordered linerange graph')")
 ```
 
 ```{r factor_04, fig.width=12, fig.height=1.17}
 knitr::include_graphics('figures/factor_04-1.png')
-cat("factor = c('point graph', 'freq. reordered point graph', 'alphab. reordered point graph')")
+cat("fac = c('point graph', 'freq. reordered point graph', 'alphab. reordered point graph')")
 ```
 
 ```{r factor_05, fig.width=12, fig.height=1.17}
 knitr::include_graphics('figures/factor_05-1.png')
-cat("factor = c('tile plot', 'freq. reordered tile plot', 'alphab. reordered tile plot')")
+cat("fac = c('tile plot', 'freq. reordered tile plot', 'alphab. reordered tile plot')")
 ```
 
 ```{r factor_06, fig.width=12, fig.height=1.17}
 knitr::include_graphics('figures/factor_06-1.png')
-cat("factor = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
+cat("fac = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
 ```
 
 ```{r factor_07, fig.width=12, fig.height=1.17}
 knitr::include_graphics('figures/factor_07-1.png')
-cat("factor = c('freq. reordered binned heatmap', 
+cat("fac = c('freq. reordered binned heatmap', 
     'bw freq. reordered binned heatmap', 
     'color freq. reordered binned heatmap')")
 ```
 
 ```{r factor_08, fig.width=12, fig.height=1.17}
 knitr::include_graphics('figures/factor_08-1.png')
-cat("factor = c('alphab. reordered binned heatmap', 
+cat("fac = c('alphab. reordered binned heatmap', 
     'bw alphab. reordered binned heatmap', 
     'color alphab. reordered binned heatmap')")
 ```
 
 ```{r factor_09, fig.width=12, fig.height=1.17}
 knitr::include_graphics('figures/factor_09-1.png')
-cat("factor = c('bar graph', 'bw bar graph', 'color bar graph')")
+cat("fac = c('bar graph', 'bw bar graph', 'color bar graph')")
 ```
 
 ```{r factor_10, fig.width=12, fig.height=1.17}
 knitr::include_graphics('figures/factor_10-1.png')
-cat("factor = c('freq. reordered bar graph', 'bw freq. reordered bar graph', 'color freq. reordered bar graph')")
+cat("fac = c('freq. reordered bar graph', 'bw freq. reordered bar graph', 'color freq. reordered bar graph')")
 ```
 
 ```{r factor_11, fig.width=12, fig.height=1.17}
 knitr::include_graphics('figures/factor_11-1.png')
-cat("factor = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')")
+cat("fac = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')")
 ```
 
 # Character
 
 ```{r character_01, fig.width=12, fig.height=3}
 knitr::include_graphics('figures/character_01-1.png')
-cat("character = c('line graph', 'freq. reordered line graph', 'alphab. reordered line graph')")
+cat("cha = c('line graph', 'freq. reordered line graph', 'alphab. reordered line graph')")
 ```
 
 ```{r character_02, fig.width=12, fig.height=3}
 knitr::include_graphics('figures/character_02-1.png')
-cat("character = c('point-to-point graph', 'freq. reordered point-to-point graph', 'alphab. reordered point-to-point graph')")
+cat("cha = c('point-to-point graph', 'freq. reordered point-to-point graph', 'alphab. reordered point-to-point graph')")
 ```
 
 ```{r character_03, fig.width=12, fig.height=3}
 knitr::include_graphics('figures/character_03-1.png')
-cat("character = c('linerange graph', 'freq. reordered linerange graph', 'alphab. reordered linerange graph')")
+cat("cha = c('linerange graph', 'freq. reordered linerange graph', 'alphab. reordered linerange graph')")
 ```
 
 ```{r character_04, fig.width=12, fig.height=3}
 knitr::include_graphics('figures/character_04-1.png')
-cat("character = c('point graph', 'freq. reordered point graph', 'alphab. reordered point graph')")
+cat("cha = c('point graph', 'freq. reordered point graph', 'alphab. reordered point graph')")
 ```
 
 ```{r character_05, fig.width=12, fig.height=3}
 knitr::include_graphics('figures/character_05-1.png')
-cat("character = c('tile plot', 'freq. reordered tile plot', 'alphab. reordered tile plot')")
+cat("cha = c('tile plot', 'freq. reordered tile plot', 'alphab. reordered tile plot')")
 ```
 
 ```{r character_06, fig.width=12, fig.height=3}
 knitr::include_graphics('figures/character_06-1.png')
-cat("character = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
+cat("cha = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
 ```
 
 ```{r character_07, fig.width=12, fig.height=3}
 knitr::include_graphics('figures/character_07-1.png')
-cat("character = c('freq. reordered binned heatmap', 
+cat("cha = c('freq. reordered binned heatmap', 
     'bw freq. reordered binned heatmap', 
     'color freq. reordered binned heatmap')")
 ```
 
 ```{r character_08, fig.width=12, fig.height=3}
 knitr::include_graphics('figures/character_08-1.png')
-cat("character = c('alphab. reordered binned heatmap', 
+cat("cha = c('alphab. reordered binned heatmap', 
     'bw alphab. reordered binned heatmap', 
     'color alphab. reordered binned heatmap')")
 ```
 
 ```{r character_09, fig.width=12, fig.height=3}
 knitr::include_graphics('figures/character_09-1.png')
-cat("character = c('bar graph', 'bw bar graph', 'color bar graph')")
+cat("cha = c('bar graph', 'bw bar graph', 'color bar graph')")
 ```
 
 ```{r character_10, fig.width=12, fig.height=3}
 knitr::include_graphics('figures/character_10-1.png')
-cat("character = c('freq. reordered bar graph', 'bw freq. reordered bar graph', 'color freq. reordered bar graph')")
+cat("cha = c('freq. reordered bar graph', 'bw freq. reordered bar graph', 'color freq. reordered bar graph')")
 ```
 
 ```{r character_11, fig.width=12, fig.height=3}
 knitr::include_graphics('figures/character_11-1.png')
-cat("character = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')")
+cat("cha = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')")
 ```
 
 # Datetime
 
 ```{r datetime_01, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/datetime_01-1.png')
-cat("datetime = c('line graph', 'stepped line graph')")
+cat("dtt = c('line graph', 'stepped line graph')")
 ```
 
 ```{r datetime_02, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/datetime_02-1.png')
-cat("datetime = c('point-to-point graph', 'stepped point-to-point graph')")
+cat("dtt = c('point-to-point graph', 'stepped point-to-point graph')")
 ```
 
 ```{r datetime_05, fig.width=12, fig.height=2.4}
@@ -259,113 +259,113 @@ cat("datetime = c('point-to-point graph', 'stepped point-to-point graph')")
 #                         heights=grid::unit(c(2.4), c("in")),
 #                         ncol=5)
 knitr::include_graphics('figures/datetime_05-1.png')
-cat("datetime = c('point graph')")
+cat("dtt = c('point graph')")
 ```
 
 ```{r datetime_03, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/datetime_03-1.png')
-cat("datetime = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
+cat("dtt = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
 ```
 
 ```{r datetime_04, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/datetime_04-1.png')
-cat("datetime = c('bw heatmap', 'color heatmap')")
+cat("dtt = c('bw heatmap', 'color heatmap')")
 ```
 
 # Numeric
 
 ```{r numeric_01, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_01-1.png')
-cat("numeric = c('area graph')")
+cat("num = c('area graph')")
 ```
 
 ```{r numeric_17, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_17-1.png')
-cat("numeric = c('stepped area graph', 'bw stepped area graph', 'color stepped area graph')")
+cat("num = c('stepped area graph', 'bw stepped area graph', 'color stepped area graph')")
 ```
 
 ```{r numeric_18, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_18-1.png')
-cat("numeric = c('seq. stripe graph', 'bw seq. stripe graph', 'color seq. stripe graph')")
+cat("num = c('seq. stripe graph', 'bw seq. stripe graph', 'color seq. stripe graph')")
 ```
 
 ```{r numeric_02, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_02-1.png')
-cat("numeric = c('line graph', 'stepped line graph')")
+cat("num = c('line graph', 'stepped line graph')")
 ```
 
 ```{r numeric_16, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_16-1.png')
-cat("numeric = c('point-to-point graph', 'stepped point-to-point graph')")
+cat("num = c('point-to-point graph', 'stepped point-to-point graph')")
 ```
 
 ```{r numeric_03, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_03-1.png')
-cat("numeric = c('point graph', 'bw point graph', 'color point graph')")
+cat("num = c('point graph', 'bw point graph', 'color point graph')")
 ```
 
 ```{r numeric_04, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_04-1.png')
-cat("numeric = c('binned point graph', 'bw binned point graph', 'color binned point graph')")
+cat("num = c('binned point graph', 'bw binned point graph', 'color binned point graph')")
 ```
 
 ```{r numeric_05, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_05-1.png')
-cat("numeric = c('point graph with trend line', 'bw point graph with trend line', 'color point graph with trend line')")
+cat("num = c('point graph with trend line', 'bw point graph with trend line', 'color point graph with trend line')")
 ```
 
 ```{r numeric_06, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_06-1.png')
-cat("numeric = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
+cat("num = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
 ```
 
 ```{r numeric_15, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_15-1.png')
-cat("numeric = c('bw heatmap', 'color heatmap')")
+cat("num = c('bw heatmap', 'color heatmap')")
 ```
 
 ```{r numeric_07, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_07-1.png')
-cat("numeric = c('stripe graph', 'bw stripe graph', 'color stripe graph')")
+cat("num = c('stripe graph', 'bw stripe graph', 'color stripe graph')")
 ```
 
 ```{r numeric_08, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_08-1.png')
-cat("numeric = c('binned stripe graph', 'binned stripe graph', 'binned stripe graph')")
+cat("num = c('binned stripe graph', 'binned stripe graph', 'binned stripe graph')")
 ```
 
 ```{r numeric_09, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_09-1.png')
-cat("numeric = c('bar graph', 'bw bar graph', 'color bar graph')")
+cat("num = c('bar graph', 'bw bar graph', 'color bar graph')")
 ```
 
 ```{r numeric_10, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_10-1.png')
-cat("numeric = c('histogram', 'bw histogram', 'color histogram')")
+cat("num = c('histogram', 'bw histogram', 'color histogram')")
 ```
 
 ```{r numeric_11, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_11-1.png')
-cat("numeric = c('freq. polygon')")
+cat("num = c('freq. polygon')")
 ```
 
 ```{r numeric_12, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_12-1.png')
-cat("numeric = c('density plot', 'filled density plot')")
+cat("num = c('density plot', 'filled density plot')")
 ```
 
 ```{r numeric_13, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_13-1.png')
-cat("numeric = c('violin plot', 'filled violin plot')")
+cat("num = c('violin plot', 'filled violin plot')")
 ```
 
 ```{r numeric_14, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_14-1.png')
-cat("numeric = c('box plot', '3 uniaxial', 'qq plot')")
+cat("num = c('box plot', '3 uniaxial', 'qq plot')")
 ```
 
 ```{r numeric_19, fig.width=12, fig.height=2.4}
 knitr::include_graphics('figures/numeric_19-1.png')
-cat("numeric = c('ecdf plot', 'point ecdf plot', 'stepped ecdf plot')")
+cat("num = c('ecdf plot', 'point ecdf plot', 'stepped ecdf plot')")
 ```
 

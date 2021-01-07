@@ -279,7 +279,7 @@ cat("factor = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph',
 
 # Character
 
-```{r character_01, fig.width=12, fig.height=3}
+```{r character_01, fig.width=12, fig.height=3, cache.lazy = TRUE}
 data(rockArt, package = "DAAG")
 gridExtra::grid.arrange(plotup(rockArt, "District", "line graph", output = 'plots pane'),
                         plotup(rockArt, "District", "freq. reordered line graph", output = 'plots pane'),

@@ -14,9 +14,9 @@ This package introduces:
   - `matrixplot()` graphics, a generalization of a matrix plot in the
     sense that the graphic that is replicated in each cell of the matrix
     can be selected from the catalogue of bivariate graphics.
-  - `plotup()` function, which complements the previous two functions in
-    that it presents a particular graphic for a specific variable or a
-    limited number of variables of a dataset.
+  - `plotup()` function, which complements the previous three functions
+    in that it presents a particular graphic for a specific variable or
+    a limited number of variables of a dataset.
 
 Future work will include the ability to draw `longplot()` and `plotup()`
 graphics from a selection of a wider number and combinations of types of
@@ -35,11 +35,8 @@ And then load the functions included in the package:
 
 ``` r
 library(brinton)
-#> Registered S3 methods overwritten by 'ggplot2':
-#>   method         from 
-#>   [.quosures     rlang
-#>   c.quosures     rlang
-#>   print.quosures rlang
+#> Warning: replacing previous import 'scales::viridis_pal' by
+#> 'viridis::viridis_pal' when loading 'brinton'
 #> M a G i C i N G R a P H S
 ```
 
@@ -51,7 +48,7 @@ new `wideplot()` function does the same but graphically. As an example,
 just run:
 
 ``` r
-wideplot(infert)
+wideplot(esoph)
 ```
 
 This function includes the argument `dataclass` that sets the types of
@@ -60,7 +57,7 @@ are listed. As an example, the following line will plot only the numeric
 variables included in the iris dataset:
 
 ``` r
-wideplot(infert, dataclass = c("numeric"))
+wideplot(esoph, dataclass = c("numeric"))
 ```
 
 Although, the `wideplot()` function shows only a small set of the
@@ -69,7 +66,7 @@ the available graphics for some specific variable included in the
 dataset, then the `longplot()` is useful. As an example, just run:
 
 ``` r
-longplot(infert, "pooled.stratum")
+longplot(esoph, "ncases")
 ```
 
 Any of the graphics presented in the `longplot()` output can also be
@@ -78,7 +75,7 @@ graphics one can, for instance, run:
 
 ``` r
 wideplot(
-  infert,
+  esoph,
   dataclass = c("numeric"),
   numeric = c("point graph", "binned point graph", "binned heatmap"),
   label = TRUE
@@ -92,7 +89,7 @@ of the `ncol` argument:
 
 ``` r
 wideplot(
-  infert,
+  esoph,
   dataclass = c("numeric"),
   numeric = c("point graph", "binned point graph", "binned heatmap"),
   label = TRUE,
@@ -103,34 +100,34 @@ wideplot(
 While the wideplot function displays a grid of univariate graphics, if a
 matrix of bivariate graphics is intended for variables of one particular
 type, the matrixplot() function is useful. Type for instance the
-following
-code:
+following code:
 
 ``` r
-matrixplot(esoph, dataclass = "numeric", diagram = "bw contour plot with data points")
+matrixplot(esoph, dataclass = "ordered", diagram = "color heatmap")
 ```
 
 Same thing if the desired matrix has to include graphics from variables
-of two different types (note that the graphic type has to be
+of two different types (please note that the graphic type has to be
 compatible):
 
 ``` r
-matrixplot(esoph, dataclass = c("numeric", "factor"), diagram = "box plot")
+matrixplot(esoph, dataclass = c("numeric", "ordered"), diagram = "box plot")
 ```
 
 If the user is interested in one particular graphic then the function
 `plotup()` is useful.
 
 ``` r
-plotup(infert, "pooled.stratum", "color binned stripe graph")
+plotup(esoph, "ncases", "color histogram")
 ```
 
 <img src="man/figures/README-plotup1-1.png" width="40%" />
 
-Or, as example of a graphic that requires more than one input variable:
+Or, as an example of a graphic that requires more than one input
+variable:
 
 ``` r
-plotup(faithful, c("waiting", "eruptions"), "color scatter plot")
+plotup(esoph, c("agegp", "alcgp"), "color stacked bar graph")
 ```
 
 <img src="man/figures/README-plotup2-1.png" width="40%" />
@@ -138,27 +135,23 @@ plotup(faithful, c("waiting", "eruptions"), "color scatter plot")
 The default output of the `plotup()` function is a `c("gg", "ggplot")`
 object but the `output` argument allows, as a side effect, to write and
 present the graphic in a html file or to print the ggplot2 function in
-the
-console:
+the console:
 
 ``` r
-plotup(infert, "pooled.stratum", "color binned stripe graph", output = "html")
+plotup(esoph, c("agegp", "alcgp"), "color stacked bar graph", output = "html")
 ```
 
 ``` r
-plotup(faithful, c("waiting", "eruptions"), "color scatter plot", output = "html")
-```
-
-``` r
-plotup(infert, "pooled.stratum", "color binned stripe graph", output = "console")
-#> binwidth <- (max(infert['pooled.stratum'], na.rm=TRUE)-min(infert['pooled.stratum'], na.rm=TRUE))/20
-#> ggplot(infert, aes(x=pooled.stratum)) +
-#>   geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +
-#>   scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3)) +
+plotup(esoph, c("agegp", "alcgp"), "color stacked bar graph", output = "console")
+#> 
+#> ggplot(esoph, aes(x=alcgp, fill=agegp)) +
+#>   geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+#>   viridis::scale_fill_viridis(discrete=TRUE, direction = -1) +
+#>   guides(fill=guide_legend(title=as.character({as.character(substitute(vars1))}), keyheight = unit(0.4, 'cm'),
+#>                                         title.theme = element_text(size = 9, colour = 'gray20'),
+#>                                         reverse = TRUE)) +
+#>   coord_flip() +
 #>   theme_minimal() +
 #>   theme(panel.grid = element_line(colour = NA),
-#>     axis.text.y =element_text(color = NA),
-#>     axis.title.y =element_text(color = NA),
-#>     axis.ticks.x =element_line(color = 'black'),
-#>     legend.position='none')
+#>     axis.ticks.x = element_line(color = 'black'))
 ```

@@ -37,10 +37,18 @@ plotup <- function(data,
                    dir = tempdir()
                    )
 {
+
+# check pandoc ------------------------------------------------------------
+
+
   if (rmarkdown::pandoc_available("1.12.3") == FALSE) {print(warning_pandoc)}
   else if (rmarkdown::pandoc_available("1.12.3") == TRUE) {
   my_env <- new.env()
-  if(is.data.frame(data) == FALSE) {
+
+# check class -------------------------------------------------------------
+
+
+    if(is.data.frame(data) == FALSE) {
     stop("I am so sorry, but this function only works with a data.frame input!\n",
          "You have provided an object of class ", class(data))
   }
@@ -49,165 +57,271 @@ plotup <- function(data,
     # data <- as.data.frame(data)
     # envir=my_env
   }
+
+# trans vars --------------------------------------------------------------
+
+  if (length(vars) == 1) {
+    if (is.logical(unlist(data[, vars])) == TRUE) {v <- "L"}
+    else if (is.character(unlist(data[, vars])) == TRUE) {v <- "C"}
+    else if (is.factor(unlist(data[, vars])) == TRUE &
+             is.ordered(unlist(data[, vars])) == FALSE) {v <- "F"}
+    else if (is.ordered(unlist(data[, vars])) == TRUE) {v <- "O"}
+    else if (lubridate::is.instant(unlist(data[, vars])) == TRUE) {v <- "D"}
+    else if (is.numeric(unlist(data[, vars])) == TRUE) {v <- "N"}
+  }
+  else if (length(vars) == 2) {
+    if (is.logical(unlist(data[, vars[1]])) == TRUE) {v <- "L"}
+    else if (is.character(unlist(data[, vars[1]])) == TRUE) {v <- "C"}
+    else if (is.factor(unlist(data[, vars[1]])) == TRUE &
+             is.ordered(unlist(data[, vars[1]])) == FALSE) {v <- "F"}
+    else if (is.ordered(unlist(data[, vars[1]])) == TRUE) {v <- "O"}
+    else if (lubridate::is.instant(unlist(data[, vars[1]])) == TRUE) {v <- "D"}
+    else if (is.numeric(unlist(data[, vars[1]])) == TRUE) {v <- "N"}
+    if (is.logical(unlist(data[, vars[2]])) == TRUE) {v[2] <- "L"}
+    else if (is.character(unlist(data[, vars[2]])) == TRUE) {v[2] <- "C"}
+    else if (is.factor(unlist(data[, vars[2]])) == TRUE &
+             is.ordered(unlist(data[, vars[2]])) == FALSE) {v[2] <- "F"}
+    else if (is.ordered(unlist(data[, vars[2]])) == TRUE) {v[2] <- "O"}
+    else if (lubridate::is.instant(unlist(data[, vars[2]])) == TRUE) {v[2] <- "D"}
+    else if (is.numeric(unlist(data[, vars[2]])) == TRUE) {v[2] <- "N"}
+  }
+
+# check vars --------------------------------------------------------------
+
+
   string      <- " argument expects a character vector"
   if(is.character(vars)  == FALSE) {
     stop(paste0("The 'vars'",  string))
   }
     if(length(vars) > 2) {
     stop("I am so sorry but, up to now, only one and two variables combinations have been considered.")
-  }
-  ## Value validation: function's argument
-  ### dataset
-  ### variable
+    }
+
+# figure dims -------------------------------------------------------------
+  GAwidth <- 10
+
   if (length(vars) == 1 &
-      (
-        is.logical(unlist(data[, vars])) == TRUE |
-        is.factor(unlist(data[, vars])) == TRUE |
-        is.character(unlist(data[, vars])) == TRUE
-      )) {
-    long <- length(unique(unlist(data[, vars]))) / 6 + 0.5
-  }
-  else if (length(vars) == 1 &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
-    long <- 3.7
-  }
-  else if (length(vars) == 2 &
-           (is.numeric(unlist(data[, vars[1]])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars[1]])) == TRUE) &
-           (is.numeric(unlist(data[, vars[2]])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars[2]])) == TRUE)) {
-    long <- 3.7
-  }
-  else if (length(vars) == 2 &
-           any(fac.num_v1 == diagram) &
-           ((is.numeric(unlist(data[, vars[1]])) == TRUE  &
-            is.factor(unlist(data[, vars[2]])) == TRUE) |
-           (is.factor(unlist(data[, vars[1]])) == TRUE  &
-            is.numeric(unlist(data[, vars[2]])) == TRUE))
+      any(v %in% c("L", "F", "O", "C"))
+      ) {
+    GAheight <- length(unique(unlist(data[, vars]))) / 2
+  } else if (length(vars) == 1 &
+           any(v %in% c("N", "D"))
            ) {
-    long <- length(unique(unlist(data[, vars][sapply(data[, vars], is.factor)])))/6 + 0.5
-  }
-  else if (length(vars) == 2 &
+    GAheight <- 6.2
+  } else if (length(vars) == 2 &
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))
+           ) {
+    GAheight <- 6.2
+  } else if (length(vars) == 2 &
+           any(fac.num_v1 == diagram) &
+           any(v == c("N")) &
+           any(v == c("F"))
+           ) {
+    GAheight <- length(unique(unlist(data[, vars][sapply(data[, vars], is.factor)])))/2
+  } else if (length(vars) == 2 &
            any(fac.num_v2 == diagram) &
-           ((is.numeric(unlist(data[, vars[1]])) == TRUE  &
-            is.factor(unlist(data[, vars[2]])) == TRUE) |
-           (is.factor(unlist(data[, vars[1]])) == TRUE  &
-            is.numeric(unlist(data[, vars[2]])) == TRUE))
+           any(v == c("N")) &
+           any(v == c("F"))
   ) {
-    long <- 3.7
+    GAheight <- 6.2
+  } else if (length(vars) == 2 &
+             any(ord.num_v1 == diagram) &
+             any(v == c("N")) &
+             any(v == c("O"))
+  ) {
+    GAheight <- length(unique(unlist(data[, vars][sapply(data[, vars], is.ordered)])))/2
+  } else if (length(vars) == 2 &
+             any(ord.num_v2 == diagram) &
+             any(v == c("N")) &
+             any(v == c("O"))
+  ) {
+    GAheight <- 6.2
+  } else if (length(vars) == 2 &
+             any(ord.ord_v0 == diagram) &
+             identical(v, c("O", "O"))
+  ) {
+    GAheight <- length(unique(unlist(data[, vars[2]])))/1
+  } else if (length(vars) == 2 &
+             any(ord.ord_v1 == diagram) &
+             identical(v, c("O", "O"))
+  ) {
+    GAheight <- length(unique(unlist(data[, vars[1]])))/1
+  } else if (length(vars) == 2 &
+             any(ord.ord_v2 == diagram) &
+             identical(v, c("O", "O"))
+  ) {
+    GAheight <- length(unique(unlist(data[, vars[2]])))/1
+    GAwidth  <- length(unique(unlist(data[, vars[1]])))/1
+  } else if (length(vars) == 2 &
+             any(fac.fac_v0 == diagram) &
+             identical(v, c("F", "F"))
+  ) {
+    GAheight <- length(unique(unlist(data[, vars[2]])))/1
+  } else if (length(vars) == 2 &
+             any(fac.fac_v1 == diagram) &
+             identical(v, c("F", "F"))
+  ) {
+    GAheight <- length(unique(unlist(data[, vars[1]])))/1
+  } else if (length(vars) == 2 &
+             any(fac.fac_v2 == diagram) &
+             identical(v, c("F", "F"))
+  ) {
+    GAheight <- length(unique(unlist(data[, vars[2]])))/1
+    GAwidth  <- length(unique(unlist(data[, vars[1]])))/1
+  } else if (length(vars) == 2 &
+             any(fac.ord_v0 == diagram) &
+             any(v == c("F")) &
+             any(v == c("O"))
+  ) {
+    GAheight <- length(unique(unlist(data[, vars][!sapply(data[, vars], is.ordered)])))/1
+  } else if (length(vars) == 2 &
+             any(fac.ord_v1 == diagram) &
+             any(v == c("F")) &
+             any(v == c("O"))
+  ) {
+    GAheight <- length(unique(unlist(data[, vars][sapply(data[, vars], is.ordered)])))/1
+  } else if (length(vars) == 2 &
+             any(fac.ord_v2 == diagram) &
+             any(v == c("F")) &
+             any(v == c("O"))
+  ) {
+    GAheight <- length(unique(unlist(data[, vars][!sapply(data[, vars], is.ordered)])))/1
+    GAwidth  <- length(unique(unlist(data[, vars][sapply(data[, vars], is.ordered)])))/1
   } else {
-    stop("This type of variable has not been yet considered")
+    stop("This data and graphic type does not match or has not been yet included in the brinton's specimen.")
   }
-  ### diagram
-  string      <- " argument expects a character string"
-  if (length(vars) == 1 &
-      lubridate::is.instant(unlist(data[, vars])) == TRUE &
-      (diagram %in% datetime_v) == FALSE)
-  {
-    stop(
-      paste0(
-        "The 'diagram'",
-        string,
-        " which values can be :\n '",
-        paste0(head(datetime_v, 10), collapse = "'\n '"),
-        "'\n  ...\n ",
-        spmn1
-      )
-    )
-  }
-  if (length(vars) == 1 &
-      is.logical(unlist(data[, vars])) == TRUE &
-      (diagram %in% logical_v) == FALSE)
-  {
-    stop(
-      paste0(
-        "The 'diagram'",
-        string,
-        " which values can be :\n '",
-        paste0(head(logical_v, 10), collapse = "'\n '"),
-        "'\n  ...\n ",
-        spmn1
-      )
-    )
-  }
-  if (length(vars) == 1 &
-      is.ordered(unlist(data[, vars])) == TRUE &
-      (diagram %in% ordered_v) == FALSE)
-  {
-    stop(
-      paste0(
-        "The 'diagram'",
-        string,
-        " which values can be :\n '",
-        paste0(head(ordered_v, 10), collapse = "'\n '"),
-        "'\n  ...\n ",
-        spmn1
-      )
-    )
-  }
-  if (length(vars) == 1 &
-      is.factor(unlist(data[, vars])) == TRUE &
-      is.ordered(unlist(data[, vars])) == FALSE &
-      (diagram %in% factor_v) == FALSE)
-  {
-    stop(
-      paste0(
-        "The 'diagram'",
-        string,
-        " which values can be :\n '",
-        paste0(head(factor_v, 10), collapse = "'\n '"),
-        "'\n  ...\n ",
-        spmn1
-      )
-    )
-  }
-  if (length(vars) == 1 &
-      is.numeric(unlist(data[, vars])) == TRUE &
-      (diagram %in% numeric_v == FALSE))
-  {
-    stop(
-      paste0(
-        "The 'diagram'",
-        string,
-        " which values can be :\n '",
-        paste0(head(numeric_v, 10), collapse = "'\n '"),
-        "'\n  ...\n ",
-        spmn1
-      )
-    )
-  }
-  if (length(vars) == 2 &
-      is.numeric(unlist(data[, vars])) == TRUE &
-      (diagram %in% numeric2_v == FALSE))
-  {
-    stop(
-      paste0(
-        "The 'diagram'",
-        string,
-        " which values can be :\n '",
-        paste0(head(numeric2_v, 10), collapse = "'\n '"),
-        "'\n  ...\n ",
-        spmn2
-      )
-    )
-  }
-  if (length(vars) == 1 &
-      is.character(unlist(data[, vars])) == TRUE &
-      (diagram %in% character_v) == FALSE)
-  {
-    stop(
-      paste0(
-        "The 'diagram'",
-        string,
-        " which values can be :\n '",
-        paste0(head(character_v, 10), collapse = "'\n '"),
-        "'\n  ...\n ",
-        spmn1
-      )
-    )
-  }
-  ### output
+
+# check diagram -----------------------------------------------------------
+
+
+  # string      <- " argument expects a character string"
+  # if (length(vars) == 1 &
+  #     lubridate::is.instant(unlist(data[, vars])) == TRUE &
+  #     (diagram %in% datetime_v) == FALSE)
+  # {
+  #   stop(
+  #     paste0(
+  #       "The 'diagram'",
+  #       string,
+  #       " which values can be :\n '",
+  #       paste0(head(datetime_v, 10), collapse = "'\n '"),
+  #       "'\n  ...\n ",
+  #       spmn1
+  #     )
+  #   )
+  # }
+  # if (length(vars) == 1 &
+  #     is.logical(unlist(data[, vars])) == TRUE &
+  #     (diagram %in% logical_v) == FALSE)
+  # {
+  #   stop(
+  #     paste0(
+  #       "The 'diagram'",
+  #       string,
+  #       " which values can be :\n '",
+  #       paste0(head(logical_v, 10), collapse = "'\n '"),
+  #       "'\n  ...\n ",
+  #       spmn1
+  #     )
+  #   )
+  # }
+  # if (length(vars) == 1 &
+  #     is.ordered(unlist(data[, vars])) == TRUE &
+  #     (diagram %in% ordered_v) == FALSE)
+  # {
+  #   stop(
+  #     paste0(
+  #       "The 'diagram'",
+  #       string,
+  #       " which values can be :\n '",
+  #       paste0(head(ordered_v, 10), collapse = "'\n '"),
+  #       "'\n  ...\n ",
+  #       spmn1
+  #     )
+  #   )
+  # }
+  # if (length(vars) == 1 &
+  #     is.factor(unlist(data[, vars])) == TRUE &
+  #     is.ordered(unlist(data[, vars])) == FALSE &
+  #     (diagram %in% factor_v) == FALSE)
+  # {
+  #   stop(
+  #     paste0(
+  #       "The 'diagram'",
+  #       string,
+  #       " which values can be :\n '",
+  #       paste0(head(factor_v, 10), collapse = "'\n '"),
+  #       "'\n  ...\n ",
+  #       spmn1
+  #     )
+  #   )
+  # }
+  # if (length(vars) == 1 &
+  #     is.numeric(unlist(data[, vars])) == TRUE &
+  #     (diagram %in% numeric_v == FALSE))
+  # {
+  #   stop(
+  #     paste0(
+  #       "The 'diagram'",
+  #       string,
+  #       " which values can be :\n '",
+  #       paste0(head(numeric_v, 10), collapse = "'\n '"),
+  #       "'\n  ...\n ",
+  #       spmn1
+  #     )
+  #   )
+  # }
+  # if (length(vars) == 2 &
+  #     sum(sapply(unlist(data[, vars]), is.numeric) == TRUE) == 2 &
+  #     (diagram %in% numeric2_v == FALSE))
+  # {
+  #   stop(
+  #     paste0(
+  #       "The 'diagram'",
+  #       string,
+  #       " which values can be :\n '",
+  #       paste0(head(numeric2_v, 10), collapse = "'\n '"),
+  #       "'\n  ...\n ",
+  #       spmn2
+  #     )
+  #   )
+  # }
+  # if (length(vars) == 2 &
+  #     any(sapply(unlist(data[, vars]), is.numeric) == TRUE) &
+  #     any(sapply(unlist(data[, vars]), is.factor) == TRUE) &
+  #     (diagram %in% fac.num_v1 == FALSE))
+  # {
+  #   stop(
+  #     paste0(
+  #       "The 'diagram'",
+  #       string,
+  #       " which values can be :\n '",
+  #       paste0(head(fac.num_v1, 10), collapse = "'\n '"),
+  #       "'\n  ...\n ",
+  #       spmn2
+  #     )
+  #   )
+  # }
+  # if (length(vars) == 1 &
+  #     is.character(unlist(data[, vars])) == TRUE &
+  #     (diagram %in% character_v) == FALSE)
+  # {
+  #   stop(
+  #     paste0(
+  #       "The 'diagram'",
+  #       string,
+  #       " which values can be :\n '",
+  #       paste0(head(character_v, 10), collapse = "'\n '"),
+  #       "'\n  ...\n ",
+  #       spmn1
+  #     )
+  #   )
+  # }
+
+# check output ------------------------------------------------------------
+
+
   output_v <- c('html',
                 'plots pane',
                 'console')
@@ -219,21 +333,36 @@ plotup <- function(data,
       "'"
     ))
   }
+
+# strings -----------------------------------------------------------------
+
+
   theme <- "theme_minimal()"
-  theme_detail <- "theme(panel.grid = element_line(colour = NA),
+  theme_basic <- "theme_minimal() +
+  theme(panel.grid = element_line(colour = NA),
   \x20\x20axis.ticks = element_line(color = 'black'))\n"
-  theme_detail_y <- "theme(panel.grid = element_line(colour = NA),
+  theme_basic_y <- "theme_minimal() +
+  theme(panel.grid = element_line(colour = NA),
   \x20\x20axis.text.y = element_text(color = NA),
   \x20\x20axis.title.y = element_text(color = NA),
   \x20\x20axis.ticks.x = element_line(color = 'black'))\n"
-  theme_detail_z <- "theme(panel.grid = element_line(colour = NA),
+  theme_basic_z <- "theme_minimal() +
+  theme(panel.grid = element_line(colour = NA),
   \x20\x20axis.ticks = element_line(color = 'black'),
   \x20\x20legend.position='none')\n"
-  theme_detail_yz <- "theme(panel.grid = element_line(colour = NA),
-  \x20\x20axis.text.y =element_text(color = NA),
-  \x20\x20axis.title.y =element_text(color = NA),
-  \x20\x20axis.ticks.x =element_line(color = 'black'),
+  theme_basic_yz <- "theme_minimal() +
+  theme(panel.grid = element_line(colour = NA),
+  \x20\x20axis.text.y = element_text(color = NA),
+  \x20\x20axis.title.y = element_text(color = NA),
+  \x20\x20axis.ticks.x = element_line(color = 'black'),
   \x20\x20legend.position='none')\n"
+  theme_basic_stack <- "theme_minimal() +
+  theme(panel.grid = element_line(colour = NA),
+  \x20\x20axis.ticks.x = element_line(color = 'black'))"
+  theme_basic_grid <- "theme_minimal() +
+  theme(axis.ticks = element_blank(),
+  \x20\x20axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+  \x20\x20panel.grid = element_line(colour = NA))"
   getdens2 <- "get_density <- function(x, y, ...) {
   dens <- MASS::kde2d(x, y, ...)
   ix <- findInterval(x, dens$x)
@@ -241,15 +370,35 @@ plotup <- function(data,
   ii <- cbind(ix, iy)
   return(dens$z[ii])
 }\n"
-  scale_bw_l <- "scale_color_gradientn(colours = colorRampPalette(c('#E5E5E5', '#000000'))(2))"
-  scale_color_l <- "scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3))"
-  scale_bw_a <- "scale_fill_gradientn(colours = colorRampPalette(c('#E5E5E5', '#000000'))(2))"
-  scale_color_a <- "scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3))"
-  scl_gray_disc_l <- "scale_color_brewer(type = 'seq', palette = 'Greys')"
-  scl_gray_disc_a <- "scale_fill_brewer(type = 'seq', palette = 'Greys')"
-  scl_color_disc_l <- "scale_color_brewer(type = 'qual', palette = 'Set1')"
-  scl_color_disc_a <- "scale_fill_brewer(type = 'qual', palette = 'Set1')"
-  getdens1 <- "add_density_1D <- function(a, b) {
+  scale_bw_l        <- "scale_color_gradientn(colours = colorRampPalette(c('#E5E5E5', '#000000'))(2))"
+  scale_bw_l_p      <- "scale_color_gradientn(colours = colorRampPalette(c('#E5E5E5', '#000000'))(2), labels = scales::label_percent())"
+  scale_color_l     <- "scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3))"
+  scale_value_l     <- "scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2))"
+  scale_value_sym   <- "scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(11, 'RdYlGn')))(3), limits = c(-abs(max(df[,3])), abs(max(df[,3]))))"
+  scale_value_sym_l <- "scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(11, 'RdYlGn')))(3), limits = c(-abs(max(df[,3])), abs(max(df[,3]))))"
+  scale_seq_l       <- "viridis::scale_color_viridis(direction = -1)"
+  scale_bw_a        <- "scale_fill_gradientn(colours = colorRampPalette(c('#E5E5E5', '#000000'))(2))"
+  scale_bw_a_p      <- "scale_fill_gradientn(colours = colorRampPalette(c('#E5E5E5', '#000000'))(2), labels = scales::label_percent())"
+  scale_color_a     <- "scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3))"
+  scale_value_a     <- "scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2))"
+  scale_seq_a       <- "scale_color_gradientn(colours = colorRampPalette(RColorBrewer::brewer.pal(3, 'YlOrBr'))(3))"
+  p_scale_value_a_p <- "scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(11, 'RdYlGn')))(3), labels = scales::label_percent())"
+  scl_gray_disc_l   <- "scale_color_grey(start = 0.8, end = 0.2)"
+  scl_gray_disc_a   <- "scale_fill_grey(start = 0.8, end = 0.2)"
+  scl_color_disc_l  <- "scale_color_brewer(type = 'qual', palette = 'Set1')"
+  scl_color_disc_a  <- "scale_fill_brewer(type = 'qual', palette = 'Set1')"
+  scl_viridis_a     <- "viridis::scale_fill_viridis(discrete=TRUE, direction = -1)"
+  scl_viridis_ad    <- "viridis::scale_fill_viridis(direction = -1)"
+  scl_viridis_l     <- "viridis::scale_color_viridis(discrete=TRUE, direction = -1)"
+  p_legend          <- "guides(fill=guide_legend(title=as.character({as.character(substitute(vars1))}), keyheight = unit(0.4, 'cm'),
+                                        title.theme = element_text(size = 9, colour = 'gray20'),
+                                        reverse = TRUE))"
+  p_labs_fill       <- "labs(x =  names(df)[1], y = names(df)[2], fill = names(df)[3])"
+  p_labs_color      <- "labs(x =  names(df)[1], y = names(df)[2], color = names(df)[3])"
+  p_guides          <- "guides(fill = guide_colorbar(barwidth = unit(2, 'mm'), title.theme = element_text(size = 9, colour = 'gray30')),
+                      color = guide_colorbar(barwidth = unit(2, 'mm'), title.theme = element_text(size = 9, colour = 'gray30')),
+                      size = FALSE)"
+  getdens1          <- "add_density_1D <- function(a, b) {
   a$b <- unlist(a[, b])
   if (length(unique(na.omit(a$b))) == 1) {
     dens <- 1 / length(a$b)
@@ -278,6 +427,10 @@ plotup <- function(data,
   times   = c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')
   )\n"
   )
+
+# reorder -----------------------------------------------------------------
+
+
   reorder_freq <- paste0(deparse(substitute(data)),
                          "[['",
                          as.character(substitute(vars)),
@@ -306,6 +459,15 @@ plotup <- function(data,
                          "[['",
                          as.character(substitute(vars)),
                              "']]))")
+reorder_freq2 <- "
+data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)"
+
+# 1var diagrams -----------------------------------------------------------
+
+
+  q <- ""
   if (diagram == "blank") {
     vars <- vars[1]
     p <- glue::glue(
@@ -320,12 +482,13 @@ plotup <- function(data,
     \x20\x20\x20\x20panel.grid = element_line(colour = NA))"
     )
   }
+
   else if (length(vars) == 1 &
            diagram == "normal qq plot" &
-           is.numeric(unlist(data[, vars])) == TRUE
+           identical(v, "N")
   ) {
     vars <- vars[1]
-    p <- paste0(
+    q <- paste0(
                 "
                 qqplot <- function (pp_df,
                 pp_var,
@@ -343,7 +506,9 @@ plotup <- function(data,
                 theme_minimal() +
                 theme(axis.ticks=element_line(color='black'),
                 panel.grid = element_line(colour = NA),
-                axis.title = element_text(colour = '#333333'))}
+                axis.title = element_text(colour = '#333333'))}")
+    p <- paste0(
+                "
                 qqplot(",
                 deparse(substitute(data)),
                 ", '",
@@ -353,11 +518,9 @@ plotup <- function(data,
   }
   else if (length(vars) == 1 &
            diagram == "3 uniaxial" &
-           is.numeric(unlist(data[, vars])) == TRUE
-  ) {
+           identical(v, "N")) {
     vars <- vars[1]
-    p <- paste0(
-"
+    q <- paste0("
 pp_3uniaxial <- function(data,
                          variable,
                          pp_size = 2)  {
@@ -377,8 +540,9 @@ pp_3uniaxial <- function(data,
       axis.title.x = element_text(colour = '#333333'),
       axis.title.y=element_blank())
     pp_plot
-  }
-pp_3uniaxial(",
+  }"
+    )
+    p <- paste0("pp_3uniaxial(",
                 deparse(substitute(data)),
                 ", '",
                 as.character(substitute(vars)),
@@ -386,158 +550,167 @@ pp_3uniaxial(",
   ")
   }
   else if (length(vars) == 1 &
-           diagram == "freq. reordered line graph") {
+           diagram == "freq. reordered line graph" &
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_freq}"
+    )
     p <- glue::glue(
-      "{reorder_freq}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "alphab. reordered line graph") {
+           diagram == "alphab. reordered line graph" &
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- reorder_alphab
     p <- glue::glue(
-      "{reorder_alphab}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
+      )
+  }
+  else if (length(vars) == 1 &
+           diagram == "point-to-point graph" &
+           any(v == c("D", "N"))) {
+    vars <- vars[1]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
+      \x20\x20geom_path(aes(group=1)) +
+      \x20\x20geom_point() +
+      \x20\x20labs(x='seq') +
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "point-to-point graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           any(v == c("L", "C", "F", "O"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_observ}"
+    )
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "point-to-point graph" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "freq. reordered point-to-point graph" &
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_freq}"
+    )
     p <- glue::glue(
-      "{reorder_observ}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "freq. reordered point-to-point graph") {
+           diagram == "alphab. reordered point-to-point graph" &
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_alphab}"
+    )
     p <- glue::glue(
-      "{reorder_freq}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
-    )
-  }
-  else if (length(vars) == 1 &
-           diagram == "alphab. reordered point-to-point graph") {
-    vars <- vars[1]
-    p <- glue::glue(
-      "{reorder_alphab}
-      ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
-      \x20\x20geom_path(aes(group=1)) +
-      \x20\x20geom_point() +
-      \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "stepped point-to-point graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           any(v == c("D", "N"))) {
     vars <- vars[1]
-    p <- glue::glue("
+    p <- glue::glue(
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_step(aes(group=1)) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "point graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           any(v == c("D", "N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "point graph" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "point graph" &
+           any(v == c("L", "C", "F", "O"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_observ}"
+    )
     p <- glue::glue(
-      "{reorder_observ}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "freq. reordered point graph") {
+           diagram == "freq. reordered point graph" &
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_freq}"
+    )
     p <- glue::glue(
-      "{reorder_freq}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "alphab. reordered point graph") {
+           diagram == "alphab. reordered point graph" &
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_alphab}"
+    )
     p <- glue::glue(
-      "{reorder_alphab}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_point() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "point graph with trend line" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -545,363 +718,349 @@ pp_3uniaxial(",
       \x20\x20geom_point() +
       \x20\x20geom_smooth(method = 'loess', size=0.5) +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "line graph" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "line graph" &
+           any(v == c("L", "C", "F", "O"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_observ}"
+    )
     p <- glue::glue(
-      "{reorder_observ}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(group=1)) +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "tile plot" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "tile plot" &
+           any(v == c("L", "C", "F", "O"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_observ}"
+    )
     p <- glue::glue(
-      "{reorder_observ}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_tile() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "freq. reordered tile plot" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "freq. reordered tile plot" &
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_freq}"
+    )
     p <- glue::glue(
-      "{reorder_freq}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_tile() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "alphab. reordered tile plot" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "alphab. reordered tile plot" &
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_alphab}"
+    )
     p <- glue::glue(
-      "{reorder_alphab}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_tile() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bar graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE)) {
+           any(v == c("N"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100"
+    )
     p <- glue::glue(
       "
-      binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bar(stat='count', width=binwidth, fill='black', color='black', position = 'identity') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw bar graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE)) {
+           any(v == c("N"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100"
+    )
     p <- glue::glue(
       "
-      binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=binwidth, position = 'identity') +
       \x20\x20{scale_bw_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color bar graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE)) {
+           any(v == c("N"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100"
+    )
     p <- glue::glue(
       "
-      binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=binwidth, position = 'identity') +
       \x20\x20{scale_color_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "bar graph" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "bar graph" &
+           any(v == c("L", "C", "F", "O"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_observ}"
+    )
     p <- glue::glue(
-      "{reorder_observ}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bar(stat='count', width=0.75, fill='black') +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "bw bar graph" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "bw bar graph" &
+           any(v == c("L", "C", "F", "O"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_observ}"
+    )
     p <- glue::glue(
-      "{reorder_observ}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_bw_a} +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "color bar graph" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.ordered(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "color bar graph" &
+           any(v == c("L", "C", "F", "O"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_observ}"
+    )
     p <- glue::glue(
-      "{reorder_observ}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_color_a} +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "freq. reordered bar graph" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_freq}"
+    )
     p <- glue::glue(
-      "{reorder_freq}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bar(stat='count', width=0.75, fill='black') +
       \x20\x20{scale_bw_a} +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw freq. reordered bar graph" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_freq}"
+    )
     p <- glue::glue(
-      "{reorder_freq}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_bw_a} +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color freq. reordered bar graph" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_freq}"
+    )
     p <- glue::glue(
-      "{reorder_freq}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_color_a} +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "alphab. reordered bar graph" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_alphab}"
+    )
     p <- glue::glue(
-      "{reorder_alphab}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bar(stat='count', width=0.75, fill='black') +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw alphab. reordered bar graph" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_alphab}"
+    )
     p <- glue::glue(
-      "{reorder_alphab}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_bw_a} +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color alphab. reordered bar graph" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_alphab}"
+    )
     p <- glue::glue(
-      "{reorder_alphab}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_bar(stat='count', width=0.75) +
       \x20\x20{scale_color_a} +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "linerange graph" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.ordered(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "linerange graph" &
+           any(v == c("L", "C", "F", "O"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_observ}"
+    )
     p <- glue::glue(
-      "{reorder_observ}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(x=seq_along({substitute(vars)})), size=0.5) +
       \x20\x20geom_point(aes(x=seq_along({substitute(vars)})), size=1) +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "freq. reordered linerange graph" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.ordered(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "freq. reordered linerange graph" &
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_freq}"
+    )
     p <- glue::glue(
-      "{reorder_freq}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(x=seq_along({substitute(vars)})), size=0.5) +
       \x20\x20geom_point(aes(x=seq_along({substitute(vars)})), size=1) +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
-           diagram == "alphab. reordered linerange graph" & (
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.ordered(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE
-           )) {
+           diagram == "alphab. reordered linerange graph" &
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_alphab}"
+    )
     p <- glue::glue(
-      "{reorder_alphab}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_path(aes(x=seq_along({substitute(vars)})), size=0.5) +
       \x20\x20geom_point(aes(x=seq_along({substitute(vars)})), size=1) +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "binned heatmap" &
-           (
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE |
-             is.logical(unlist(data[, vars])) == TRUE |
-             is.ordered(unlist(data[, vars])) == TRUE
-           )) {
+           any(v == c("L", "C", "F", "O"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_observ}"
+    )
     p <- glue::glue(
-      "{reorder_observ}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)})), fill = 'black') +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw binned heatmap" &
-           (
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE |
-             is.logical(unlist(data[, vars])) == TRUE
-           )) {
+           any(v == c("L", "C", "F", "O"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_observ}"
+    )
     p <- glue::glue(
-      "{reorder_observ}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20{scale_bw_a} +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "binned heatmap" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           any(v == c("D", "N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)})), fill = 'black') +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw heatmap" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           any(v == c("D", "N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -909,14 +1068,12 @@ pp_3uniaxial(",
       \x20\x20stat_density_2d(aes(x=seq_along({substitute(vars)}), fill = stat(density)), geom = 'raster', contour = FALSE) +
       \x20\x20{scale_bw_a} +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color heatmap" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           any(v == c("D", "N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -924,14 +1081,12 @@ pp_3uniaxial(",
       \x20\x20stat_density_2d(aes(x=seq_along({substitute(vars)}), fill = stat(density)), geom = 'raster', contour = FALSE) +
       \x20\x20{scale_color_a} +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw binned heatmap" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           any(v == c("D", "N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -939,32 +1094,28 @@ pp_3uniaxial(",
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20{scale_bw_a} +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color binned heatmap" &
-           (
-             is.factor(unlist(data[, vars])) == TRUE |
-             is.character(unlist(data[, vars])) == TRUE |
-             is.logical(unlist(data[, vars])) == TRUE
-           )) {
+           any(v == c("L", "C", "F", "O"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_observ}"
+    )
     p <- glue::glue(
-      "{reorder_observ}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20{scale_color_a} +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color binned heatmap" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           any(v == c("D", "N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -972,155 +1123,154 @@ pp_3uniaxial(",
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20{scale_color_a} +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "freq. reordered binned heatmap" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_freq}"
+    )
     p <- glue::glue(
-      "{reorder_freq}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)})), fill = 'black') +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw freq. reordered binned heatmap" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_freq}"
+    )
     p <- glue::glue(
-      "{reorder_freq}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20labs(x='seq.') +
       \x20\x20{scale_bw_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color freq. reordered binned heatmap" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_freq}"
+    )
     p <- glue::glue(
-      "{reorder_freq}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20labs(x='seq.') +
       \x20\x20{scale_color_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "alphab. reordered binned heatmap" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_alphab}"
+    )
     p <- glue::glue(
-      "{reorder_alphab}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)})), fill = 'black') +
       \x20\x20labs(x='seq.') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw alphab. reordered binned heatmap" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_alphab}"
+    )
     p <- glue::glue(
-      "{reorder_alphab}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20labs(x='seq.') +
       \x20\x20{scale_bw_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color alphab. reordered binned heatmap" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.character(unlist(data[, vars])) == TRUE)) {
+           any(v == c("C", "F"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{reorder_alphab}"
+    )
     p <- glue::glue(
-      "{reorder_alphab}
+      "
       ggplot({deparse(substitute(data))}, aes(y={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(x=seq_along({substitute(vars)}))) +
       \x20\x20labs(x='seq.') +
       \x20\x20{scale_color_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "stepped line graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-           lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           any(v == c("D", "N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_step(direction = 'hv') +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "line graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-           lubridate::is.instant(unlist(data[, vars])) == TRUE)) {
+           any(v == c("D", "N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_line() +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "area graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_area(fill = 'black') +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "stepped area graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))})) +
       \x20\x20geom_bar(fill = 'black', width = 1, stat = 'identity') +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw stepped area graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -1128,105 +1278,97 @@ pp_3uniaxial(",
       \x20\x20geom_bar(width = 1, stat = 'identity') +
       \x20\x20{scale_bw_a} +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color stepped area graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}), y={as.character(substitute(vars))}, fill={as.character(substitute(vars))})) +
       \x20\x20geom_bar(width = 1, stat = 'identity') +
-      \x20\x20{scale_color_a} +
+      \x20\x20{scale_value_a} +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "histogram" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_histogram(bins = 20, fill='black') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw histogram" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_histogram(bins = 20) +
       \x20\x20{scale_bw_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color histogram" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, fill=..count..)) +
       \x20\x20geom_histogram(bins = 20) +
       \x20\x20{scale_color_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "freq. polygon" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_line(stat = 'bin', bins = 20, center = 0, size = 0.5) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "density plot" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = {as.character(substitute(vars))})) +
       \x20\x20geom_density(size = 0.5) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}
+      \x20\x20{theme_basic}
       "
     )
   }
   else if (length(vars) == 1 &
            diagram == "filled density plot" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = {as.character(substitute(vars))})) +
       \x20\x20geom_density(fill = 'black') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}
+      \x20\x20{theme_basic}
       "
     )
   }
   else if (length(vars) == 1 &
            diagram == "violin plot" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -1234,13 +1376,12 @@ pp_3uniaxial(",
       \x20\x20aes(x = 0, y = {as.character(substitute(vars))})) +
       \x20\x20geom_violin(size = 0.5) +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_y}
+      \x20\x20{theme_basic_y}
       "
     )
   }  else if (length(vars) == 1 &
               diagram == "filled violin plot" &
-              is.numeric(unlist(data[, vars])) == TRUE) {
+              any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -1248,14 +1389,13 @@ pp_3uniaxial(",
       \x20\x20aes(x = 0, y = {as.character(substitute(vars))})) +
       \x20\x20geom_violin(fill = 'black') +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_y}
+      \x20\x20{theme_basic_y}
       "
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw point graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -1264,13 +1404,12 @@ pp_3uniaxial(",
       \x20\x20geom_point(aes(color={as.character(substitute(vars))})) +
       \x20\x20{scale_bw_l} +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw point graph with trend line" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -1280,28 +1419,26 @@ pp_3uniaxial(",
       \x20\x20geom_smooth(method = 'loess', size=0.5) +
       \x20\x20{scale_bw_l} +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color point graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))},
       \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
       \x20\x20geom_point(aes(color={as.character(substitute(vars))})) +
-      \x20\x20{scale_color_l} +
+      \x20\x20{scale_value_l} +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color point graph with trend line" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -1309,16 +1446,14 @@ pp_3uniaxial(",
       \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
       \x20\x20geom_point(aes(color={as.character(substitute(vars))})) +
       \x20\x20geom_smooth(method = 'loess', size=0.5) +
-      \x20\x20{scale_color_l} +
+      \x20\x20{scale_value_l} +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "binned point graph" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.numeric(unlist(data[, vars])) == TRUE)) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -1326,14 +1461,12 @@ pp_3uniaxial(",
       \x20\x20aes(x = seq_along({as.character(substitute(vars))}), y = {as.character(substitute(vars))})) +
       \x20\x20geom_point(color='black', stat= 'bin2d') +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw binned point graph" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.numeric(unlist(data[, vars])) == TRUE)) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -1342,14 +1475,12 @@ pp_3uniaxial(",
       \x20\x20geom_point(aes(color=..count..), stat= 'bin2d') +
       \x20\x20{scale_bw_l} +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color binned point graph" &
-           (is.factor(unlist(data[, vars])) == TRUE |
-            is.numeric(unlist(data[, vars])) == TRUE)) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -1358,13 +1489,12 @@ pp_3uniaxial(",
       \x20\x20geom_point(aes(color=..count..), stat= 'bin2d') +
       \x20\x20{scale_color_l} +
       \x20\x20labs(x='seq') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "box plot" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
@@ -1372,187 +1502,192 @@ pp_3uniaxial(",
       \x20\x20aes(x = 0, y = {as.character(substitute(vars))})) +
       \x20\x20geom_boxplot() +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_y}"
+      \x20\x20{theme_basic_y}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "ecdf plot" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x = {as.character(substitute(vars))})) +
       \x20\x20stat_ecdf(geom = 'line', size=0.1) +
       \x20\x20labs(x = '{as.character(substitute(vars))}', y = 'p') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "point ecdf plot" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x = {as.character(substitute(vars))})) +
       \x20\x20stat_ecdf(geom = 'point', size=0.1) +
       \x20\x20labs(x = '{as.character(substitute(vars))}', y = 'p') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "stepped ecdf plot" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x = {as.character(substitute(vars))})) +
       \x20\x20stat_ecdf(geom = 'step', size=0.1) +
       \x20\x20labs(x = '{as.character(substitute(vars))}', y = 'p') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "stripe graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_linerange(aes(ymin=0, ymax=1)) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_y}"
+      \x20\x20{theme_basic_y}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw stripe graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{getdens1}"
+    )
     p <- glue::glue(
-      "{getdens1}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, color=add_density_1D({deparse(substitute(data))}, '{as.character(substitute(vars))}'))) +
       \x20\x20geom_linerange(aes(ymin=0, ymax=1)) +
       \x20\x20{scale_bw_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_yz}"
+      \x20\x20{theme_basic_yz}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color stripe graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{getdens1}"
+    )
     p <- glue::glue(
-      "{getdens1}
+      "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))}, color=add_density_1D({deparse(substitute(data))}, '{as.character(substitute(vars))}'))) +
       \x20\x20geom_linerange(aes(ymin=0, ymax=1)) +
       \x20\x20{scale_color_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_yz}"
+      \x20\x20{theme_basic_yz}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "binned stripe graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20"
+    )
     p <- glue::glue(
       "
-      binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(y=1), binwidth = c(binwidth, 1), fill='black') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_y}"
+      \x20\x20{theme_basic_y}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw binned stripe graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20"
+    )
     p <- glue::glue(
       "
-      binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +
       \x20\x20{scale_bw_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_yz}"
+      \x20\x20{theme_basic_yz}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color binned stripe graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20"
+    )
     p <- glue::glue(
       "
-      binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
       \x20\x20geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +
       \x20\x20{scale_color_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_yz}"
+      \x20\x20{theme_basic_yz}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "seq. stripe graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}))) +
       \x20\x20geom_tile(aes(y=1), fill = 'black') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_y}"
+      \x20\x20{theme_basic_y}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "bw seq. stripe graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{getdens1}"
+    )
     p <- glue::glue(
-      "{getdens1}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}))) +
       \x20\x20geom_tile(aes(y=1, fill={as.character(substitute(vars))})) +
       \x20\x20{scale_bw_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_yz}"
+      \x20\x20{theme_basic_yz}"
     )
   }
   else if (length(vars) == 1 &
            diagram == "color seq. stripe graph" &
-           is.numeric(unlist(data[, vars])) == TRUE) {
+           any(v == c("N"))) {
     vars <- vars[1]
+    q <- glue::glue(
+      "{getdens1}"
+    )
     p <- glue::glue(
-      "{getdens1}
+      "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}))) +
       \x20\x20geom_tile(aes(y=1, fill={as.character(substitute(vars))})) +
-      \x20\x20{scale_color_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_yz}"
+      \x20\x20{scale_value_a} +
+      \x20\x20{theme_basic_yz}"
     )
   }
-###################################################################################################################
-### 2 variables 2 variables 2 variables 2 variables 2 variables 2 variables 2 variables 2 variables 2 variables ###
-###################################################################################################################
+
+# 2var diagrams -----------------------------------------------------------
+
+
   else if (length(vars) == 2 &
            diagram == "scatter plot" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_point() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "scatter plot with trend line" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1560,58 +1695,58 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_point() +
       \x20\x20geom_smooth() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw scatter plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      "{getdens2}"
+    )
     p <- glue::glue(
-      "{getdens2}
-      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=get_density({deparse(substitute(data))}${as.character(substitute(vars1))}, {deparse(substitute(data))}${as.character(substitute(vars2))}))) +
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=get_density({as.character(substitute(vars1))}, {as.character(substitute(vars2))}))) +
       \x20\x20geom_point() +
       \x20\x20{scale_bw_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color scatter plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      "{getdens2}"
+    )
     p <- glue::glue(
-      "{getdens2}
-      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=get_density({deparse(substitute(data))}${as.character(substitute(vars1))}, {deparse(substitute(data))}${as.character(substitute(vars2))}))) +
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=get_density({as.character(substitute(vars1))}, {as.character(substitute(vars2))}))) +
       \x20\x20geom_point() +
       \x20\x20{scale_color_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "binned scatter plot" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_point(stat= 'bin2d') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw binned scatter plot" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1619,14 +1754,13 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=..count..)) +
       \x20\x20geom_point(stat= 'bin2d') +
       \x20\x20{scale_bw_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color binned scatter plot" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1634,28 +1768,26 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=..count..)) +
       \x20\x20geom_point(stat= 'bin2d') +
       \x20\x20{scale_color_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "binned heatmap" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d(fill = 'black') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw binned heatmap" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1663,14 +1795,13 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d() +
       \x20\x20{scale_bw_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color binned heatmap" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1678,28 +1809,24 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d() +
       \x20\x20{scale_color_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "hexagonal binned heatmap" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_binhex(fill = 'black') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw hexagonal binned heatmap" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1708,14 +1835,12 @@ pp_3uniaxial(",
       \x20\x20stat_binhex(aes(fill=..count..,  color=..count..)) +
       \x20\x20{scale_bw_l} +
       \x20\x20{scale_bw_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color hexagonal binned heatmap" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1724,14 +1849,13 @@ pp_3uniaxial(",
       \x20\x20stat_binhex(aes(fill=..count..,  color=..count..)) +
       \x20\x20{scale_color_l} +
       \x20\x20{scale_color_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw heatmap" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1739,14 +1863,13 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(fill=stat(density)), geom = 'raster', contour = FALSE) +
       \x20\x20{scale_bw_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color heatmap" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1754,28 +1877,26 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(fill=stat(density)), geom = 'raster', contour = FALSE) +
       \x20\x20{scale_color_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "contour plot" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(color = 'black', size=0.2) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw contour plot" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1783,14 +1904,13 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(color=..level..), size=0.2) +
       \x20\x20{scale_bw_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color contour plot" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1798,14 +1918,13 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(color=..level..), size=0.2) +
       \x20\x20{scale_color_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "contour plot with data points" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -1813,64 +1932,59 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(color = 'black', size=0.2) +
       \x20\x20geom_point() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw contour plot with data points" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(color=..level..), size=0.2) +
-      \x20\x20geom_point(aes(color=get_density({deparse(substitute(data))}${as.character(substitute(vars1))}, {deparse(substitute(data))}${as.character(substitute(vars2))}))) +
+      \x20\x20geom_point(aes(color=get_density({as.character(substitute(vars1))}, {as.character(substitute(vars2))}))) +
       \x20\x20{scale_bw_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color contour plot with data points" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20stat_density_2d(aes(color=..level..), size=0.2) +
-      \x20\x20geom_point(aes(color=get_density({deparse(substitute(data))}${as.character(substitute(vars1))}, {deparse(substitute(data))}${as.character(substitute(vars2))}))) +
+      \x20\x20geom_point(aes(color=get_density({as.character(substitute(vars1))}, {as.character(substitute(vars2))}))) +
       \x20\x20{scale_color_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "parallel plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       GGally::ggparcoord({deparse(substitute(data))}, columns = 1:2, scale = 'uniminmax', alphaLines = 0.2, order = 'skewness') +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw parallel plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      "{getdens2}"
+    )
     p <- glue::glue(
-      "{getdens2}
+      "
       GGally::ggparcoord(data.frame('{as.character(substitute(vars1))}' = {deparse(substitute(data))}${as.character(substitute(vars1))},
       \x20\x20'{as.character(substitute(vars2))}' = {deparse(substitute(data))}${as.character(substitute(vars2))},
       \x20\x20'dens' = get_density({deparse(substitute(data))}${as.character(substitute(vars1))},
@@ -1878,18 +1992,19 @@ pp_3uniaxial(",
       \x20\x20scale = 'uniminmax', alphaLines = 0.5, mapping=aes(color=dens), order = 'skewness') +
       \x20\x20{scale_bw_l} +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color parallel plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      "{getdens2}"
+    )
     p <- glue::glue(
-      "{getdens2}
+      "
       GGally::ggparcoord(data.frame('{as.character(substitute(vars1))}' = {deparse(substitute(data))}${as.character(substitute(vars1))},
       \x20\x20'{as.character(substitute(vars2))}' = {deparse(substitute(data))}${as.character(substitute(vars2))},
       \x20\x20'dens' = get_density({deparse(substitute(data))}${as.character(substitute(vars1))},
@@ -1897,32 +2012,31 @@ pp_3uniaxial(",
       \x20\x20scale = 'uniminmax', alphaLines = 0.5, mapping=aes(color=dens), order = 'skewness') +
       \x20\x20{scale_color_l} +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "unscaled parallel plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       GGally::ggparcoord({deparse(substitute(data))}, columns = 1:2, scale = 'globalminmax', alphaLines = 0.2, order = 'skewness') +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "unscaled bw parallel plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      "{getdens2}"
+    )
     p <- glue::glue(
-      "{getdens2}
+      "
       GGally::ggparcoord(data.frame('{as.character(substitute(vars1))}' = {deparse(substitute(data))}${as.character(substitute(vars1))},
       \x20\x20'{as.character(substitute(vars2))}' = {deparse(substitute(data))}${as.character(substitute(vars2))},
       \x20\x20'dens' = get_density({deparse(substitute(data))}${as.character(substitute(vars1))},
@@ -1930,18 +2044,19 @@ pp_3uniaxial(",
       \x20\x20scale = 'globalminmax', alphaLines = 0.5, mapping=aes(color=dens), order = 'skewness') +
       \x20\x20{scale_bw_l} +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "unscaled color parallel plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      "{getdens2}"
+    )
     p <- glue::glue(
-      "{getdens2}
+      "
       GGally::ggparcoord(data.frame('{as.character(substitute(vars1))}' = {deparse(substitute(data))}${as.character(substitute(vars1))},
       \x20\x20'{as.character(substitute(vars2))}' = {deparse(substitute(data))}${as.character(substitute(vars2))},
       \x20\x20'dens' = get_density({deparse(substitute(data))}${as.character(substitute(vars1))},
@@ -1949,58 +2064,60 @@ pp_3uniaxial(",
       \x20\x20scale = 'globalminmax', alphaLines = 0.5, mapping=aes(color=dens), order = 'skewness') +
       \x20\x20{scale_color_l} +
       \x20\x20scale_x_discrete(expand = c(.1, 0)) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
-  else if (length(vars) == 2 &&
-           diagram == "path graph" &&
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+  else if (length(vars) == 2 &
+           diagram == "path graph" &
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_path() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20geom_point(data = {deparse(substitute(data))}[1,], aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}), size=1.5, shape = 1) +
+      \x20\x20geom_point(data = {deparse(substitute(data))}[nrow({deparse(substitute(data))}),], aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}), size = 1.5, shape = 19) +
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw path graph" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=seq_along({as.character(substitute(vars1))}))) +
       \x20\x20geom_path() +
+      \x20\x20geom_point(data = {deparse(substitute(data))}[1,], aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}), color = 'black', size = 1.5, shape = 1) +
+      \x20\x20geom_point(data = {deparse(substitute(data))}[nrow({deparse(substitute(data))}),], aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}), color = 'black', size = 1.5, shape = 19) +
       \x20\x20{scale_bw_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color path graph" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=seq_along({as.character(substitute(vars1))}))) +
       \x20\x20geom_path() +
-      \x20\x20{scale_color_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20geom_point(data = {deparse(substitute(data))}[1,], aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}), color = 'black', size=1.5, shape = 1) +
+      \x20\x20geom_point(data = {deparse(substitute(data))}[nrow({deparse(substitute(data))}),], aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}), color = 'black', size=1.5, shape = 19) +
+      \x20\x20{scale_seq_l} +
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "point-to-point graph" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -2008,14 +2125,13 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_path() +
       \x20\x20geom_point() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw point-to-point graph" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -2024,14 +2140,13 @@ pp_3uniaxial(",
       \x20\x20geom_path() +
       \x20\x20geom_point() +
       \x20\x20{scale_bw_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color point-to-point graph" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
     p <- glue::glue(
@@ -2039,502 +2154,713 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))}, color=seq_along({as.character(substitute(vars1))}))) +
       \x20\x20geom_path() +
       \x20\x20geom_point() +
-      \x20\x20{scale_color_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{scale_seq_l} +
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "point graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x='foo_id')) +
+      "
+      ggplot(foo_df, aes_string(x='foo_id')) +
       geom_point(aes_string(y='measure'), size=1) +
       labs(y='', x='seq') +
       facet_grid(variable~., switch = 'both') +
-      {theme} +
-      {theme_detail}
+      {theme_basic}
       "
       )
   }
   else if (length(vars) == 2 &
            diagram == "bw point graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x='foo_id')) +
+      "
+      ggplot(foo_df, aes_string(x='foo_id')) +
       geom_point(aes_string(y='measure', color = 'measure'), size=1) +
       labs(y='', x='seq') +
       {scale_bw_l} +
       facet_grid(variable~., switch = 'both') +
-      {theme} +
-      {theme_detail_z}
+      {theme_basic_z}
       "
     )
   }
   else if (length(vars) == 2 &
            diagram == "color point graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'foo_id')) +
+      "
+      ggplot(foo_df, aes_string(x = 'foo_id')) +
       geom_point(aes_string(y = 'measure', color = 'measure'), size = 1) +
       labs(y = '', x = 'seq') +
-      {scale_color_l} +
+      {scale_value_l} +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail_z}"
+      {theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "line graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'foo_id', y = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'foo_id', y = 'measure')) +
       geom_line(color = 'black') +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "stepped line graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'foo_id', y = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'foo_id', y = 'measure')) +
       geom_step(color = 'black') +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "area graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'foo_id', y = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'foo_id', y = 'measure')) +
       geom_area(fill = 'black') +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "stepped area graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'foo_id')) +
+      "
+      ggplot(foo_df, aes_string(x = 'foo_id')) +
       geom_bar(aes_string(y='measure'), fill = 'black', width = 1, stat = 'identity') +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw stepped area graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'foo_id')) +
+      "
+      ggplot(foo_df, aes_string(x = 'foo_id')) +
       geom_bar(aes_string(y='measure', fill = 'measure'), width = 1, stat = 'identity') +
       {scale_bw_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail_z}"
+      {theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color stepped area graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'foo_id')) +
+      "
+      ggplot(foo_df, aes_string(x = 'foo_id')) +
       geom_bar(aes_string(y='measure', fill = 'measure'), width = 1, stat = 'identity') +
-      {scale_color_a} +
+      {scale_value_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail_z}"
+      {theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw seq. heatmap" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'foo_id', y='measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'foo_id', y='measure')) +
       stat_density_2d(aes(fill = stat(density)), geom = 'raster', contour = FALSE) +
       {scale_bw_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail_z}"
+      {theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color seq. heatmap" &
-           any(is.numeric(unlist(data[, vars[1]])), lubridate::is.instant(unlist(data[, vars[1]]))) &
-           any(is.numeric(unlist(data[, vars[2]])), lubridate::is.instant(unlist(data[, vars[2]])))) {
+           any(v[1] == c("N", "D")) &
+           any(v[2] == c("N", "D"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'foo_id', y='measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'foo_id', y='measure')) +
       stat_density_2d(aes(fill = stat(density)), geom = 'raster', contour = FALSE) +
       {scale_color_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail_z}"
+      {theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw seq. stripe graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'foo_id', y = 1)) +
+      "
+      ggplot(foo_df, aes_string(x = 'foo_id', y = 1)) +
       geom_tile(aes_string(fill = 'measure')) +
       {scale_bw_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail_z}"
+      {theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color seq. stripe graph" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'foo_id', y = 1)) +
+      "
+      ggplot(foo_df, aes_string(x = 'foo_id', y = 1)) +
       geom_tile(aes_string(fill = 'measure')) +
-      {scale_color_a} +
+      {scale_value_a} +
       labs(y = '', x = 'seq') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail_z}"
+      {theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "histogram" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'measure')) +
       geom_histogram(fill = 'black') +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw histogram" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'measure')) +
       geom_histogram(aes_(fill=~..count..)) +
       {scale_bw_a} +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail_z}"
+      {theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color histogram" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'measure')) +
       geom_histogram(aes_(fill=~..count..)) +
       {scale_color_a} +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail_z}"
+      {theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "freq. polygon" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'measure')) +
       geom_line(stat = 'bin', bins = 20, center = 0, color = 'black', size = 0.1) +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "density plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'measure')) +
       geom_density(size = 0.1) +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "filled density plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'measure')) +
       geom_density(fill = 'black', size = 0.1) +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "violin plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 0, y = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 0, y = 'measure')) +
       geom_violin(size = 0.1) +
       labs(x = '') +
       coord_flip() +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "filled violin plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 0, y = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 0, y = 'measure')) +
       geom_violin(fill = 'black', size = 0.1) +
       labs(x = '') +
       coord_flip() +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "box plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df) +
+      "
+      ggplot(foo_df) +
       geom_boxplot(aes_string(x=0, y='measure'), size = 0.1) +
       labs(x = '') +
       coord_flip() +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail_y}"
+      {theme_basic_y}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "filled violin plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'measure')) +
       geom_violin(fill = 'black', size = 0.1) +
       labs(x = '') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail_y}"
+      {theme_basic_y}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "ecdf plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'measure')) +
       stat_ecdf(geom = 'point', size=0.1) +
       labs(x = '', y = 'p') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "point ecdf plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'measure')) +
       stat_ecdf(geom = 'point', size=1) +
       labs(x = '', y = 'p') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "stepped ecdf plot" &
-           is.numeric(unlist(data[, vars[1]])) == TRUE &
-           is.numeric(unlist(data[, vars[2]])) == TRUE) {
+           identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      paste0(unfold)
+    )
     p <- glue::glue(
-      paste0(unfold),
-      "ggplot(foo_df, aes_string(x = 'measure')) +
+      "
+      ggplot(foo_df, aes_string(x = 'measure')) +
       stat_ecdf(geom = 'step', size=0.1) +
       labs(x = '', y = 'p') +
       facet_grid(variable ~ ., switch = 'both') +
-      {theme} +
-      {theme_detail}"
+      {theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "path graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+           (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_path(aes(group=1), size=0.5) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
+           diagram == "freq. reordered path graph" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+      "
+      data_aux <- as.data.frame(ftable(data_mod[2], useNA = 'no'))
+      data_mod[,2]  <- factor(data_mod[,2], levels = data_aux[order(-data_aux$Freq),][,1], ordered = TRUE)"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_path(aes(group=1), size=0.5) +
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "alphab. reordered path graph" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_mod[,2]  <- as.character(data_mod[,2])"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_path(aes(group=1), size=0.5) +
+      \x20\x20{theme_basic}"
+                )
+  }
+  else if (length(vars) == 2 &
            diagram == "point graph" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_point(aes(group=1)) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "freq. reordered point graph" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_aux <- as.data.frame(ftable(data_mod[2], useNA = 'no'))
+      data_mod[,2]  <- factor(data_mod[,2], levels = data_aux[order(-data_aux$Freq),][,1], ordered = TRUE)"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_point(aes(group=1)) +
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "alphab. reordered point graph" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_mod[,2]  <- as.character(data_mod[,2])"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_point(aes(group=1)) +
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "tile plot" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_tile() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "freq. reordered tile plot" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_aux <- as.data.frame(ftable(data_mod[2], useNA = 'no'))
+      data_mod[,2]  <- factor(data_mod[,2], levels = data_aux[order(-data_aux$Freq),][,1], ordered = TRUE)"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_tile() +
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "alphab. reordered tile plot" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_mod[,2]  <- as.character(data_mod[,2])"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_tile() +
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "binned heatmap" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d(fill = 'black') +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "freq. reordered binned heatmap" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_aux <- as.data.frame(ftable(data_mod[2], useNA = 'no'))
+      data_mod[,2]  <- factor(data_mod[,2], levels = data_aux[order(-data_aux$Freq),][,1], ordered = TRUE)"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_bin2d(fill = 'black') +
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "alphab. reordered binned heatmap" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_mod[,2]  <- as.character(data_mod[,2])"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_bin2d(fill = 'black') +
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw binned heatmap" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
@@ -2542,14 +2868,62 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d() +
       \x20\x20{scale_bw_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw freq. reordered binned heatmap" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_aux <- as.data.frame(ftable(data_mod[2], useNA = 'no'))
+      data_mod[,2]  <- factor(data_mod[,2], levels = data_aux[order(-data_aux$Freq),][,1], ordered = TRUE)"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_bin2d() +
+      \x20\x20{scale_bw_a} +
+      \x20\x20{theme_basic_z}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw alphab. reordered binned heatmap" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_mod[,2]  <- as.character(data_mod[,2])"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_bin2d() +
+      \x20\x20{scale_bw_a} +
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color binned heatmap" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
@@ -2557,14 +2931,62 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_bin2d() +
       \x20\x20{scale_color_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered binned heatmap" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_aux <- as.data.frame(ftable(data_mod[2], useNA = 'no'))
+      data_mod[,2]  <- factor(data_mod[,2], levels = data_aux[order(-data_aux$Freq),][,1], ordered = TRUE)"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_bin2d() +
+      \x20\x20{scale_color_a} +
+      \x20\x20{theme_basic_z}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered binned heatmap" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars1)),
+                       "', '",
+                       as.character(substitute(vars2)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_mod[,2]  <- as.character(data_mod[,2])"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_bin2d() +
+      \x20\x20{scale_color_a} +
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw stacked histogram" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
@@ -2573,14 +2995,28 @@ pp_3uniaxial(",
       \x20\x20geom_histogram(center = 0, position = 'stack') +
       \x20\x20{scl_gray_disc_l} +
       \x20\x20{scl_gray_disc_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color stacked histogram" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           any(v == c("N")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_histogram(center = 0, position = 'stack') +
+      \x20\x20{scl_viridis_l} +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20{theme_basic_z}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color stacked histogram" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
@@ -2589,14 +3025,13 @@ pp_3uniaxial(",
       \x20\x20geom_histogram(center = 0, position = 'stack') +
       \x20\x20{scl_color_disc_l} +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "bw 100% stacked histogram" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
@@ -2606,45 +3041,86 @@ pp_3uniaxial(",
       \x20\x20scale_y_continuous(breaks = c(0, 1), labels = c('0%', '100%')) +
       \x20\x20{scl_gray_disc_l} +
       \x20\x20{scl_gray_disc_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color 100% stacked histogram" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           any(v == c("N")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_histogram(center = 0, position = 'fill') +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1), labels = c('0%', '20%', '40%', '60%', '80%', '100%')) +
+      \x20\x20{scl_viridis_l} +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20{theme_basic_z}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color 100% stacked histogram" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_histogram(center = 0, position = 'fill') +
-      \x20\x20scale_y_continuous(breaks = c(0, 1), labels = c('0%', '100%')) +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1), labels = c('0%', '20%', '40%', '60%', '80%', '100%')) +
       \x20\x20{scl_color_disc_l} +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "density plot" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, group={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5) +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw density plot" &
+           any(v == c("N")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))})) +
+      \x20\x20geom_density(size=0.5) +
+      \x20\x20{scl_gray_disc_l} +
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color density plot" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           any(v == c("N")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))})) +
+      \x20\x20geom_density(size=0.5) +
+      \x20\x20{scl_viridis_l} +
+      \x20\x20{theme_basic_z}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color density plot" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
@@ -2652,29 +3128,54 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5) +
       \x20\x20{scl_color_disc_l} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
-           diagram == "filled density plot" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           diagram == "bw filled density plot" &
+           any(v == c("N")) &
+           any(v == c("O"))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
-    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5, alpha = 0.7, color = 'black') +
       \x20\x20{scl_gray_disc_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "filled density plot" &
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, group={as.character(substitute(vars2))})) +
+      \x20\x20geom_density(size=0.5, alpha = 0.3, color = 'black', fill = 'black') +
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "color filled density plot" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           any(v == c("N")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_density(size=0.5, alpha = 0.3, color = 'white') +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20{theme_basic_z}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color filled density plot" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     p <- glue::glue(
@@ -2682,14 +3183,13 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5, alpha = 0.3, color = 'white') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail_z}"
+      \x20\x20{theme_basic_z}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "violin plot" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     p <- glue::glue(
@@ -2697,14 +3197,62 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_violin(size=0.5) +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "freq. reordered violin plot" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars2)),
+                       "', '",
+                       as.character(substitute(vars1)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_aux <- as.data.frame(ftable(data_mod[2], useNA = 'no'))
+      data_mod[,2]  <- factor(data_mod[,2], levels = data_aux[order(-data_aux$Freq),][,1], ordered = TRUE)"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_violin(size=0.5) +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "alphab. reordered violin plot" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars2)),
+                       "', '",
+                       as.character(substitute(vars1)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_mod[,2]  <- as.character(data_mod[,2])"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_violin(size=0.5) +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "filled violin plot" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     p <- glue::glue(
@@ -2712,14 +3260,62 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_violin(fill='black') +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "freq. reordered filled violin plot" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars2)),
+                       "', '",
+                       as.character(substitute(vars1)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_aux <- as.data.frame(ftable(data_mod[2], useNA = 'no'))
+      data_mod[,2]  <- factor(data_mod[,2], levels = data_aux[order(-data_aux$Freq),][,1], ordered = TRUE)"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_violin(fill='black') +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "alphab. reordered filled violin plot" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars2)),
+                       "', '",
+                       as.character(substitute(vars1)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_mod[,2]  <- as.character(data_mod[,2])"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_violin(fill='black') +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic}"
     )
   }
   else if (length(vars) == 2 &
            diagram == "box plot" &
-           (is.numeric(unlist(data[, vars])) == TRUE |
-            is.factor(unlist(data[, vars])) == TRUE)) {
+           ((any(v == c("N")) & any(v == c("O"))) |
+            (any(v == c("N")) & any(v == c("F"))))) {
     vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
     vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
     p <- glue::glue(
@@ -2727,27 +3323,1970 @@ pp_3uniaxial(",
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
       \x20\x20geom_boxplot(size=0.5) +
       \x20\x20coord_flip() +
-      \x20\x20{theme} +
-      \x20\x20{theme_detail}"
+      \x20\x20{theme_basic}"
     )
   }
+  else if (length(vars) == 2 &
+           diagram == "freq. reordered box plot" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars2)),
+                       "', '",
+                       as.character(substitute(vars1)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_aux <- as.data.frame(ftable(data_mod[2], useNA = 'no'))
+      data_mod[,2]  <- factor(data_mod[,2], levels = data_aux[order(-data_aux$Freq),][,1], ordered = TRUE)"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_boxplot(size=0.5) +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "alphab. reordered box plot" &
+           any(v == c("N")) &
+           any(v == c("F"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    vars2 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    q <- paste0(paste0("data_mod <- ",
+                       deparse(substitute(data)),
+                       "[ , c('",
+                       as.character(substitute(vars2)),
+                       "', '",
+                       as.character(substitute(vars1)),
+                       "')]\n"),
+                glue::glue(
+                  "
+      data_mod[,2]  <- as.character(data_mod[,2])"))
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_mod))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
+      \x20\x20geom_boxplot(size=0.5) +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw stacked bar graph" &
+           ((any(v == c("F")) & any(v == c("O"))) |
+            (any(v == c("O")) & any(v == c("O"))))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_gray_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw freq. reordered stacked bar graph" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)"
+      )
+    p <- glue::glue(
+      "
+      ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_gray_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw alphab. reordered stacked bar graph" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])"
+      )
+    p <- glue::glue(
+      "
+      ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_gray_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color stacked bar graph" &
+           ((any(v == c("F")) & any(v == c("O"))) |
+            (any(v == c("O")) & any(v == c("O"))))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered stacked bar graph" &
+           (any(v == c("F")) &
+           any(v == c("O")))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)"
+      )
+    p <- glue::glue(
+      "
+      ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered stacked bar graph" &
+           (any(v == c("F")) &
+            any(v == c("O")))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])"
+      )
+    p <- glue::glue(
+      "
+      ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color stacked bar graph" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)"
+      )
+    p <- glue::glue(
+      "
+      ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color freq. reordered stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)"
+      )
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_aux))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])"
+      )
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_aux))}, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color alphab. reordered stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])"
+      )
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data_aux))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw 100% stacked bar graph" &
+           ((any(v == c("F")) & any(v == c("O"))) |
+            (any(v == c("O")) & any(v == c("O"))))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_gray_disc_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color 100% stacked bar graph" &
+           ((any(v == c("F")) & any(v == c("O"))) |
+            (any(v == c("O")) & any(v == c("O"))))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered 100% stacked bar graph" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)"
+      )
+    p <- glue::glue(
+      "
+      ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered 100% stacked bar graph" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])"
+      )
+    p <- glue::glue(
+      "
+      ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color 100% stacked bar graph" &
+           ((any(v == c("F")) & any(v == c("O"))) |
+            (any(v == c("O")) & any(v == c("O"))))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color 100% stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color 100% stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color stacked bar graph" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered 100% stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)"
+      )
+    p <- glue::glue(
+      "
+      ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color freq. reordered 100% stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)"
+      )
+    p <- glue::glue(
+      "
+      ggplot(data_aux, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered 100% stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])"
+      )
+    p <- glue::glue(
+      "
+      ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color alphab. reordered 100% stacked bar graph" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])"
+      )
+    p <- glue::glue(
+      "
+      ggplot(data_aux, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed bw stacked bar graph" &
+           identical(v, c("O", "O"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_gray_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color stacked bar graph" &
+           identical(v, c("O", "O"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color stacked bar graph" &
+           (identical(v, c("F", "F")) |
+            (any(v == c("F")) & any(v == c("O"))))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
+      \x20\x20{scl_color_disc_a} +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed bw 100% stacked bar graph" &
+           identical(v, c("O", "O"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_gray_disc_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "transposed color 100% stacked bar graph" &
+           identical(v, c("O", "O"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    p <- glue::glue(
+      "
+      ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
+      \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
+      \x20\x20{scl_viridis_a} +
+      \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
+      \x20\x20labs(y='percentage') +
+      \x20\x20{p_legend} +
+      \x20\x20coord_flip() +
+      \x20\x20{theme_basic_stack}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw heatmap" &
+           (identical(v, c("O", "O")) |
+           identical(v, c("F", "F")) |
+           (any(v == c("F")) & any(v == c("O")))
+           )
+           ) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      tb <- ftable({deparse(substitute(data))}[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_bw_a} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw freq. reordered heatmap" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_bw_a} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw freq. reordered heatmap" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_bw_a} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw alphab. reordered heatmap" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_bw_a} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw alphab. reordered heatmap" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_bw_a} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color heatmap" &
+           (identical(v, c("O", "O")) |
+            identical(v, c("F", "F")) |
+            (any(v == c("F")) & any(v == c("O")))
+           )) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      tb <- ftable({deparse(substitute(data))}[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_color_a} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered heatmap" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_color_a} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered heatmap" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_color_a} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered heatmap" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_color_a} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered heatmap" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_color_a} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color residuals heatmap" &
+           (identical(v, c("O", "O")) |
+            identical(v, c("F", "F")) |
+            (any(v == c("F")) & any(v == c("O")))
+           )) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      tb <- ftable({deparse(substitute(data))}[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      df[,3]     <- as.data.frame(chisq.test(tb)$residuals)$Freq
+      names(df)[3] <- 'resid'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_value_sym} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered residuals heatmap" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      df[,3]     <- as.data.frame(chisq.test(tb)$residuals)$Freq
+      names(df)[3] <- 'resid'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_value_sym} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered residuals heatmap" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      df[,3]     <- as.data.frame(chisq.test(tb)$residuals)$Freq
+      names(df)[3] <- 'resid'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_value_sym} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered residuals heatmap" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      df[,3]     <- as.data.frame(chisq.test(tb)$residuals)$Freq
+      names(df)[3] <- 'resid'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_value_sym} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered residuals heatmap" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      df[,3]     <- as.data.frame(chisq.test(tb)$residuals)$Freq
+      names(df)[3] <- 'resid'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_value_sym} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw contribution to x2 heatmap" &
+           (identical(v, c("O", "O")) |
+            identical(v, c("F", "F")) |
+            (any(v == c("F")) & any(v == c("O")))
+           )) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      tb <- ftable({deparse(substitute(data))}[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_bw_a_p} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw freq. reordered contribution to x2 heatmap" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_bw_a_p} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw freq. reordered contribution to x2 heatmap" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_bw_a_p} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw alphab. reordered contribution to x2 heatmap" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_bw_a_p} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw alphab. reordered contribution to x2 heatmap" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{scale_bw_a_p} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color contribution to x2 heatmap" &
+           (identical(v, c("O", "O")) |
+            identical(v, c("F", "F")) |
+            (any(v == c("F")) & any(v == c("O")))
+           )) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      tb <- ftable({deparse(substitute(data))}[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{p_scale_value_a_p} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered contribution to x2 heatmap" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{p_scale_value_a_p} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered contribution to x2 heatmap" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{p_scale_value_a_p} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered contribution to x2 heatmap" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{p_scale_value_a_p} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered contribution to x2 heatmap" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], fill=df[,3])) +
+      \x20\x20geom_tile() +
+      \x20\x20{p_scale_value_a_p} +
+      \x20\x20{p_labs_fill} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw balloon plot" &
+           (identical(v, c("O", "O")) |
+            identical(v, c("F", "F")) |
+            (any(v == c("F")) & any(v == c("O")))
+           )) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      tb <- ftable({deparse(substitute(data))}[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_bw_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw freq. reordered balloon plot" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_bw_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw freq. reordered balloon plot" &
+           any(v == c("F")) & any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_bw_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw alphab. reordered balloon plot" &
+           any(v == c("F")) & any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_bw_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw alphab. reordered balloon plot" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_bw_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color balloon plot" &
+           (identical(v, c("O", "O")) |
+            identical(v, c("F", "F")) |
+            (any(v == c("F")) & any(v == c("O")))
+           )) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      tb <- ftable({deparse(substitute(data))}[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_color_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered balloon plot" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_color_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered balloon plot" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'")
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_color_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered balloon plot" &
+           any(v == c("F")) &
+           any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'")
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_color_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered balloon plot" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      names(df)[3] <- 'freq'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_color_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color residuals balloon plot" &
+           (identical(v, c("O", "O")) |
+            identical(v, c("F", "F")) |
+            (any(v == c("F")) & any(v == c("O")))
+           )) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      tb <- ftable({deparse(substitute(data))}[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      df[,3]     <- as.data.frame(chisq.test(tb)$residuals)$Freq
+      names(df)[3] <- 'resid'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_value_sym_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered residuals balloon plot" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      df[,3]     <- as.data.frame(chisq.test(tb)$residuals)$Freq
+      names(df)[3] <- 'resid'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_value_sym_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered residuals balloon plot" &
+           any(v == c("F")) & any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      df[,3]     <- as.data.frame(chisq.test(tb)$residuals)$Freq
+      names(df)[3] <- 'resid'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_value_sym_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered residuals balloon plot" &
+           any(v == c("F")) & any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      df[,3]     <- as.data.frame(chisq.test(tb)$residuals)$Freq
+      names(df)[3] <- 'resid'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_value_sym_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered residuals balloon plot" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      df[,3]     <- as.data.frame(chisq.test(tb)$residuals)$Freq
+      names(df)[3] <- 'resid'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_value_sym_l} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw contribution to x2 balloon plot" &
+           (identical(v, c("O", "O")) |
+            identical(v, c("F", "F")) |
+            (any(v == c("F")) & any(v == c("O")))
+           )) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      tb <- ftable({deparse(substitute(data))}[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_bw_l_p} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw freq. reordered contribution to x2 balloon plot" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_bw_l_p} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw freq. reordered contribution to x2 balloon plot" &
+           any(v == c("F")) & any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_bw_l_p} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw alphab. reordered contribution to x2 balloon plot" &
+           any(v == c("F")) & any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_bw_l_p} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "bw alphab. reordered contribution to x2 balloon plot" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20{scale_bw_l_p} +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color contribution to x2 balloon plot" &
+           (identical(v, c("O", "O")) |
+            identical(v, c("F", "F")) |
+            (any(v == c("F")) & any(v == c("O")))
+           )) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      tb <- ftable({deparse(substitute(data))}[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20p_scale_value_l_p +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered contribution to x2 balloon plot" &
+           identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_x <- as.data.frame(ftable(data_aux${as.character(substitute(vars1))}, useNA = 'no'))
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,1]  <- factor(data_aux[,1], levels = data_aux_x[order(-data_aux_x$Freq),][,1], ordered = TRUE)
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20p_scale_value_l_p +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color freq. reordered contribution to x2 balloon plot" &
+           any(v == c("F")) & any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- {deparse(substitute(data))}[, c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')]
+      data_aux_y <- as.data.frame(ftable(data_aux${as.character(substitute(vars2))}, useNA = 'no'))
+      data_aux[,2]  <- factor(data_aux[,2], levels = data_aux_y[order(-data_aux_y$Freq),][,1], ordered = TRUE)
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20p_scale_value_l_p +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+           diagram == "color alphab. reordered contribution to x2 balloon plot" &
+           any(v == c("F")) & any(v == c("O"))) {
+    vars1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    vars2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20p_scale_value_l_p +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+  else if (length(vars) == 2 &
+             diagram == "color alphab. reordered contribution to x2 balloon plot" &
+             identical(v, c("F", "F"))) {
+    vars1 <- vars[1]
+    vars2 <- vars[2]
+    q <- glue::glue(
+      "
+      data_aux <- data[, vars]
+      data_aux[[vars[1]]] <- as.character(data_aux[[vars[1]]])
+      data_aux[[vars[2]]] <- as.character(data_aux[[vars[2]]])
+
+      tb <- ftable(data_aux[,c('{as.character(substitute(vars1))}', '{as.character(substitute(vars2))}')], useNA = 'no')
+      df <- as.data.frame(tb)
+      chisq <- chisq.test(tb, simulate.p.value = TRUE)
+      df[,3]     <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+      names(df)[3] <- 'contrib'"
+      )
+    p <- glue::glue(
+      "
+      ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
+      \x20\x20geom_point() +
+      \x20\x20p_scale_value_l_p +
+      \x20\x20{p_labs_color} +
+      \x20\x20{p_guides} +
+      \x20\x20{theme_basic_grid}"
+    )
+  }
+
+
+# clousure ----------------------------------------------------------------
+
+
   else {stop("The combination of these data and graphic type has not been still considered.")}
     if (output == 'console') {
-      cat(p)}
+      cat(paste0(q, "\n", p))}
     else if (output == 'plots pane') {
-      eval(parse(text=p))}
+      eval(parse(text=paste0(q, "\n", p)))}
     else if (output == 'html') {
       dir.create(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), showWarnings = FALSE)
       writeLines(output_up, file.path(dir, "brinton_outcomes", "plotup.R"))
       write(paste0("cat('A ", deparse(substitute(diagram)), " produced from the " ,deparse(substitute(vars)), " variable(s) of the ", deparse(substitute(data))," dataframe')"),
             file=file.path(dir, "brinton_outcomes", "plotup.R"), append=TRUE)
-      write(paste0("#+ plot, fig.width=6, fig.height=", long), file.path(dir, "brinton_outcomes", "plotup.R"), append = TRUE)
-      write(p, file.path(dir, "brinton_outcomes", "plotup.R"), append = TRUE)
+      write(paste0("#+ plot"), file.path(dir, "brinton_outcomes", "plotup.R"), append = TRUE)
+      write(paste0(q , "\nplot <- ", p), file.path(dir, "brinton_outcomes", "plotup.R"), append = TRUE)
+      write(paste0("grid::grid.draw(egg::set_panel_size(plot, width  = unit(", GAwidth,", 'cm'), height = unit(", GAheight, ", 'cm')))"), file.path(dir, "brinton_outcomes", "plotup.R"), append = TRUE)
       rmarkdown::render(file.path(dir, "brinton_outcomes", "plotup.R"),"html_document", envir=my_env)
       pander::openFileInOS(file.path(dir, "brinton_outcomes", "plotup.html"))
-      # unlink(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), recursive = TRUE)
       }
     }
 }
-
-geom_tile(aes_string(x='pp_id', fill = 'measure'))

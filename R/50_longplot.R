@@ -31,18 +31,59 @@ longplot <- function(data,
                      dir = tempdir()
                      )
 {
+
+# check markdown ----------------------------------------------------------
+
+
   if (rmarkdown::pandoc_available("1.12.3") == FALSE) {print(warning_pandoc)}
   else if (rmarkdown::pandoc_available("1.12.3") == TRUE) {
-  ## Auxiliary functions
-  add_plots <- function(a, b) {
-    write(paste0("gridExtra::grid.arrange(", paste0(a, 1:b, collapse = ", "), ", ncol=5)"), file.path(dir, "brinton_outcomes", "longplot.R"), append = TRUE)
-  }
 
-  add_label <- function(a, b) {
-    char_types <- paste0(a, " = c('", paste0(b, collapse = "', '"), "')")
-    write(paste0('cat("', char_types, '")'), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
-  }
-  ## Format validation: function's object
+# aux functions -----------------------------------------------------------
+
+    add_plots <- function(a, b) {
+      write(
+        paste0(
+          "gridExtra::grid.arrange(",
+          paste0(a, 1:b, collapse = ", "),
+          ", ncol=5)"
+        ),
+        file.path(dir, "brinton_outcomes", "longplot.R"),
+        append = TRUE
+      )
+    }
+
+    add_float <- function(a, b, w, h, n) {
+      string_1 <-
+        "grid::grid.draw(gridExtra::grid.arrange(grobs = lapply(list("
+      string_2 <- paste0(a, 1:b, collapse = ", ")
+      string_3 <-
+        paste0("), egg::set_panel_size, width = panel.",
+               w,
+               ", heigh = panel.",
+               h,
+               "), ncol=",
+               n,
+               "))")
+      write(
+        paste0(string_1, string_2, string_3),
+        file.path(dir, "brinton_outcomes", "longplot.R"),
+        append = TRUE
+      )
+    }
+
+    add_label <- function(a, b) {
+      char_types <-
+        paste0(a, " = c('", paste0(b, collapse = "', '"), "')")
+      write(
+        paste0('cat("', char_types, '")'),
+        file.path(dir, "brinton_outcomes", "longplot.R"),
+        append = TRUE
+      )
+    }
+
+# check class -------------------------------------------------------------
+
+
   if(is.data.frame(data) == FALSE) {
     stop("I am so sorry, but this function only works with a data.frame input!\n",
          "You have provided an object of class ", class(data))
@@ -55,6 +96,10 @@ longplot <- function(data,
   if(is.character(vars)  == FALSE) {
     stop(paste0("The 'vars'",  string))
   }
+
+# check vars --------------------------------------------------------------
+
+
   if(length(vars) > 2) {
     stop("I am so sorry but, up to now, only one and two variables combinations have been considered.")
   } else {
@@ -87,8 +132,17 @@ longplot <- function(data,
     (
       is.numeric(unlist(data[, vars[2]])) == TRUE &
       is.factor(unlist(data[, vars[1]])) == TRUE))
-  ) {long <- length(unique(unlist(sapply(data[, vars], is.factor))))/4 + 0.5}
-  else {stop("This type of variable has not been yet considered")}
+  ) {long <- length(unlist(unique(data[, vars][which(sapply(data[, vars], is.factor))])))/4 + 0.5}
+    else if (length(vars) == 2 &
+             is.factor(unlist(data[, vars[1]])) == TRUE &
+             is.factor(unlist(data[, vars[2]])) == TRUE
+    ) {wide <- length(unique(unlist(data[, vars[2]]))) / 5
+    long <- length(unique(unlist(data[, vars[2]]))) / 5
+    longt <- length(unique(unlist(data[, vars[1]]))) / 5}
+    else{stop("This type of variable has not been yet considered")}
+
+# setup -------------------------------------------------------------------
+
 
   my_env <- new.env()
   ncol <- 5
@@ -97,20 +151,27 @@ longplot <- function(data,
   write(paste0("cat('Graphics from the ", deparse(substitute(vars)), " variable(s) of the ", deparse(substitute(data))," dataframe')"),
         file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
 
+
+# 1var --------------------------------------------------------------------
+
+
+# datetime ----------------------------------------------------------------
+
+
   if (length(vars) == 1 & lubridate::is.instant(unlist(data[, vars])) == TRUE) {
-    write(paste0("#+ datetime, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+    write(paste0("#+ datetime, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
     stripe <- c('line graph',
                 'stepped line graph')
     dt11 <- pp_1DD_linegraph(data, colnames(data[vars]), pp_size = 1/ncol)
     dt12 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_trans = 'step')
     add_plots("dt1", 2)
-    if (label == TRUE) {add_label("datetime", stripe)}
+    if (label == TRUE) {add_label("dtt", stripe)}
     stripe <- c('point graph',
                 'point-to-point graph')
     dt21 <- pp_1DD_pointgraph(data, colnames(data[vars]), pp_size = 1/ncol)
     dt22 <- pp_1DD_linegraph(data, colnames(data[vars]), pp_size = 1/ncol, pp_points = TRUE)
     add_plots("dt2", 2)
-    if (label == TRUE) {add_label("datetime", stripe)}
+    if (label == TRUE) {add_label("dtt", stripe)}
     stripe <- c('binned heatmap',
                 'bw binned heatmap',
                 'color binned heatmap')
@@ -118,17 +179,20 @@ longplot <- function(data,
     dt32 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     dt33 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("dt3", 3)
-    if (label == TRUE) {add_label("datetime", stripe)}
+    if (label == TRUE) {add_label("dtt", stripe)}
     stripe <- c('bw heatmap', 'color heatmap')
     p151 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'bw')
     p152 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'color')
     add_plots("p15", 2)
-    if (label == TRUE) {add_label("datetime", stripe)}
+    if (label == TRUE) {add_label("dtt", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
-    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))}
 
-  } else if (length(vars) == 1 & is.logical(unlist(data[, vars])) == TRUE) {
-    write(paste0("#+ logical, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+# logical -----------------------------------------------------------------
+
+
+    else if (length(vars) == 1 & is.logical(unlist(data[, vars])) == TRUE) {
+    write(paste0("#+ logical, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
     stripe <- c('line graph',
                 'point graph',
                 'point-to-point graph',
@@ -140,7 +204,7 @@ longplot <- function(data,
     lg14 <- pp_1DD_tileplot(data, colnames(data[vars]), 'yx')
     lg15 <- pp_1DD_linerange(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     add_plots("lg1", 5)
-    if (label == TRUE) {add_label("logical", stripe)}
+    if (label == TRUE) {add_label("lgc", stripe)}
     stripe <- c('binned heatmap',
                 'bw binned heatmap',
                 'color binned heatmap')
@@ -148,7 +212,7 @@ longplot <- function(data,
     lg22 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     lg23 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("lg2", 3)
-    if (label == TRUE) {add_label("logical", stripe)}
+    if (label == TRUE) {add_label("lgc", stripe)}
     stripe <- c('bar graph',
                 'bw bar graph',
                 'color bar graph')
@@ -156,11 +220,19 @@ longplot <- function(data,
     lg32 <- pp_bargraph(data, colnames(data[vars]), 'bw')
     lg33 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("lg3", 3)
-    if (label == TRUE) {add_label("logical", stripe)}
+    if (label == TRUE) {add_label("lgc", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
-    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (length(vars) == 1 & is.ordered(unlist(data[, vars])) == TRUE) {
-    write(paste0("#+ ordered, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))}
+
+# ordered -----------------------------------------------------------------
+
+
+    else if (length(vars) == 1 & is.ordered(unlist(data[, vars])) == TRUE) {
+    # classes <- data[,vars]
+    # data[,vars] <- ifelse(nchar(as.vector(data[,vars])) > 10,
+    #                       paste0(substring(as.vector(data[,vars]), 1, 8), "..."), as.vector(data[,vars]))
+    # data[,vars] <- classes
+    write(paste0("#+ ordered, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
     stripe <- c('line graph',
                 'point graph',
                 'point-to-point graph',
@@ -172,7 +244,7 @@ longplot <- function(data,
     of14 <- pp_1DD_tileplot(data, colnames(data[vars]), 'yx')
     of15 <- pp_1DD_linerange(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     add_plots("of1", 5)
-    if (label == TRUE) {add_label("ordered", stripe)}
+    if (label == TRUE) {add_label("ord", stripe)}
     stripe <- c('binned heatmap',
                 'bw binned heatmap',
                 'color binned heatmap')
@@ -180,7 +252,7 @@ longplot <- function(data,
     of22 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     of23 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("of2", 3)
-    if (label == TRUE) {add_label("ordered", stripe)}
+    if (label == TRUE) {add_label("ord", stripe)}
     stripe <- c('bar graph',
                 'bw bar graph',
                 'color bar graph')
@@ -188,11 +260,18 @@ longplot <- function(data,
     of32 <- pp_bargraph(data, colnames(data[vars]), 'bw')
     of33 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("of3", 3)
-    if (label == TRUE) {add_label("ordered", stripe)}
+    if (label == TRUE) {add_label("ord", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
-    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (length(vars) == 1 & is.factor(unlist(data[, vars])) == TRUE & is.ordered(unlist(data[, vars])) == FALSE) {
-    write(paste0("#+ factor, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))}
+
+# factor ------------------------------------------------------------------
+
+
+    else if (length(vars) == 1 & is.factor(unlist(data[, vars])) == TRUE & is.ordered(unlist(data[, vars])) == FALSE) {
+    # classes <- data[,vars]
+    # data[,vars] <- ifelse(nchar(as.vector(data[,vars])) > 10, paste0(substring(as.vector(data[,vars]), 1, 8), "..."), as.vector(data[,vars]))
+    # data[,vars] <- classes
+    write(paste0("#+ factor, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('line graph',
                 'point graph',
@@ -205,7 +284,7 @@ longplot <- function(data,
     ft14 <- pp_1DD_tileplot(data, colnames(data[vars]), 'yx')
     ft15 <- pp_1DD_linerange(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     add_plots("ft1", 5)
-    if (label == TRUE) {add_label("factor", stripe)}
+    if (label == TRUE) {add_label("fac", stripe)}
     data[[vars]] <- forcats::fct_infreq(data[[vars]], ordered = TRUE)
     stripe <- c('freq. reordered line graph',
                 'freq. reordered point graph',
@@ -218,7 +297,7 @@ longplot <- function(data,
     ft24 <- pp_1DD_tileplot(data, colnames(data[vars]), 'yx')
     ft25 <- pp_1DD_linerange(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     add_plots("ft2", 5)
-    if (label == TRUE) {add_label("factor", stripe)}
+    if (label == TRUE) {add_label("fac", stripe)}
     data[[vars]] <- as.character(data[[vars]])
     stripe <- c('alphab. reordered line graph',
                 'alphab. reordered point graph',
@@ -231,7 +310,7 @@ longplot <- function(data,
     ft34 <- pp_1DD_tileplot(data, colnames(data[vars]), 'yx')
     ft35 <- pp_1DD_linerange(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     add_plots("ft3", 5)
-    if (label == TRUE) {add_label("factor", stripe)}
+    if (label == TRUE) {add_label("fac", stripe)}
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('binned heatmap',
                 'bw binned heatmap',
@@ -240,7 +319,7 @@ longplot <- function(data,
     ft42 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     ft43 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("ft4", 3)
-    if (label == TRUE) {add_label("factor", stripe)}
+    if (label == TRUE) {add_label("fac", stripe)}
     data[[vars]] <- forcats::fct_infreq(data[[vars]], ordered = TRUE)
     stripe <- c('freq. reordered binned heatmap',
                 'bw freq. reordered binned heatmap',
@@ -249,7 +328,7 @@ longplot <- function(data,
     ft52 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     ft53 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("ft5", 3)
-    if (label == TRUE) {add_label("factor", stripe)}
+    if (label == TRUE) {add_label("fac", stripe)}
     data[[vars]] <- as.character(data[[vars]])
     stripe <- c('alphab. reordered binned heatmap',
                 'bw alphab. reordered binned heatmap',
@@ -258,7 +337,7 @@ longplot <- function(data,
     ft62 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     ft63 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("ft6", 3)
-    if (label == TRUE) {add_label("factor", stripe)}
+    if (label == TRUE) {add_label("fac", stripe)}
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('bar graph',
                 'bw bar graph',
@@ -267,7 +346,7 @@ longplot <- function(data,
     ft72 <- pp_bargraph(data, colnames(data[vars]), 'bw')
     ft73 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("ft7", 3)
-    if (label == TRUE) {add_label("factor", stripe)}
+    if (label == TRUE) {add_label("fac", stripe)}
     data[[vars]] <- forcats::fct_infreq(data[[vars]], ordered = TRUE)
     stripe <- c('freq. reordered bar graph',
                 'bw freq. reordered bar graph',
@@ -276,7 +355,7 @@ longplot <- function(data,
     ft82 <- pp_bargraph(data, colnames(data[vars]), 'bw')
     ft83 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("ft8", 3)
-    if (label == TRUE) {add_label("factor", stripe)}
+    if (label == TRUE) {add_label("fac", stripe)}
     data[[vars]] <- as.character(data[[vars]])
     stripe <- c('alphab. reordered bar graph',
                 'bw alphab. reordered bar graph',
@@ -285,11 +364,16 @@ longplot <- function(data,
     ft92 <- pp_bargraph(data, colnames(data[vars]), 'bw')
     ft93 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("ft9", 3)
-    if (label == TRUE) {add_label("factor", stripe)}
+    if (label == TRUE) {add_label("fac", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
-    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (length(vars) == 1 & is.character(unlist(data[, vars])) == TRUE ) {
-    write(paste0("#+ character, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))}
+
+# character ---------------------------------------------------------------
+
+
+    else if (length(vars) == 1 & is.character(unlist(data[, vars])) == TRUE ) {
+    # data[,vars] <- ifelse(nchar(as.vector(data[,vars])) > 10, paste0(substring(as.vector(data[,vars]), 1, 8), "..."), as.vector(data[,vars]))
+    write(paste0("#+ character, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('line graph',
                 'point graph',
@@ -302,7 +386,7 @@ longplot <- function(data,
     p014 <- pp_1DD_tileplot(data, colnames(data[vars]), 'yx')
     p015 <- pp_1DD_linerange(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     add_plots("p01", 5)
-    if (label == TRUE) {add_label("character", stripe)}
+    if (label == TRUE) {add_label("cha", stripe)}
     data[[vars]] <- forcats::fct_infreq(data[[vars]], ordered = TRUE)
     stripe <- c('freq. reordered line graph',
                 'freq. reordered point graph',
@@ -315,7 +399,7 @@ longplot <- function(data,
     p024 <- pp_1DD_tileplot(data, colnames(data[vars]), 'yx')
     p025 <- pp_1DD_linerange(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     add_plots("p02", 5)
-    if (label == TRUE) {add_label("character", stripe)}
+    if (label == TRUE) {add_label("cha", stripe)}
     data[[vars]] <- as.character(data[[vars]])
     stripe <- c('alphab. reordered line graph',
                 'alphab. reordered point graph',
@@ -328,7 +412,7 @@ longplot <- function(data,
     p034 <- pp_1DD_tileplot(data, colnames(data[vars]), 'yx')
     p035 <- pp_1DD_linerange(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     add_plots("p03", 5)
-    if (label == TRUE) {add_label("character", stripe)}
+    if (label == TRUE) {add_label("cha", stripe)}
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('binned heatmap',
                 'bw binned heatmap',
@@ -337,7 +421,7 @@ longplot <- function(data,
     p042 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     p043 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("p04", 3)
-    if (label == TRUE) {add_label("character", stripe)}
+    if (label == TRUE) {add_label("cha", stripe)}
     data[[vars]] <- forcats::fct_infreq(data[[vars]], ordered = TRUE)
     stripe <- c('freq. reordered binned heatmap',
                 'bw freq. reordered binned heatmap',
@@ -346,7 +430,7 @@ longplot <- function(data,
     p052 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     p053 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("p05", 3)
-    if (label == TRUE) {add_label("character", stripe)}
+    if (label == TRUE) {add_label("cha", stripe)}
     data[[vars]] <- as.character(data[[vars]])
     stripe <- c('alphab. reordered binned heatmap',
                 'bw alphab. reordered binned heatmap',
@@ -355,7 +439,7 @@ longplot <- function(data,
     p062 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     p063 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("p06", 3)
-    if (label == TRUE) {add_label("character", stripe)}
+    if (label == TRUE) {add_label("cha", stripe)}
     data[[vars]] <- factor(data[[vars]], levels = unique(data[[vars]]))
     stripe <- c('bar graph',
                 'bw bar graph',
@@ -364,7 +448,7 @@ longplot <- function(data,
     p072 <- pp_bargraph(data, colnames(data[vars]), 'bw')
     p073 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("p07", 3)
-    if (label == TRUE) {add_label("character", stripe)}
+    if (label == TRUE) {add_label("cha", stripe)}
     data[[vars]] <- forcats::fct_infreq(data[[vars]], ordered = TRUE)
     stripe <- c('freq. reordered bar graph',
                 'bw freq. reordered bar graph',
@@ -373,7 +457,7 @@ longplot <- function(data,
     p082 <- pp_bargraph(data, colnames(data[vars]), 'bw')
     p083 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("p08", 3)
-    if (label == TRUE) {add_label("character", stripe)}
+    if (label == TRUE) {add_label("cha", stripe)}
     data[[vars]] <- as.character(data[[vars]])
     stripe <- c('alphab. reordered bar graph',
                 'bw alphab. reordered bar graph',
@@ -382,28 +466,32 @@ longplot <- function(data,
     p092 <- pp_bargraph(data, colnames(data[vars]), 'bw')
     p093 <- pp_bargraph(data, colnames(data[vars]), 'color')
     add_plots("p09", 3)
-    if (label == TRUE) {add_label("character", stripe)}
+    if (label == TRUE) {add_label("cha", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
-    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (length(vars) == 1 & is.numeric(unlist(data[, vars])) == TRUE) {
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))}
+
+# numeric -----------------------------------------------------------------
+
+
+    else if (length(vars) == 1 & is.numeric(unlist(data[, vars])) == TRUE) {
     my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
-    write(paste0("#+ numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+    write(paste0("#+ numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
     stripe <- c('line graph',
                 'stepped line graph')
     p011 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol)
     p012 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_trans = 'step')
     add_plots("p01", 2)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('point-to-point graph',
                 'stepped point-to-point graph')
     p161 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_points = TRUE)
     p162 <- pp_1DD_linegraph(data, colnames(data[vars]), 'yx', pp_size = 1/ncol, pp_points = TRUE, pp_trans = 'step')
     add_plots("p16", 2)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('area graph')
     p131 <- pp_1DD_areagraph(data, colnames(data[vars]), 'yx')
     add_plots("p13", 1)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('stepped area graph',
                 'bw stepped area graph',
                 'color stepped area graph')
@@ -411,7 +499,7 @@ longplot <- function(data,
     p182 <- pp_1DD_areagraph(data, colnames(data[vars]), 'yx', pp_trans = 'step', pp_color = 'bw')
     p183 <- pp_1DD_areagraph(data, colnames(data[vars]), 'yx', pp_trans = 'step', pp_color = 'color')
     add_plots("p18", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('seq. stripe graph',
                 'bw seq. stripe graph',
                 'color seq. stripe graph')
@@ -419,13 +507,13 @@ longplot <- function(data,
     p192 <- pp_1DD_stripegraph(data, colnames(data[vars]), pp_color = 'bw')
     p193 <- pp_1DD_stripegraph(data, colnames(data[vars]), pp_color = 'color')
     add_plots("p19", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('stripe graph', 'bw stripe graph', 'color stripe graph')
     p021 <- pp_stripegraph(data, colnames(data[vars]), 'black')
     p022 <- pp_stripegraph(data, colnames(data[vars]), 'bw')
     p023 <- pp_stripegraph(data, colnames(data[vars]), 'color')
     add_plots("p02", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('binned stripe graph',
                 'bw binned stripe graph',
                 'color binned stripe graph')
@@ -433,7 +521,7 @@ longplot <- function(data,
     p032 <- pp_binned_stripegraph(data, colnames(data[vars]), 'bw', my_binwidth)
     p033 <- pp_binned_stripegraph(data, colnames(data[vars]), 'color', my_binwidth)
     add_plots("p03", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('point graph',
                 'bw point graph',
                 'color point graph')
@@ -441,7 +529,7 @@ longplot <- function(data,
     p042 <- pp_1DD_scatterplot(data, colnames(data[vars]), 'yx', pp_size = 3/ncol, 'bw')
     p043 <- pp_1DD_scatterplot(data, colnames(data[vars]), 'yx', pp_size = 3/ncol, 'color')
     add_plots("p04", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('point graph with trend line',
                 'bw point graph with trend line',
                 'color point graph with trend line')
@@ -449,7 +537,7 @@ longplot <- function(data,
     p122 <- pp_1DD_scatterplot(data, colnames(data[vars]), 'yx', pp_size = 3/ncol, 'bw', 'true')
     p123 <- pp_1DD_scatterplot(data, colnames(data[vars]), 'yx', pp_size = 3/ncol, 'color', 'true')
     add_plots("p12", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('binned point graph',
                 'bw binned point graph',
                 'color binned point graph')
@@ -457,19 +545,19 @@ longplot <- function(data,
     p052 <- pp_1DD_binnedpointgraph(data, colnames(data[vars]), 'yx', pp_size = 3/ncol, 'bw')
     p053 <- pp_1DD_binnedpointgraph(data, colnames(data[vars]), 'yx', pp_size = 3/ncol, 'color')
     add_plots("p05", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')
     p061 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'black')
     p062 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'bw')
     p063 <- pp_1DD_heatmap(data, colnames(data[vars]), 'yx', 'color')
     add_plots("p06", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('blank', 'bw heatmap', 'color heatmap')
     p151 <- blank(data, colnames(data[vars]))
     p152 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'bw')
     p153 <- pp_1DD_raster(data, colnames(data[vars]), 'yx', 'color')
     add_plots("p15", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('bar graph',
                 'bw bar graph',
                 'color bar graph')
@@ -477,7 +565,7 @@ longplot <- function(data,
     p072 <- pp_bargraph(data, colnames(data[vars]), 'bw', 'xy', pp_size = 0.2*my_binwidth)
     p073 <- pp_bargraph(data, colnames(data[vars]), 'color', 'xy', pp_size = 0.2*my_binwidth)
     add_plots("p07", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('histogram',
                 'bw histogram',
                 'color histogram')
@@ -485,23 +573,23 @@ longplot <- function(data,
     p082 <- pp_histogram(data, colnames(data[vars]), 'bw', pp_binwidth = my_binwidth)
     p083 <- pp_histogram(data, colnames(data[vars]), 'color', pp_binwidth = my_binwidth)
     add_plots("p08", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('freq. polygon')
     p141 <- pp_histogram(data, colnames(data[vars]), 'black', 1, pp_geom = 'line', my_binwidth)
     add_plots("p14", 1)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('density plot',
                 'filled density plot')
     p091 <- pp_density(data, colnames(data[vars]), pp_size = 1/ncol)
     p092 <- pp_density(data, colnames(data[vars]), pp_size = 1/ncol, pp_color='black')
     add_plots("p09", 2)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('violin plot',
                 'filled violin plot')
     p101 <- pp_violin(data, colnames(data[vars]), pp_size = 1/ncol)
     p102 <- pp_violin(data, colnames(data[vars]), pp_size = 1/ncol, pp_color='black')
     add_plots("p10", 2)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('box plot',
                 '3 uniaxial',
                 'normal qq plot')
@@ -509,7 +597,7 @@ longplot <- function(data,
     p112 <- pp_3uniaxial(data, colnames(data[vars]), pp_size = 4/ncol)
     p113 <- qqplot(data, colnames(data[vars]), pp_size = 1/ncol)
     add_plots("p11", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('ecfd plot',
                 'dotted ecfd plot',
                 'stepped ecfd plot')
@@ -517,10 +605,19 @@ longplot <- function(data,
     p172 <- pp_ecdf(data, colnames(data[vars]), pp_trans = "point")
     p173 <- pp_ecdf(data, colnames(data[vars]), pp_trans = "step")
     add_plots("p17", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (length(vars) == 2 & (
+  }
+
+
+# 2var --------------------------------------------------------------------
+
+
+# dtt~num -----------------------------------------------------------------
+
+
+  else if (length(vars) == 2 & (
              (lubridate::is.instant(unlist(data[, vars[1]])) == TRUE  &
              lubridate::is.instant(unlist(data[, vars[2]])) == TRUE) |
              (is.numeric(unlist(data[, vars[1]])) == TRUE  &
@@ -528,57 +625,62 @@ longplot <- function(data,
              (lubridate::is.instant(unlist(data[, vars[1]])) == TRUE  &
               is.numeric(unlist(data[, vars[2]])) == TRUE))) {
     # my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
-    write(paste0("#+ numeric_datetime, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+    write(paste0("#+ numeric_datetime, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
     stripe <- c('scatter plot', 'scatter plot with trend line')
     p001 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, pp_color = 'black', pp_smooth = FALSE)
     p002 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, pp_color = 'black', pp_smooth = TRUE)
     add_plots("p00", 2)
-    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
+    if (label == TRUE) {add_label("{dtt~num} OR {2dtt}", stripe)}
     stripe <- c('binned scatter plot', 'bw binned scatter plot', 'color binned scatter plot')
     p021 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black')
     p022 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw')
     p023 <- pp_binnedpointgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'color')
     add_plots("p02", 3)
-    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
+    if (label == TRUE) {add_label("{dtt~num} OR {2dtt}", stripe)}
     stripe <- c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')
     p031 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black')
     p032 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw')
     p033 <- pp_heatmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color')
     add_plots("p03", 3)
-    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
+    if (label == TRUE) {add_label("{dtt~num} OR {2dtt}", stripe)}
     stripe <- c('blank', 'bw heatmap', 'color heatmap')
     p051 <- blank2(data, colnames(data[vars][1]), colnames(data[vars][2]))
     p052 <- pp_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw')
     p053 <- pp_raster(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color')
     add_plots("p05", 3)
-    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
+    if (label == TRUE) {add_label("{dtt~num} OR {2dtt}", stripe)}
     stripe <- c('contour plot', 'bw contour plot', 'color contour plot')
     p061 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black')
     p062 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw')
     p063 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'color')
     add_plots("p06", 3)
-    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
+    if (label == TRUE) {add_label("{dtt~num} OR {2dtt}", stripe)}
     stripe <- c('contour plot with data points')
     p071 <- pp_contourmap(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, 'TRUE')
     add_plots("p07", 1)
-    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
+    if (label == TRUE) {add_label("{dtt~num} OR {2dtt}", stripe)}
     stripe <- c('path graph', 'bw path graph', 'color path graph')
     p101 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'black', pp_size = 3/ncol)
     p102 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'bw', pp_size = 3/ncol)
     p103 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), FALSE, 'color', pp_size = 3/ncol)
     add_plots("p10", 3)
-    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
+    if (label == TRUE) {add_label("{dtt~num} OR {2dtt}", stripe)}
     stripe <- c('point-to-point graph', 'bw point-to-point graph', 'color point-to-point graph')
     p111 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'black', pp_size = 3/ncol)
     p112 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'bw', pp_size = 3/ncol)
     p113 <- pp_pathgraph(data, colnames(data[vars][1]), colnames(data[vars][2]), TRUE, 'color', pp_size = 3/ncol)
     add_plots("p11", 3)
-    if (label == TRUE) {add_label("{date~num} OR {2date}", stripe)}
+    if (label == TRUE) {add_label("{dtt~num} OR {2dtt}", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (length(vars) == 2 & is.numeric(unlist(data[, vars[1]])) == TRUE & is.numeric(unlist(data[, vars[2]])) == TRUE) {
+  }
+
+# 2num --------------------------------------------------------------------
+
+
+  else if (length(vars) == 2 & is.numeric(unlist(data[, vars[1]])) == TRUE & is.numeric(unlist(data[, vars[2]])) == TRUE) {
     # my_binwidth <- (max(data[vars], na.rm=TRUE)-min(data[vars], na.rm=TRUE))/20
-    write(paste0("#+ numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+    write(paste0("#+ numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
     stripe <- c('scatter plot', 'bw scatter plot', 'color scatter plot')
     p001 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'black', FALSE)
     p002 <- pp_scatterplot(data, colnames(data[vars][1]), colnames(data[vars][2]), pp_size = 3/ncol, 'bw', FALSE)
@@ -667,7 +769,7 @@ longplot <- function(data,
     p131 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'line')
     p132 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'step')
     add_plots("p13", 2)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("2num", stripe)}
     stripe <- c('area graph')
     p141 <- pp_unfolded(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'area')
     add_plots("p14", 1)
@@ -695,7 +797,7 @@ longplot <- function(data,
     p182 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', pp_size = 3/ncol, pp_geom = 'hist')
     p183 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', pp_size = 3/ncol, pp_geom = 'hist')
     add_plots("p18", 3)
-    if (label == TRUE) {add_label("numeric", stripe)}
+    if (label == TRUE) {add_label("num", stripe)}
     stripe <- c('freq. polygon')
     p191 <- pp_unf_yuxt(data, colnames(data[vars][1]), colnames(data[vars][2]), 'black', pp_size = 3/ncol, pp_geom = 'freq')
     add_plots("p19", 1)
@@ -722,71 +824,503 @@ longplot <- function(data,
     if (label == TRUE) {add_label("2num", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
-  } else if (length(vars) == 2 & ((
+  }
+
+# ordnum ------------------------------------------------------------------
+
+
+  else if (length(vars) == 2 & ((
     is.numeric(unlist(data[, vars[1]])) == TRUE &
-    is.factor(unlist(data[, vars[2]])) == TRUE) |
+    is.ordered(unlist(data[, vars[2]])) == TRUE) |
     (
       is.numeric(unlist(data[, vars[2]])) == TRUE &
-      is.factor(unlist(data[, vars[1]])) == TRUE))) {
-    write(paste0("#+ factor_numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+      is.ordered(unlist(data[, vars[1]])) == TRUE))) {
+    write(paste0("#+ ordered_numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
     var1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
-    var2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    var2 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
     stripe <- c('path graph',
                 'point graph',
                 'tile plot')
-    ofnum11 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'line')
-    ofnum12 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'point')
-    ofnum13 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'tile')
-    add_plots("ofnum1", 3)
-    if (label == TRUE) {add_label("fac-num", stripe)}
+    ordnum11 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'line')
+    ordnum12 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'point')
+    ordnum13 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'tile')
+    add_plots("ordnum1", 3)
+    if (label == TRUE) {add_label("ord-num", stripe)}
     stripe <- c('binned heatmap',
                 'bw binned heatmap',
                 'color binned heatmap')
-    ofnum41 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'bin', 'black')
-    ofnum42 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'bin', 'bw')
-    ofnum43 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'bin', 'color')
-    add_plots("ofnum4", 3)
-    if (label == TRUE) {add_label("fac-num", stripe)}
+    ordnum41 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'bin', 'black')
+    ordnum42 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'bin', 'bw')
+    ordnum43 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'bin', 'color')
+    add_plots("ordnum4", 3)
+    if (label == TRUE) {add_label("ord-num", stripe)}
     stripe <- c('violin plot', 'filled violin plot')
-    ofnum21 <- pp_basicgraph(data, var2, var1, pp_size = 1/ncol, 'violin')
-    ofnum22 <- pp_basicgraph(data, var2, var1, pp_size = 1/ncol, 'violin filled')
-    add_plots("ofnum2", 2)
-    if (label == TRUE) {add_label("fac-num", stripe)}
+    ordnum21 <- pp_basicgraph(data, var2, var1, pp_size = 1/ncol, 'violin')
+    ordnum22 <- pp_basicgraph(data, var2, var1, pp_size = 1/ncol, 'violin filled')
+    add_plots("ordnum2", 2)
+    if (label == TRUE) {add_label("ord-num", stripe)}
     stripe <- c('box plot')
-    ofnum31 <- pp_basicgraph(data, var2, var1, pp_size = 1/ncol, 'box')
-    add_plots("ofnum3", 1)
-    if (label == TRUE) {add_label("fac-num", stripe)}
-    write(paste0("#+ factor_numeric2, fig.width=12, fig.height=2"), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)  # gridExtra
+    ordnum31 <- pp_basicgraph(data, var2, var1, pp_size = 1/ncol, 'box')
+    add_plots("ordnum3", 1)
+    if (label == TRUE) {add_label("ord-num", stripe)}
+    write(paste0("#+ factor_numeric2, fig.width=12, fig.height=2"), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
     stripe <- c('blank',
                 'bw stacked histogram',
                 'color stacked histogram')
-    ofnum51 <- blank2(data, var1, var2)
-    ofnum52 <- pp_histogram2(data, var1, var2)
-    ofnum53 <- pp_histogram2(data, var1, var2, pp_color = "color")
-    add_plots("ofnum5", 3)
+    ordnum51 <- blank2(data, var1, var2)
+    ordnum52 <- pp_histogram2(data, var1, var2)
+    ordnum53 <- pp_histogram2(data, var1, var2, pp_color = "color", pp_scale = "ordinal")
+    add_plots("ordnum5", 3)
+    if (label == TRUE) {add_label("ord-num", stripe)}
+    stripe <- c('blank',
+                'bw 100% stacked histogram',
+                'color 100% stacked histogram')
+    ordnum61 <- blank2(data, var1, var2)
+    ordnum62 <- pp_histogram2(data, var1, var2, pp_position = "fill")
+    ordnum63 <- pp_histogram2(data, var1, var2, pp_color = "color", pp_position = "fill", pp_scale = "ordinal")
+    add_plots("ordnum6", 3)
+    if (label == TRUE) {add_label("ord-num", stripe)}
+    stripe <- c('density plot',
+                'bw density plot',
+                'color density plot')
+    ordnum71 <- pp_density2(data, var1, var2, 0.5, "line", "black")
+    ordnum72 <- pp_density2(data, var1, var2, 0.5, "line", "bw")
+    ordnum73 <- pp_density2(data, var1, var2, 0.5, "line", "viridis")
+    add_plots("ordnum7", 3)
+    if (label == TRUE) {add_label("ord-num", stripe)}
+    stripe <- c('blank',
+                'bw filled density plot',
+                'color filled density plot')
+    ordnum81 <- blank2(data, var1, var2)
+    ordnum82 <- pp_density2(data, var2, var1, 0.5, "area", "bw")
+    ordnum83 <- pp_density2(data, var2, var1, 0.5, "area", "viridis")
+    add_plots("ordnum8", 3)
+    if (label == TRUE) {add_label("ord-num", stripe)}
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
+  }
+
+# facnum ------------------------------------------------------------------
+
+
+  else if (length(vars) == 2 & ((
+    is.numeric(unlist(data[, vars[1]])) == TRUE &
+    (is.factor(unlist(data[, vars[2]])) == TRUE & is.ordered(unlist(data[, vars[2]])) == FALSE)) |
+    (
+      is.numeric(unlist(data[, vars[2]])) == TRUE &
+      (is.factor(unlist(data[, vars[1]])) == TRUE & is.ordered(unlist(data[, vars[1]])) == FALSE)))) {
+    write(paste0("#+ factor_numeric, fig.width=12, fig.height=", long), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    var1 <- colnames(data[vars][which(sapply(data[vars], is.numeric))])
+    var2 <- colnames(data[vars][which(sapply(data[vars], is.factor))])
+    data2 <- data[ , c(var1, var2)]
+    data3b <- as.data.frame(stats::ftable(data2[2], useNA = "no"))
+    data2[,2]  <- factor(data2[,2], levels = data3b[order(-data3b$Freq),][,1], ordered = TRUE)
+    data4 <- data[ , c(var1, var2)]
+    data4[,2] <- as.character(data4[,2])
+    stripe <- c('path graph',
+                'freq. reordered path graph',
+                'alphab. reordered path graph')
+    facnum011 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'line')
+    facnum012 <- pp_basicgraph(data2, var1, var2, pp_size = 1/ncol, 'line')
+    facnum013 <- pp_basicgraph(data4, var1, var2, pp_size = 1/ncol, 'line')
+    add_plots("facnum01", 3)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    stripe <- c('point graph',
+                'freq. reordered point graph',
+                'alphab. reordered point graph')
+    facnum021 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'point')
+    facnum022 <- pp_basicgraph(data2, var1, var2, pp_size = 1/ncol, 'point')
+    facnum023 <- pp_basicgraph(data4, var1, var2, pp_size = 1/ncol, 'point')
+    add_plots("facnum02", 3)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    stripe <- c('tile plot',
+                'freq. reordered tile plot',
+                'alphab. reordered tile plot')
+    facnum031 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'tile')
+    facnum032 <- pp_basicgraph(data2, var1, var2, pp_size = 1/ncol, 'tile')
+    facnum033 <- pp_basicgraph(data4, var1, var2, pp_size = 1/ncol, 'tile')
+    add_plots("facnum03", 3)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    stripe <- c('binned heatmap',
+                'freq. reordered binned heatmap',
+                'alphab. reordered binned heatmap')
+    facnum111 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'bin', 'black')
+    facnum112 <- pp_basicgraph(data2, var1, var2, pp_size = 1/ncol, 'bin', 'black')
+    facnum113 <- pp_basicgraph(data4, var1, var2, pp_size = 1/ncol, 'bin', 'black')
+    add_plots("facnum11", 3)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    stripe <- c('bw binned heatmap',
+                'bw freq. reordered binned heatmap',
+                'bw alphab. reordered binned heatmap')
+    facnum121 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'bin', 'bw')
+    facnum122 <- pp_basicgraph(data2, var1, var2, pp_size = 1/ncol, 'bin', 'bw')
+    facnum123 <- pp_basicgraph(data4, var1, var2, pp_size = 1/ncol, 'bin', 'bw')
+    add_plots("facnum12", 3)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    stripe <- c('color binned heatmap',
+                'color freq. reordered binned heatmap',
+                'color alphab. reordered binned heatmap')
+    facnum131 <- pp_basicgraph(data, var1, var2, pp_size = 1/ncol, 'bin', 'color')
+    facnum132 <- pp_basicgraph(data2, var1, var2, pp_size = 1/ncol, 'bin', 'color')
+    facnum133 <- pp_basicgraph(data4, var1, var2, pp_size = 1/ncol, 'bin', 'color')
+    add_plots("facnum13", 3)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    stripe <- c('violin plot', 'freq. reordered violin plot', 'alphab. reordered violin plot')
+    facnum211 <- pp_basicgraph(data, var2, var1, pp_size = 1/ncol, 'violin')
+    facnum212 <- pp_basicgraph(data2, var2, var1, pp_size = 1/ncol, 'violin')
+    facnum213 <- pp_basicgraph(data4, var2, var1, pp_size = 1/ncol, 'violin')
+    add_plots("facnum21", 3)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    stripe <- c('filled violin plot', 'freq. reordered filled violin plot', 'alphab. reordered filled violin plot')
+    facnum221 <- pp_basicgraph(data, var2, var1, pp_size = 1/ncol, 'violin filled')
+    facnum222 <- pp_basicgraph(data2, var2, var1, pp_size = 1/ncol, 'violin filled')
+    facnum223 <- pp_basicgraph(data4, var2, var1, pp_size = 1/ncol, 'violin filled')
+    add_plots("facnum22", 3)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    stripe <- c('box plot', 'freq. reordered box plot', 'alphab. reordered box plot')
+    facnum311 <- pp_basicgraph(data, var2, var1, pp_size = 1/ncol, 'box')
+    facnum312 <- pp_basicgraph(data2, var2, var1, pp_size = 1/ncol, 'box')
+    facnum313 <- pp_basicgraph(data4, var2, var1, pp_size = 1/ncol, 'box')
+    add_plots("facnum31", 3)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    write(paste0("#+ factor_numeric2, fig.width=12, fig.height=2"), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe <- c('blank',
+                'bw stacked histogram',
+                'color stacked histogram')
+    facnum51 <- blank2(data, var1, var2)
+    facnum52 <- pp_histogram2(data, var1, var2)
+    facnum53 <- pp_histogram2(data, var1, var2, pp_color = "color")
+    add_plots("facnum5", 3)
     if (label == TRUE) {add_label("fac-num", stripe)}
     stripe <- c('blank',
                 'bw 100% stacked histogram',
                 'color 100% stacked histogram')
-    ofnum61 <- blank2(data, var1, var2)
-    ofnum62 <- pp_histogram2(data, var1, var2, pp_position = "fill")
-    ofnum63 <- pp_histogram2(data, var1, var2, pp_color = "color", pp_position = "fill")
-    add_plots("ofnum6", 3)
+    facnum61 <- blank2(data, var1, var2)
+    facnum62 <- pp_histogram2(data, var1, var2, pp_position = "fill")
+    facnum63 <- pp_histogram2(data, var1, var2, pp_color = "color", pp_position = "fill")
+    add_plots("facnum6", 3)
     if (label == TRUE) {add_label("fac-num", stripe)}
     stripe <- c('density plot',
-                'color density plot',
-                'filled density plot',
+                'bw density plot',
+                'color density plot')
+    facnum71 <- pp_density2(data, var1, var2, 0.5, "line", "black")
+    facnum72 <- blank2(data, var1, var2)
+    facnum73 <- pp_density2(data, var1, var2, 0.5, "line", "color")
+    add_plots("facnum7", 3)
+    if (label == TRUE) {add_label("fac-num", stripe)}
+    stripe <- c('filled density plot',
+                'blank',
                 'color filled density plot')
-    ofnum71 <- pp_density2(data, var1, var2, 0.5, "line", "bw")
-    ofnum72 <- pp_density2(data, var1, var2, 0.5, "line", "color")
-    ofnum73 <- pp_density2(data, var2, var1, 0.5, "area", "bw")
-    ofnum74 <- pp_density2(data, var2, var1, 0.5, "area", pp_color="color")
-    add_plots("ofnum7", 4)
+    facnum81 <- pp_density2(data, var2, var1, 0.5, "area", "bw")
+    facnum82 <- blank2(data, var1, var2)
+    facnum83 <- pp_density2(data, var2, var1, 0.5, "area", "color")
+    add_plots("facnum8", 3)
     if (label == TRUE) {add_label("fac-num", stripe)}
     rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
     pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
   }
-  # unlink(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), recursive = TRUE)
+
+# 2ord --------------------------------------------------------------------
+
+
+  else if (length(vars) == 2 & is.ordered(unlist(data[, vars[1]])) == TRUE & is.ordered(unlist(data[, vars[2]])) == TRUE) {
+    panel.h <- unit(nrow(unique(data[vars[1]]))*0.7, "cm")
+    panel.w <- unit(3.5, "cm")
+    panel.h2 <- unit(nrow(unique(data[vars[2]]))*0.7, "cm")
+    panel.w2 <- unit(nrow(unique(data[vars[1]]))*0.7, "cm")
+    write(paste0("#+ 2ord_1, fig.width=8, fig.height=", long+1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('bw stacked bar graph', 'color stacked bar graph')
+    ofof01   <- pp_stackedbar(data, colnames(data[vars][2]), colnames(data[vars][1]), 'bw', 'stack', 'ordinal')
+    ofof02   <- pp_stackedbar(data, colnames(data[vars][2]), colnames(data[vars][1]), 'color', 'stack', 'ordinal')
+    add_float("ofof0", 2, "w", "h2", 2)
+    if (label == TRUE) {add_label("2ord", stripe)}
+    write(paste0("#+ 2ord_2, fig.width=8, fig.height=", longt+1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('transposed bw stacked bar graph', 'transposed color stacked bar graph')
+    ofof051   <- pp_stackedbar(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'stack', 'ordinal')
+    ofof052   <- pp_stackedbar(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'stack', 'ordinal')
+    add_float("ofof05", 2, "w", "h", 2)
+    if (label == TRUE) {add_label("2ord", stripe)}
+    write(paste0("#+ 2ord_3, fig.width=8, fig.height=", long+1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('bw 100% stacked bar graph', 'color 100% stacked bar graph')
+    ofof11   <- pp_stackedbar(data, colnames(data[vars][2]), colnames(data[vars][1]), 'bw', 'fill', 'ordinal')
+    ofof12   <- pp_stackedbar(data, colnames(data[vars][2]), colnames(data[vars][1]), 'color', 'fill', 'ordinal')
+    add_float("ofof1", 2, "w", "h2", 2)
+    if (label == TRUE) {add_label("2ord", stripe)}
+    write(paste0("#+ 2ord_4, fig.width=8, fig.height=", longt+1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('transposed bw 100% stacked bar graph', 'transposed color 100% stacked bar graph')
+    ofof151   <- pp_stackedbar(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'fill', 'ordinal')
+    ofof152   <- pp_stackedbar(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'fill', 'ordinal')
+    add_float("ofof15", 2, "w", "h", 2)
+    if (label == TRUE) {add_label("2ord", stripe)}
+    write(paste0("#+ 2ord_5, fig.width=", longt*2+5, ", fig.height=", long+1.5), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('bw heatmap', 'color heatmap')
+    ofof21   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'observed')
+    ofof22   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'observed')
+    add_float("ofof2", 2, "w2", "h2", 2)
+    if (label == TRUE) {add_label("2ord", stripe)}
+    stripe  <- c('blank', 'color residuals heatmap')
+    ofof41   <- blank2(data, colnames(data[vars][1]), colnames(data[vars][2]))
+    ofof42   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'residuals')
+    add_float("ofof4", 2, "w2", "h2", 2)
+    if (label == TRUE) {add_label("2ord", stripe)}
+    stripe  <- c('bw contribution to x2 heatmap', 'color contribution to x2 heatmap')
+    ofof61   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'contrib')
+    ofof62   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'contrib')
+    add_float("ofof6", 2, "w2", "h2", 2)
+    if (label == TRUE) {add_label("2ord", stripe)}
+    stripe  <- c('bw balloon plot', 'color balloon plot')
+    ofof101   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'observed', pp_geom = 'point')
+    ofof102   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'observed', pp_geom = 'point')
+    add_float("ofof10", 2, "w2", "h2", 2)
+    if (label == TRUE) {add_label("2ord", stripe)}
+    stripe  <- c('blank', 'color residuals balloon plot')
+    ofof121   <- blank2(data, colnames(data[vars][1]), colnames(data[vars][2]))
+    ofof122   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'residuals', pp_geom = 'point')
+    add_float("ofof12", 2, "w2", "h2", 2)
+    if (label == TRUE) {add_label("2ord", stripe)}
+    stripe  <- c('bw contribution to x2 balloon plot', 'color contribution to x2 balloon plot')
+    ofof141   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'contrib', pp_geom = 'point')
+    ofof142   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'contrib', pp_geom = 'point')
+    add_float("ofof14", 2, "w2", "h2", 2)
+    if (label == TRUE) {add_label("2ord", stripe)}
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
+  }
+
+# 2fac --------------------------------------------------------------------
+
+
+  else if (length(vars) == 2 &
+             (is.factor(unlist(data[, vars[1]])) == TRUE & is.ordered(unlist(data[, vars[1]])) == FALSE) &
+             (is.factor(unlist(data[, vars[2]])) == TRUE & is.ordered(unlist(data[, vars[2]])) == FALSE)) {
+    panel.h <- unit(nrow(unique(data[vars[1]]))*0.7, "cm")
+    panel.h2 <- unit(nrow(unique(data[vars[2]]))*0.7, "cm")
+    panel.w <- unit(3.5, "cm")
+    data2 <- data[, vars]
+    data3  <- as.data.frame(stats::ftable(data2[1], useNA = "no"))
+    data3b <- as.data.frame(stats::ftable(data2[2], useNA = "no"))
+    data2[,1]  <- factor(data2[,1], levels = data3[order(-data3$Freq),][,1], ordered = TRUE)
+    data2[,2]  <- factor(data2[,2], levels = data3b[order(-data3b$Freq),][,1], ordered = TRUE)
+    data4 <- data[, vars]
+    data4[[vars[1]]] <- as.character(data4[[vars[1]]])
+    data4[[vars[2]]] <- as.character(data4[[vars[2]]])
+    write(paste0("#+ 2fac_1, fig.width=12, fig.height=", long+1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('color stacked bar graph', 'color freq. reordered stacked bar graph', 'color alphab. reordered stacked bar graph')
+    fafa01   <- pp_stackedbar(data, colnames(data2[vars][2]), colnames(data2[vars][1]), 'color', 'stack')
+    fafa02   <- pp_stackedbar(data2, colnames(data2[vars][2]), colnames(data2[vars][1]), 'color', 'stack')
+    fafa03   <- pp_stackedbar(data4, colnames(data4[vars][2]), colnames(data4[vars][1]), 'color', 'stack')
+    add_float("fafa0", 3, "w", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    write(paste0("#+ 2fac_2, fig.width=12, fig.height=", longt+1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('transposed color stacked bar graph', 'transposed color freq. reordered stacked bar graph', 'transposed color alphab. reordered stacked bar graph')
+    fafa051   <- pp_stackedbar(data, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'stack')
+    fafa052   <- pp_stackedbar(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'stack')
+    fafa053   <- pp_stackedbar(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'stack')
+    add_float("fafa05", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    write(paste0("#+ 2fac_3, fig.width=12, fig.height=", long+1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('color 100% stacked bar graph', 'color freq. reordered 100% stacked bar graph', 'color alphab. reordered 100% stacked bar graph')
+    fafa11   <- pp_stackedbar(data, colnames(data[vars][2]), colnames(data[vars][1]), 'color', 'fill')
+    fafa12   <- pp_stackedbar(data2, colnames(data2[vars][2]), colnames(data2[vars][1]), 'color', 'fill')
+    fafa13   <- pp_stackedbar(data4, colnames(data4[vars][2]), colnames(data4[vars][1]), 'color', 'fill')
+    add_float("fafa1", 3, "w", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    write(paste0("#+ 2fac_4, fig.width=12, fig.height=", longt+1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('transposed color 100% stacked bar graph', 'transposed color freq. reordered 100% stacked bar graph', 'transposed color alphab. reordered 100% stacked bar graph')
+    fafa151   <- pp_stackedbar(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'fill')
+    fafa152   <- pp_stackedbar(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'fill')
+    fafa153   <- pp_stackedbar(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'fill')
+    add_float("fafa15", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    panel.h2 <- unit(nrow(unique(data[vars[2]]))*0.7, "cm")
+    panel.w2 <- unit(nrow(unique(data[vars[1]]))*0.7, "cm")
+    write(paste0("#+ 2fac_5, fig.width=", wide*3+10, ", fig.height=", long+1.5), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('bw heatmap', 'bw freq. reordered heatmap', 'bw alphab. reordered heatmap')
+    fafa21   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'observed')
+    fafa22   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'bw', 'observed')
+    fafa23   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'bw', 'observed')
+    add_float("fafa2", 3, "w2", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    stripe  <- c('color heatmap', 'color freq. reordered heatmap', 'color alphab. reordered heatmap')
+    fafa31   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'observed')
+    fafa32   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'observed')
+    fafa33   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'observed')
+    add_float("fafa3", 3, "w2", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    stripe  <- c('color residuals heatmap', 'color freq. reordered residuals heatmap', 'color alphab. reordered residuals heatmap')
+    fafa41  <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'residuals')
+    fafa42   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'residuals')
+    fafa43   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'residuals')
+    add_float("fafa4", 3, "w2", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    stripe  <- c('bw contribution to x2 heatmap', 'bw freq. reordered contribution to x2 heatmap', 'bw alphab. reordered contribution to x2 heatmap')
+    fafa61   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'contrib')
+    fafa62   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'bw', 'contrib')
+    fafa63   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'bw', 'contrib')
+    add_float("fafa6", 3, "w2", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    stripe  <- c('color contribution to x2 heatmap', 'color freq. reordered contribution to x2 heatmap', 'color alphab. reordered contribution to x2 heatmap')
+    fafa71   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'contrib')
+    fafa72   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'contrib')
+    fafa73   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'contrib')
+    add_float("fafa7", 3, "w2", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    stripe  <- c('bw balloon plot', 'bw freq. reordered balloon plot', 'bw alphab. reordered balloon plot')
+    fafa81   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'observed', pp_geom = "point")
+    fafa82   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'bw', 'observed', pp_geom = "point")
+    fafa83   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'bw', 'observed', pp_geom = "point")
+    add_float("fafa8", 3, "w2", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    stripe  <- c('color balloon plot', 'color freq. reordered balloon plot', 'color alphab. reordered balloon plot')
+    fafa91   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'observed', pp_geom = "point")
+    fafa92   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'observed', pp_geom = "point")
+    fafa93   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'observed', pp_geom = "point")
+    add_float("fafa9", 3, "w2", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    stripe  <- c('color residuals balloon plot', 'color freq. reordered residuals balloon plot', 'color alphab. reordered residuals balloon plot')
+    fafa101   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'residuals', pp_geom = "point")
+    fafa102   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'residuals', pp_geom = "point")
+    fafa103   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'residuals', pp_geom = "point")
+    add_float("fafa10", 3, "w2", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    stripe  <- c('bw contribution to x2 balloon plot', 'bw freq. reordered contribution to x2 balloon plot', 'bw alphab. reordered contribution to x2 balloon plot')
+    fafa121   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'contrib', pp_geom = "point")
+    fafa122   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'bw', 'contrib', pp_geom = "point")
+    fafa123   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'bw', 'contrib', pp_geom = "point")
+    add_float("fafa12", 3, "w2", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    stripe  <- c('color contribution to x2 balloon plot', 'color freq. reordered contribution to x2 balloon plot', 'color alphab. reordered contribution to x2 balloon plot')
+    fafa131   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'contrib', pp_geom = "point")
+    fafa132   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'contrib', pp_geom = "point")
+    fafa133   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'contrib', pp_geom = "point")
+    add_float("fafa13", 3, "w2", "h2", 3)
+    if (label == TRUE) {add_label("2fac", stripe)}
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
+  }
+
+# facord ------------------------------------------------------------------
+
+
+  else if (length(vars) == 2 &
+             ((
+               is.ordered(unlist(data[, vars[1]])) == TRUE &
+               (is.factor(unlist(data[, vars[2]])) == TRUE & is.ordered(unlist(data[, vars[2]])) == FALSE)) |
+              (
+                is.ordered(unlist(data[, vars[2]])) == TRUE &
+                (is.factor(unlist(data[, vars[1]])) == TRUE & is.ordered(unlist(data[, vars[1]])) == FALSE)))) {
+    var2 <- colnames(data[vars][,sapply(data[vars], function(x) is.factor(x) & !is.ordered(x)), drop = FALSE])
+    var1 <- colnames(data[vars][which(sapply(data[vars], is.ordered))])
+    panel.h <- unit(length(unique(data[,var2]))*0.7, "cm")
+    panel.h2 <- unit(length(unique(data[,var1]))*0.7, "cm")
+    panel.w <- unit(3.5, "cm")
+    data2 <- data[, vars]
+    data3b <- as.data.frame(stats::ftable(data2[2], useNA = "no"))
+    data2[,2]  <- factor(data2[,2], levels = data3b[order(-data3b$Freq),][,1], ordered = TRUE)
+    data4 <- data[, vars]
+    data4[[vars[2]]] <- as.character(data4[[vars[2]]])
+    write(paste0("#+ facord_1, fig.width=12, fig.height=", length(unique(unlist(data[, var2]))) / 3.7 + 1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('bw stacked bar graph', 'bw freq. reordered stacked bar graph', 'bw alphab. reordered stacked bar graph')
+    offa01   <- pp_stackedbar(data,  var2, var1, 'bw', 'stack')
+    offa02   <- pp_stackedbar(data2, var2, var1, 'bw', 'stack')
+    offa03   <- pp_stackedbar(data4, var2, var1, 'bw', 'stack')
+    add_float("offa0", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    stripe  <- c('color stacked bar graph', 'color freq. reordered stacked bar graph', 'color alphab. reordered stacked bar graph')
+    offa11   <- pp_stackedbar(data,  var2, var1, 'color', 'stack', 'ordinal')
+    offa12   <- pp_stackedbar(data2, var2, var1, 'color', 'stack', 'ordinal')
+    offa13   <- pp_stackedbar(data4, var2, var1, 'color', 'stack', 'ordinal')
+    add_float("offa1", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    write(paste0("#+ facord_2, fig.width=12, fig.height=", length(unique(unlist(data[, var1]))) / 3.7 + 1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('transposed color stacked bar graph')
+    offa211   <- pp_stackedbar(data,  var1, var2, 'color', 'stack')
+    add_float("offa21", 1, "w", "h2", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    write(paste0("#+ facord_3, fig.width=12, fig.height=", length(unique(unlist(data[, var2]))) / 3.7 + 1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('bw 100% stacked bar graph', 'bw freq. reordered 100% stacked bar graph', 'bw alphab. reordered 100% stacked bar graph')
+    offa21   <- pp_stackedbar(data, var2, var1, pp_color = 'bw', pp_position = 'fill')
+    offa22   <- pp_stackedbar(data2, var2, var1, pp_color = 'bw', pp_position = 'fill')
+    offa23   <- pp_stackedbar(data4, var2, var1, pp_color = 'bw', pp_position = 'fill')
+    add_float("offa2", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    stripe  <- c('color 100% stacked bar graph', 'color freq. reordered 100% stacked bar graph', 'color alphab. reordered 100% stacked bar graph')
+    offa31   <- pp_stackedbar(data, var2, var1, pp_color = 'color', pp_position = 'fill', 'ordinal')
+    offa32   <- pp_stackedbar(data2, var2, var1, pp_color = 'color', pp_position = 'fill', 'ordinal')
+    offa33   <- pp_stackedbar(data4, var2, var1, pp_color = 'color', pp_position = 'fill', 'ordinal')
+    add_float("offa3", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    write(paste0("#+ facord_4, fig.width=12, fig.height=", length(unique(unlist(data[, var1]))) / 3.7 + 1), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    stripe  <- c('transposed color 100% stacked bar graph')
+    offa221   <- pp_stackedbar(data,  var1, var2, 'color', 'fill')
+    add_float("offa22", 1, "w", "h2", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    write(paste0("#+ facord_5, fig.width=12, fig.height=", length(unique(unlist(data[, var2]))) / 3.7 + 1.5), file.path(dir, "brinton_outcomes", "longplot.R"), append=TRUE)
+    panel.w2 <- unit(nrow(unique(data[vars[1]]))*0.7, "cm")
+    stripe  <- c('bw heatmap', 'bw freq. reordered heatmap', 'bw alphab. reordered heatmap')
+    offa41   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'observed')
+    offa42   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'bw', 'observed')
+    offa43   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'bw', 'observed')
+    add_float("offa4", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    stripe  <- c('color heatmap', 'color freq. reordered heatmap', 'color alphab. reordered heatmap')
+    offa51   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'observed')
+    offa52   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'observed')
+    offa53   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'observed')
+    add_float("offa5", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    stripe  <- c('color residuals heatmap', 'color freq. reordered residuals heatmap', 'color alphab. reordered residuals heatmap')
+    offa61   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'residuals')
+    offa62   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'residuals')
+    offa63   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'residuals')
+    add_float("offa6", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    stripe    <- c('bw contribution to x2 heatmap', 'color contribution to x2 heatmap')
+    offa81    <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'contrib')
+    offa82    <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'bw', 'contrib')
+    offa83    <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'bw', 'contrib')
+    add_float("offa8", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    stripe    <- c('bw freq. reordered contribution to x2 heatmap', 'color freq. reordered contribution to x2 heatmap')
+    offa91    <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'contrib')
+    offa92    <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'contrib')
+    offa93    <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'contrib')
+    add_float("offa9", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    stripe    <- c('bw balloon plot', 'bw freq. reordered balloon plot', 'bw alphab. reordered balloon plot')
+    offa101   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'observed', pp_geom = "point")
+    offa102   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'bw', 'observed', pp_geom = "point")
+    offa103   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'bw', 'observed', pp_geom = "point")
+    add_float("offa10", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    stripe    <- c('color balloon plot', 'color freq. reordered balloon plot', 'color alphab. reordered balloon plot')
+    offa111   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'observed', pp_geom = "point")
+    offa112   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'observed', pp_geom = "point")
+    offa113   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'observed', pp_geom = "point")
+    add_float("offa11", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    stripe    <- c('color residuals balloon plot', 'color freq. reordered residuals balloon plot', 'color alphab. reordered residuals balloon plot')
+    offa121   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'residuals', pp_geom = "point")
+    offa122   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'residuals', pp_geom = "point")
+    offa123   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'residuals', pp_geom = "point")
+    add_float("offa12", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    stripe  <- c('bw contribution to x2 balloon plot', 'bw freq. reordered contribution to x2 balloon plot', 'bw alphab. reordered contribution to x2 balloon plot')
+    offa141   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'bw', 'contrib', pp_geom = "point")
+    offa142   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'bw', 'contrib', pp_geom = "point")
+    offa143   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'bw', 'contrib', pp_geom = "point")
+    add_float("offa14", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    stripe  <- c('color contribution to x2 balloon plot', 'color freq. reordered contribution to x2 balloon plot', 'color alphab. reordered contribution to x2 balloon plot')
+    offa151   <- pp_contingency(data, colnames(data[vars][1]), colnames(data[vars][2]), 'color', 'contrib', pp_geom = "point")
+    offa152   <- pp_contingency(data2, colnames(data2[vars][1]), colnames(data2[vars][2]), 'color', 'contrib', pp_geom = "point")
+    offa153   <- pp_contingency(data4, colnames(data4[vars][1]), colnames(data4[vars][2]), 'color', 'contrib', pp_geom = "point")
+    add_float("offa15", 3, "w", "h", 3)
+    if (label == TRUE) {add_label("offa", stripe)}
+    rmarkdown::render(file.path(dir, "brinton_outcomes", "longplot.R"),"html_document")
+    pander::openFileInOS(file.path(dir, "brinton_outcomes", "longplot.html"))
+  }
+  else {print("This combination of variable types has not been considered yet")}
   }
   }
 }

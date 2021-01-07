@@ -525,6 +525,7 @@ if (length(data[sapply(data, is.ordered)])>0)
   out = NULL
   for (i in seq_along(data.ofac))
   {
+    # data.ofac[,i] <- ifelse(nchar(as.vector(data.ofac[,i])) > 10, paste0(substring(as.vector(data.ofac[,i]), 1, 8), "..."), as.vector(data.ofac[,i]))
     for (j in 1:ncol) {eval(parse(text=paste0("ofi", letters[j], " <- paste0('of', ", i, ", '", letters[j],"')")))}
     ofac.plot <- function(pp)
     {
@@ -593,6 +594,8 @@ if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], 
   out = NULL
   for (i in seq_along(data.fac))
   {
+    # data.fac[,i] <- ifelse(nchar(as.vector(data.fac[,i])) > 10, paste0(substring(as.vector(data.fac[,i]), 1, 8), "..."), as.vector(data.fac[,i]))
+
     for (j in 1:ncol) {eval(parse(text=paste0("fti", letters[j], " <- paste0('ft', ", i, ", '", letters[j],"')")))}
     fac.plot <- function(pp)
     {
@@ -851,6 +854,12 @@ if (length(data[sapply(data, is.numeric)])>0)
                                              } else if (numeric[", j, "] == 'stepped area graph') {
                                              assign(nui", letters[j], ",
                                              pp_1DD_areagraph(pp, colnames(pp[i]), pp_trans = 'step'), envir=my_env)
+                                             } else if (numeric[", j, "] == 'bw stepped area graph') {
+                                             assign(nui", letters[j], ",
+                                             pp_1DD_areagraph(pp, colnames(pp[i]), pp_trans = 'step', pp_color = 'bw'), envir=my_env)
+                                             } else if (numeric[", j, "] == 'color stepped area graph') {
+                                             assign(nui", letters[j], ",
+                                             pp_1DD_areagraph(pp, colnames(pp[i]), pp_trans = 'step', pp_color = 'color'), envir=my_env)
                                              } else if (numeric[", j, "] == 'stripe graph') {
                                              assign(nui", letters[j], ",
                                              pp_stripegraph(pp, colnames(pp[i])), envir=my_env)
@@ -860,6 +869,15 @@ if (length(data[sapply(data, is.numeric)])>0)
                                              } else if (numeric[", j, "] == 'color stripe graph') {
                                              assign(nui", letters[j], ",
                                              pp_stripegraph(pp, colnames(pp[i]), 'color'), envir=my_env)
+                                             } else if (numeric[", j, "] == 'seq. stripe graph') {
+                                             assign(nui", letters[j], ",
+                                             pp_1DD_stripegraph(pp, colnames(pp[i])), envir=my_env)
+                                             } else if (numeric[", j, "] == 'bw seq. stripe graph') {
+                                             assign(nui", letters[j], ",
+                                             pp_1DD_stripegraph(pp, colnames(pp[i]), 'bw'), envir=my_env)
+                                             } else if (numeric[", j, "] == 'color seq. stripe graph') {
+                                             assign(nui", letters[j], ",
+                                             pp_1DD_stripegraph(pp, colnames(pp[i]), 'color'), envir=my_env)
                                              } else if (numeric[", j, "] == 'binned stripe graph') {
                                              assign(nui", letters[j], ",
                                              pp_binned_stripegraph(pp, colnames(pp[i]), 'black', my_binwidth), envir=my_env)
@@ -983,6 +1001,7 @@ if (length(data[sapply(data, is.character)])>0)
 
   for (i in seq_along(data.char))
   {
+    # data.char[,i] <- ifelse(nchar(as.vector(data.char[,i])) > 10, paste0(substring(as.vector(data.char[,i]), 1, 8), "..."), as.vector(data.char[,i]))
     for (j in 1:ncol) {eval(parse(text=paste0("chi", letters[j], " <- paste0('ch', ", i, ", '", letters[j],"')")))}
     char.plot <- function(pp)
     {

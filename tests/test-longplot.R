@@ -32,7 +32,10 @@ brinton::longplot(flights_dt50, "departure")
 brinton::longplot(midwest, "area")
 
 # 2vars
-brinton::longplot(midwest, c("area", "poptotal"))
-brinton::longplot(flights_dt50, c("departure", "arrival"))
-brinton::longplot(flights_dt50, c("departure", "delay"))
-brinton::longplot(iris, c("Species", "Sepal.Length"))
+brinton::longplot(midwest, c("area", "poptotal"))                           # 2 numeric
+brinton::longplot(flights_dt50, c("departure", "arrival"))                  # 1 datetime
+brinton::longplot(flights_dt50, c("departure", "delay"))                    # 1 datetime and 1 numeric
+brinton::longplot(iris, c("Species", "Sepal.Length"))                       # 1 factor and 1 numeric
+brinton::longplot(mediation::jobs, c("occp", "marital"))                    # 2 factor
+brinton::longplot(as.data.frame(ggplot2::diamonds), c("clarity", "cut"))    # 2 ordered
+brinton::longplot(Ecdat::HI, c("education", "region"))                      # 1 ordered and 1 factor

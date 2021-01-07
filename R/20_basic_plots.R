@@ -164,9 +164,9 @@ pp_1DD_scatterplot <- function(pp_df,
   } else if (pp_coord == "yx" & pp_color == "bw" & pp_smooth == "true") {
     p_plot + p_point_c + p_smooth + p_scale_gray_l + amb.z
   } else if (pp_coord == "yx" & pp_color == "color" & pp_smooth == "false") {
-    p_plot + p_point_c + p_scale_color_l + amb.z
+    p_plot + p_point_c + p_scale_value_l + amb.z
   } else if (pp_coord == "yx" & pp_color == "color" & pp_smooth == "true") {
-    p_plot + p_point_c + p_smooth + p_scale_color_l + amb.z
+    p_plot + p_point_c + p_smooth + p_scale_value_l + amb.z
   } else if (pp_coord == "xy" & pp_color == "black") {
     p_plot + p_point + coord_flip()
   } else if (pp_coord == "xy" & pp_color == "bw") {
@@ -290,12 +290,12 @@ pp_1DD_areagraph <- function(pp_df,
     p_plot + p_areastep + coord_flip()
   } else if (pp_coord == "xy" & pp_trans == "step" & pp_color == "bw") {
     p_plot + p_areastep_c + p_scale_gray_a + amb.z
-    } else if (pp_coord == "yx" & pp_trans == "step" & pp_color == "bw") {
+  } else if (pp_coord == "yx" & pp_trans == "step" & pp_color == "bw") {
     p_plot + p_areastep_c + p_scale_gray_a + coord_flip() + amb.z
   } else if (pp_coord == "xy" & pp_trans == "step" & pp_color == "color") {
-    p_plot + p_areastep_c + p_scale_color_a + amb.z
+    p_plot + p_areastep_c + p_scale_value_a + amb.z
   } else if (pp_coord == "yx" & pp_trans == "step" & pp_color == "color") {
-    p_plot + p_areastep_c + p_scale_color_a + coord_flip() + amb.z
+    p_plot + p_areastep_c + p_scale_value_a + coord_flip() + amb.z
   } else {stop(warning_general)}
 }
 
@@ -314,6 +314,8 @@ pp_1DD_linegraph <- function(pp_df,
   p_path    <- geom_path(aes(x=seq_along(pp_var), group=1), size=0.5*pp_size)
   p_path_s  <- geom_step(aes(x=seq_along(pp_var), group=1), size=0.5*pp_size)
   p_point   <- geom_point(data = pp_df, aes(x=seq_along(pp_var), group=1), size=3*pp_size)
+  # p_labels  <- ggplot_build(p_plot)$layout$panel_params[[1]]$y$get_labels()
+  # p_axis    <- scale_x_discrete(labels=ifelse(nchar(p_labels) > 10, paste0(substring(as.vector(p_labels), 1, 8), "..."), as.vector(p_labels)))
 
   if (pp_coord == "xy" & pp_trans == "rect" & pp_points == FALSE) {
     p_plot + p_path
@@ -322,7 +324,7 @@ pp_1DD_linegraph <- function(pp_df,
   } else if (pp_coord == "xy" & pp_trans == "step" & pp_points == FALSE) {
     p_plot + p_path_s
   } else if (pp_coord == "yx" & pp_trans == "step" & pp_points == FALSE) {
-    p_plot + p_path_s + coord_flip()
+    p_plot + p_path_s + coord_flip()# + p_axis
   } else if (pp_coord == "xy" & pp_trans == "rect" & pp_points == TRUE) {
     p_plot + p_path + p_point
   } else if (pp_coord == "yx" & pp_trans == "rect" & pp_points == TRUE) {
@@ -458,7 +460,7 @@ pp_1DD_stripegraph <- function(pp_df,
   } else if (pp_color == "bw") {
     p_plot + p_tile_c + p_scale_gray_a + amb.z
   } else if (pp_color == "color") {
-    p_plot + p_tile_c + p_scale_color_a + amb.z
+    p_plot + p_tile_c + p_scale_value_a + amb.z
   } else {stop(warning_general)}
 }
 
@@ -743,20 +745,22 @@ pp_pathgraph <- function(pp_df,
   p_path    <- geom_path(aes(x=pp_var1, group=1), size=0.5*pp_size)
   p_path_c  <- geom_path(aes(x=pp_var1, group=1, color=seq_along(pp_var1)))
   p_point   <- geom_point(data = pp_df, aes(x=pp_var1, group=1), size=1.5*pp_size)
-  p_point_c   <- geom_point(data = pp_df, aes(x=pp_var1, color=seq_along(pp_var1), group=1), size=1.5*pp_size)
+  p_point_c <- geom_point(data = pp_df, aes(x=pp_var1, color=seq_along(pp_var1), group=1), size=1.5*pp_size)
+  p_inici   <- geom_point(data = pp_df[1,], aes(x=pp_var1, y=pp_var2, group=1), size=1.5, shape = 1)
+  p_final   <- geom_point(data = pp_df[nrow(pp_df),], aes(x=pp_var1, y=pp_var2, group=1), size=1.5, shape = 19)
 
   if (pp_points == FALSE & pp_color == "black") {
-    p_plot + p_path
+    p_plot + p_path + p_inici + p_final
   } else if (pp_points == FALSE & pp_color == "bw") {
-    p_plot + p_path_c + p_scale_gray_l + amb.z
+    p_plot + p_path_c + p_scale_gray_l + p_inici + p_final + amb.z
   } else if (pp_points == FALSE & pp_color == "color") {
-    p_plot + p_path_c + p_scale_color_l + amb.z
+    p_plot + p_path_c + scl_viridis_ld + p_inici + p_final + amb.z
   } else if (pp_points == TRUE & pp_color == "black") {
     p_plot + p_path + p_point
   } else if (pp_points == TRUE & pp_color == "bw") {
     p_plot + p_path_c + p_point_c + p_scale_gray_l + amb.z
   } else if (pp_points == TRUE & pp_color == "color") {
-    p_plot + p_path_c + p_point_c + p_scale_color_l + amb.z
+    p_plot + p_path_c + p_point_c + scl_viridis_ld + amb.z
   } else {stop(warning_general)}
 }
 
@@ -807,13 +811,13 @@ pp_unfolded <- function(pp_df,
   } else if (pp_geom ==  "point" & pp_color == "bw") {
     p_plot + p_point_c + p_scale_gray_l + amb.z
   } else if (pp_geom ==  "point" & pp_color == "color") {
-    p_plot + p_point_c + p_scale_color_l + amb.z
+    p_plot + p_point_c + p_scale_value_l + amb.z
   } else if (pp_geom ==  "bar" & pp_color == "black") {
     p_plot + p_bar
   } else if (pp_geom ==  "bar" & pp_color == "bw") {
     p_plot + p_bar_c + p_scale_gray_l + amb.z
   } else if (pp_geom ==  "bar" & pp_color == "color") {
-    p_plot + p_bar_c + p_scale_color_l + amb.z
+    p_plot + p_bar_c + p_scale_value_l + amb.z
   } else if (pp_geom ==  "area" & pp_color == "black") {
     p_plot + p_area
   } else {stop(warning_general)}
@@ -882,7 +886,7 @@ pp_unf_tile <- function(pp_df,
   if (pp_geom ==  "tile" & pp_color == "bw") {
     p_plot + p_tile + p_scale_gray_a + amb.z + amb.y
   } else if (pp_geom ==  "tile" & pp_color == "color") {
-    p_plot + p_tile + p_scale_color_a + amb.z + amb.y
+    p_plot + p_tile + p_scale_value_a + amb.z + amb.y
   } else {
     stop(warning_general)
   }
@@ -1023,14 +1027,21 @@ pp_density2 <- function(pp_df,
   p_plot_b <- ggplot(pp_df, aes_string(x=pp_var1, group = pp_var2), environment = environment()) + p_labs + pp_theme()
   p_plot_c <- ggplot(pp_df, aes_string(x=pp_var1, color = pp_var2), environment = environment()) + p_labs + pp_theme()
   p_plot_f <- ggplot(pp_df, aes_string(x=pp_var2, fill = pp_var1), environment = environment()) + p_labs + pp_theme()
-  if (pp_aes == "line" & pp_color == "bw") {
+  p_plot_g <- ggplot(pp_df, aes_string(x=pp_var1, color = pp_var2), environment = environment()) + p_labs + pp_theme()
+  if (pp_aes == "line" & pp_color == "black") {
     p_plot_b + geom_density(size=pp_size, color = "black")
+  } else if (pp_aes == "line" & pp_color == "bw") {
+    p_plot_g + geom_density(size=0.5*pp_size) + scl_gray_disc_l + amb.z
+  } else if (pp_aes == "line" & pp_color == "viridis") {
+    p_plot_g + geom_density(size=0.5*pp_size) + scl_viridis_l + amb.z
   } else if (pp_aes == "area" & pp_color == "bw") {
     p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.7, color = "black") + scl_gray_disc_a + amb.z
   } else if (pp_aes == "line" & pp_color == "color") {
     p_plot_c + geom_density(size=pp_size, alpha = 0.5) + scl_col_disc_l + amb.z
   } else if (pp_aes == "area" & pp_color == "color") {
     p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.5, color = "white") + scl_col_disc_a + amb.z
+  } else if (pp_aes == "area" & pp_color == "viridis") {
+    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.5, color = "white") + scl_viridis_a + amb.z
   } else {stop(warning_general)}
 }
 
@@ -1038,7 +1049,8 @@ pp_histogram2 <- function(pp_df,
                           pp_var1,
                           pp_var2,
                           pp_color = "bw",
-                          pp_position = "stack")  {
+                          pp_position = "stack",
+                          pp_scale = "nominal")  {
   pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
   pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
 
@@ -1046,14 +1058,154 @@ pp_histogram2 <- function(pp_df,
   p_plot    <- ggplot(pp_df, aes_string(x=pp_var1, color=pp_var2, fill=pp_var2), environment = environment()) + p_labs + pp_theme()
   p_hist_s  <- geom_histogram(center = 0, position = "stack")
   p_hist_f  <- geom_histogram(center = 0, position = "fill")
+  p_labels  <- scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1), labels = c("0%", "20%", "40%", "60%", "80%", "100%"))
 
-  if (pp_color == "bw" & pp_position == "stack") {
+  if (pp_color == "bw" & pp_position == "stack" & pp_scale == "nominal") {
     p_plot + p_hist_s + scl_gray_disc_a + scl_gray_disc_l + amb.z
-  } else if (pp_color == "color" & pp_position == "stack") {
+  } else if (pp_color == "color" & pp_position == "stack" & pp_scale == "nominal") {
     p_plot + p_hist_s + scl_col_disc_a + scl_col_disc_l + amb.z
-  } else if (pp_color == "bw" & pp_position == "fill") {
-    p_plot + p_hist_f + scl_gray_disc_a + scl_gray_disc_l + amb.z + scale_y_continuous(breaks = c(0, 1), labels = c("0%", "100%"))
-  } else if (pp_color == "color" & pp_position == "fill") {
-    p_plot + p_hist_f + scl_col_disc_a + scl_col_disc_l + amb.z + scale_y_continuous(breaks = c(0, 1), labels = c("0%", "100%"))
+  } else if (pp_color == "color" & pp_position == "stack" & pp_scale == "ordinal") {
+    p_plot + p_hist_s + scl_viridis_l + scl_viridis_a + amb.z
+  } else if (pp_color == "bw" & pp_position == "fill" & pp_scale == "nominal") {
+    p_plot + p_hist_f + scl_gray_disc_a + scl_gray_disc_l + amb.z + p_labels
+  } else if (pp_color == "color" & pp_position == "fill" & pp_scale == "nominal") {
+    p_plot + p_hist_f + scl_col_disc_a + scl_col_disc_l + amb.z + p_labels
+  } else if (pp_color == "color" & pp_position == "fill" & pp_scale == "ordinal") {
+    p_plot + p_hist_f + scl_viridis_l + scl_viridis_a + amb.z + p_labels
+  } else {stop(warning_general)}
+}
+
+pp_stackedbar <- function(pp_df,
+                          pp_var1,
+                          pp_var2,
+                          pp_color = "bw",
+                          pp_position = "stack",
+                          pp_scale = "nominal")  {
+
+  pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
+  pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
+  pp_df$pp_var1 <- short_label(pp_df, pp_var1, 13, 11)
+  pp_df$pp_var2 <- short_label(pp_df, pp_var2, 13, 11)
+
+  p_labs    <- labs(x=names(pp_df[pp_var1]))
+  p_labs_y  <- labs(y="percentage")
+  p_labels  <- scale_y_continuous(breaks = c(0, 0.5, 1), labels = c("0%", "50%", "100%"))
+  p_plot    <- ggplot(pp_df, aes(x=pp_var1, fill=pp_var2), environment = environment()) + p_labs + pp_theme() + theme(axis.ticks.y = element_blank())
+  p_bars_s  <- geom_bar(key_glyph = draw_key_dotplot, position = "stack")
+  p_bars_f  <- geom_bar(key_glyph = draw_key_dotplot, position = "fill")
+  p_legend  <- guides(fill=guide_legend(title=as.character(pp_var2), keyheight = unit(0.4, "cm"),
+                                        title.theme = element_text(size = 9, colour = "gray20"),
+                                        reverse = TRUE))
+  p_black   <- theme(panel.background = element_rect(fill = "gray90", color = "gray90"),
+                     plot.background = element_rect(fill = "gray90", color = "gray90"))
+
+  if (pp_color == "bw" & pp_position == "stack" & pp_scale == "nominal") {
+    p_plot + p_bars_s + scl_gray_disc_a + p_legend + coord_flip()
+  } else if (pp_color == "color" & pp_position == "stack" & pp_scale == "nominal") {
+    p_plot + p_bars_s + scl_col_disc_a + p_legend + coord_flip()
+  } else if (pp_color == "bw" & pp_position == "fill" & pp_scale == "nominal") {
+    p_plot + p_bars_f + scl_gray_disc_a + p_labels + p_labs_y + p_legend + coord_flip()
+  } else if (pp_color == "color" & pp_position == "fill" & pp_scale == "nominal") {
+    p_plot + p_bars_f + scl_col_disc_a + p_labels + p_labs_y + p_legend + coord_flip()
+  } else if (pp_color == "bw" & pp_position == "stack" & pp_scale == "ordinal") {
+    p_plot + p_bars_s + scl_gray_disc_a + p_legend + coord_flip()
+  } else if (pp_color == "color" & pp_position == "stack" & pp_scale == "ordinal") {
+    p_plot + p_bars_s + scl_viridis_a + p_legend + coord_flip()
+  } else if (pp_color == "bw" & pp_position == "fill" & pp_scale == "ordinal") {
+    p_plot + p_bars_f + scl_gray_disc_a + p_labels + p_labs_y + p_legend + coord_flip()
+  } else if (pp_color == "color" & pp_position == "fill" & pp_scale == "ordinal") {
+    p_plot + p_bars_f + scl_viridis_a + p_labels + p_labs_y + p_legend + coord_flip()
+  } else {stop(warning_general)}
+}
+
+pp_contingency <- function(pp_df,
+                          pp_var1,
+                          pp_var2,
+                          pp_color = "bw",
+                          pp_statistic = "observed",
+                          pp_geom = "tile")  {
+
+
+  tb <- stats::ftable(pp_df[,c(pp_var1, pp_var2)], useNA = "no")
+  df <- as.data.frame(tb)
+
+  # return(str(df))
+
+  # df[,1] <- if(is.ordered(pp_df[,1]) == TRUE) {factor(df[,1], levels = levels(pp_df[,1]), ordered=TRUE)} else {df[,1]}
+  # df[,2] <- if(is.ordered(pp_df[,2]) == TRUE) {factor(df[,2], levels = levels(pp_df[,2]), ordered=TRUE)} else {df[,2]}
+
+
+  df[,1] <- short_label(df, 1, 13, 11)
+  df[,2] <- short_label(df, 2, 13, 11)
+
+  names(df)[3] <- "freq"
+  chisq <- stats::chisq.test(tb, simulate.p.value = TRUE)
+
+  df$resid      <- as.data.frame(stats::chisq.test(tb)$residuals)$Freq
+  df$stdres     <- as.data.frame(stats::chisq.test(tb)$stdres)$Freq
+  df$contrib    <- as.data.frame(chisq$residuals^2/chisq$statistic)$Freq
+  df$proportion <- as.data.frame(prop.table(table(as.data.frame(pp_df[,c(pp_var1, pp_var2)]))))$Freq
+
+
+  p_labs    <- labs(x =  names(df)[1], y = names(df)[2])
+  p_guides  <- guides(fill = guide_colorbar(barwidth = unit(2, "mm"), title.theme = element_text(size = 9, colour = "gray30")),
+                      color = guide_colorbar(barwidth = unit(2, "mm"), title.theme = element_text(size = 9, colour = "gray30")),
+                      size = FALSE)
+  # guides(fill=guide_legend(title=as.character(pp_var2), keyheight = unit(0.4, "cm"),
+  #                          title.theme = element_text(size = 9, colour = "gray20"),
+  #                          reverse = TRUE))
+
+  p_plot  <- ggplot(df, aes_string(x=df[,1], y=df[,2]), environment = environment()) + p_labs + p_guides + pp_theme() + theme(axis.ticks = element_blank())
+  p_tile_3    <- geom_tile(aes(fill=df[,3]))
+  p_tile_4    <- geom_tile(aes(fill=df[,4]))
+  p_tile_5    <- geom_tile(aes(fill=df[,5]))
+  p_tile_6    <- geom_tile(aes(fill=df[,6]))
+  p_tile_7    <- geom_tile(aes(fill=df[,7]))
+  p_point_3   <- geom_point(aes(color=df[,3], size=df[,3]))
+  p_point_4   <- geom_point(aes(color=df[,4], size=df[,4]))
+  p_point_5   <- geom_point(aes(color=df[,5], size=df[,5]))
+  p_point_6   <- geom_point(aes(color=df[,6], size=df[,6]))
+  p_point_7   <- geom_point(aes(color=df[,7], size=df[,7]))
+
+  if (pp_color == "bw" & pp_statistic == "observed" & pp_geom == "tile") {
+    p_plot + p_tile_3 + p_scale_gray_a + rot.x + labs(fill = names(df)[3])
+  } else if (pp_color == "color" & pp_statistic == "observed" & pp_geom == "tile") {
+    p_plot + p_tile_3 + p_scale_color_a + rot.x + labs(fill = names(df)[3])
+  } else if (pp_color == "bw" & pp_statistic == "observed" & pp_geom == "point") {
+    p_plot + p_point_3 + p_scale_gray_l + rot.x + labs(color = names(df)[3])
+  } else if (pp_color == "color" & pp_statistic == "observed" & pp_geom == "point") {
+    p_plot + p_point_3 + p_scale_color_l + rot.x + labs(color = names(df)[3])
+  } else if (pp_color == "bw" & pp_statistic == "proportion" & pp_geom == "tile") {
+    p_plot + p_tile_7 + p_scale_gray_a + rot.x + labs(fill = names(df)[7])
+  } else if (pp_color == "color" & pp_statistic == "proportion" & pp_geom == "tile") {
+    p_plot + p_tile_7 + p_scale_color_a + rot.x + labs(fill = names(df)[7])
+  } else if (pp_color == "bw" & pp_statistic == "proportion" & pp_geom == "point") {
+    p_plot + p_point_7 + p_scale_gray_l + rot.x + labs(color = names(df)[7])
+  } else if (pp_color == "color" & pp_statistic == "proportion" & pp_geom == "point") {
+    p_plot + p_point_7 + p_scale_color_l + rot.x + labs(color = names(df)[7])
+  } else if (pp_color == "bw" & pp_statistic == "residuals" & pp_geom == "tile") {
+    p_plot + p_tile_4 + p_scale_gray_a + rot.x + labs(fill = names(df)[4])
+  } else if (pp_color == "color" & pp_statistic == "residuals" & pp_geom == "tile") {
+    p_plot + p_tile_4 + rot.x + labs(fill = names(df)[4]) + scale_fill_gradientn(colours = scl_col_value(3), limits = c(-abs(max(df[,4])), abs(max(df[,4]))))
+  } else if (pp_color == "bw" & pp_statistic == "residuals" & pp_geom == "point") {
+    p_plot + p_point_4 + p_scale_gray_l + rot.x + labs(color = names(df)[4])
+  } else if (pp_color == "color" & pp_statistic == "residuals" & pp_geom == "point") {
+    p_plot + p_point_4 + rot.x + labs(color = names(df)[4]) + scale_color_gradientn(colours = scl_col_value(3), limits = c(-abs(max(df[,4])), abs(max(df[,4]))))
+  } else if (pp_color == "bw" & pp_statistic == "stdres" & pp_geom == "tile") {
+    p_plot + p_tile_5 + p_scale_gray_a + rot.x + labs(fill = names(df)[5])
+  } else if (pp_color == "color" & pp_statistic == "stdres" & pp_geom == "tile") {
+    p_plot + p_tile_5 + rot.x + labs(fill = names(df)[5]) + scale_fill_gradientn(colours = scl_col_value(3), limits = c(-abs(max(df[,5])), abs(max(df[,5]))))
+  } else if (pp_color == "bw" & pp_statistic == "stdres" & pp_geom == "point") {
+    p_plot + p_point_5 + p_scale_gray_l + rot.x + labs(color = names(df)[5])
+  } else if (pp_color == "color" & pp_statistic == "stdres" & pp_geom == "point") {
+    p_plot + p_point_5 + rot.x + labs(color = names(df)[5]) + scale_color_gradientn(colours = scl_col_value(3), limits = c(-abs(max(df[,5])), abs(max(df[,5]))))
+  } else if (pp_color == "bw" & pp_statistic == "contrib" & pp_geom == "tile") {
+    p_plot + p_tile_6 + p_scale_gray_a_p + rot.x + labs(fill = names(df)[6])
+  } else if (pp_color == "color" & pp_statistic == "contrib" & pp_geom == "tile") {
+    p_plot + p_tile_6 + p_scale_value_a_p + rot.x + labs(fill = names(df)[6])
+  } else if (pp_color == "bw" & pp_statistic == "contrib" & pp_geom == "point") {
+    p_plot + p_point_6 + p_scale_gray_l_p + rot.x + labs(color = names(df)[6])
+  } else if (pp_color == "color" & pp_statistic == "contrib" & pp_geom == "point") {
+    p_plot + p_point_6 + p_scale_value_l_p + rot.x + labs(color = names(df)[6])
   } else {stop(warning_general)}
 }

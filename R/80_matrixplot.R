@@ -78,13 +78,13 @@ matrixplot <- function(data,
     if (is.null(diagram) == TRUE) {
       diagram <- c("scatter plot")
     }
-    if (length(diagram) != sum(diagram %in% c(numeric2_v2, fac.num_v1, fac.num_v2), na.rm = TRUE))
+    if (length(diagram) != sum(diagram %in% c(matrixplot_2num, fac.num_v1, fac.num_v2, fac.fac_v1, fac.fac_v1, ord.ord_v0, ord.ord_v1, ord.ord_v2), na.rm = TRUE))
     {
       stop(paste0(
         "The 'diagram'",
         string,
         " which values can be : '",
-        paste0(cbind(numeric2_v2, fac.num_v1), collapse = "', '"),
+        paste0(cbind(matrixplot_2num, fac.num_v1), collapse = "', '"),
         "'"
       ))
     }
@@ -107,226 +107,226 @@ matrixplot <- function(data,
       file = file.path(dir, "brinton_outcomes", "matrixplot.R"),
       append = TRUE
     )
-
-
-if (length(data[sapply(data, is.numeric)])>0 &&
-    dataclass[1] == "numeric" &&
-    dataclass[2] == "numeric" &&
-    (diagram %in% numeric2_v2) == TRUE)
+if (length(data[sapply(data, is.numeric)])>1 &&
+    identical(dataclass, c("numeric", "numeric")) &&
+    (diagram %in% matrixplot_2num) == TRUE)
 {
   data.num <- data[sapply(data, is.numeric)]
   diagram <- rep(diagram, ncol(data.num))
   out = NULL
   write(paste0("#+ numeric, fig.width=", 2.4*ncol(data.num) ,", fig.height=2.4"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
-  for (i in seq_along(data.num))
+  for (i in seq_along(data.num)[2:ncol(data.num)])
   {
-    for (j in seq_along(data.num)) {eval(parse(text=paste0("nui", letters[j], " <- paste0('nu', ", i, ", '", letters[j],"')")))}
+    for (j in seq_along(data.num)[c(1:i-1)]) {eval(parse(text=paste0("nui", letters[j], " <- paste0('nu', ", i, ", '", letters[j],"')")))}
     num.plot <- function(pp)
     {
-      for (j in seq_along(data.num)) {eval(parse(text=paste0("
+      for (j in seq_along(data.num)[c(1:i-1)]) {eval(parse(text=paste0("
                                              if (diagram[", j, "] == 'scatter plot') {
                                              assign(nui", letters[j], ",
-                                             pp_scatterplot(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'black', FALSE), envir=my_env)
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'black', FALSE), envir=my_env)
+                                             } else if (diagram[", j, "] == 'scatter plot with trend line') {
+                                             assign(nui", letters[j], ",
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'black', TRUE), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw scatter plot') {
                                              assign(nui", letters[j], ",
-                                             pp_scatterplot(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'bw', FALSE), envir=my_env)
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'bw', FALSE), envir=my_env)
                                              } else if (diagram[", j, "] == 'color scatter plot') {
                                              assign(nui", letters[j], ",
-                                             pp_scatterplot(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'color', FALSE), envir=my_env)
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'color', FALSE), envir=my_env)
                                              } else if (diagram[", j, "] == 'binned scatter plot') {
                                              assign(nui", letters[j], ",
-                                             pp_binnedpointgraph(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'black'), envir=my_env)
+                                             pp_binnedpointgraph(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'black'), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw binned scatter plot') {
                                              assign(nui", letters[j], ",
-                                             pp_binnedpointgraph(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'bw'), envir=my_env)
+                                             pp_binnedpointgraph(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'bw'), envir=my_env)
                                              } else if (diagram[", j, "] == 'color binned scatter plot') {
                                              assign(nui", letters[j], ",
-                                             pp_binnedpointgraph(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'color'), envir=my_env)
+                                             pp_binnedpointgraph(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'color'), envir=my_env)
                                              } else if (diagram[", j, "] == 'binned heatmap') {
                                              assign(nui", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[i]), colnames(pp[j]), 'black'), envir=my_env)
+                                             pp_heatmap(data, colnames(pp[j]), colnames(pp[i]), 'black'), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw binned heatmap') {
                                              assign(nui", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[i]), colnames(pp[j]), 'bw'), envir=my_env)
+                                             pp_heatmap(data, colnames(pp[j]), colnames(pp[i]), 'bw'), envir=my_env)
                                              } else if (diagram[", j, "] == 'color binned heatmap') {
                                              assign(nui", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[i]), colnames(pp[j]), 'color'), envir=my_env)
+                                             pp_heatmap(data, colnames(pp[j]), colnames(pp[i]), 'color'), envir=my_env)
                                              } else if (diagram[", j, "] == 'hexagonal binned heatmap') {
                                              assign(nui", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[i]), colnames(pp[j]), 'black', 6), envir=my_env)
+                                             pp_heatmap(data, colnames(pp[j]), colnames(pp[i]), 'black', 6), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw hexagonal binned heatmap') {
                                              assign(nui", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[i]), colnames(pp[j]), 'bw', 6), envir=my_env)
+                                             pp_heatmap(data, colnames(pp[j]), colnames(pp[i]), 'bw', 6), envir=my_env)
                                              } else if (diagram[", j, "] == 'color hexagonal binned heatmap') {
                                              assign(nui", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[i]), colnames(pp[j]), 'color', 6), envir=my_env)
+                                             pp_heatmap(data, colnames(pp[j]), colnames(pp[i]), 'color', 6), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw heatmap') {
                                              assign(nui", letters[j], ",
-                                             pp_raster(data, colnames(pp[i]), colnames(pp[j]), 'bw'), envir=my_env)
+                                             pp_raster(data, colnames(pp[j]), colnames(pp[i]), 'bw'), envir=my_env)
                                              } else if (diagram[", j, "] == 'color heatmap') {
                                              assign(nui", letters[j], ",
-                                             pp_raster(data, colnames(pp[i]), colnames(pp[j]), 'color'), envir=my_env)
+                                             pp_raster(data, colnames(pp[j]), colnames(pp[i]), 'color'), envir=my_env)
                                              } else if (diagram[", j, "] == 'contour plot') {
                                              assign(nui", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'black'), envir=my_env)
+                                             pp_contourmap(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'black'), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw contour plot') {
                                              assign(nui", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'bw'), envir=my_env)
+                                             pp_contourmap(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'bw'), envir=my_env)
                                              } else if (diagram[", j, "] == 'color contour plot') {
                                              assign(nui", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'color'), envir=my_env)
+                                             pp_contourmap(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'color'), envir=my_env)
                                              } else if (diagram[", j, "] == 'contour plot with data points') {
                                              assign(nui", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'black', TRUE), envir=my_env)
+                                             pp_contourmap(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'black', TRUE), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw contour plot with data points') {
                                              assign(nui", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'bw', TRUE), envir=my_env)
+                                             pp_contourmap(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'bw', TRUE), envir=my_env)
                                              } else if (diagram[", j, "] == 'color contour plot with data points') {
                                              assign(nui", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'color', TRUE), envir=my_env)
+                                             pp_contourmap(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'color', TRUE), envir=my_env)
                                              } else if (diagram[", j, "] == 'scatter plot with confidence ellipse') {
                                              assign(nui", letters[j], ",
-                                             pp_scatterplot(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'black', FALSE, TRUE, FALSE), envir=my_env)
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'black', FALSE, TRUE, FALSE), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw scatter plot with confidence ellipse') {
                                              assign(nui", letters[j], ",
-                                             pp_scatterplot(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'bw', FALSE, TRUE, FALSE), envir=my_env)
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'bw', FALSE, TRUE, FALSE), envir=my_env)
                                              } else if (diagram[", j, "] == 'color scatter plot with confidence ellipse') {
                                              assign(nui", letters[j], ",
-                                             pp_scatterplot(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'color', FALSE, TRUE, FALSE), envir=my_env)
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'color', FALSE, TRUE, FALSE), envir=my_env)
                                              } else if (diagram[", j, "] == 'scatter plot with marginal rugs') {
                                              assign(nui", letters[j], ",
-                                             pp_scatterplot(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'black', FALSE, FALSE, TRUE), envir=my_env)
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'black', FALSE, FALSE, TRUE), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw scatter plot with marginal rugs') {
                                              assign(nui", letters[j], ",
-                                             pp_scatterplot(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'bw', FALSE, FALSE, TRUE), envir=my_env)
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'bw', FALSE, FALSE, TRUE), envir=my_env)
                                              } else if (diagram[", j, "] == 'color scatter plot with marginal rugs') {
                                              assign(nui", letters[j], ",
-                                             pp_scatterplot(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'color', FALSE, FALSE, TRUE), envir=my_env)
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.num), 'color', FALSE, FALSE, TRUE), envir=my_env)
                                              } else if (diagram[", j, "] == 'path graph') {
                                              assign(nui", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), FALSE, 'black', pp_size = 3/ncol(data.num)), envir=my_env)
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), FALSE, 'black', pp_size = 3/ncol(data.num)), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw path graph') {
                                              assign(nui", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), FALSE, 'bw', pp_size = 3/ncol(data.num)), envir=my_env)
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), FALSE, 'bw', pp_size = 3/ncol(data.num)), envir=my_env)
                                              } else if (diagram[", j, "] == 'color path graph') {
                                              assign(nui", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), FALSE, 'color', pp_size = 3/ncol(data.num)), envir=my_env)
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), FALSE, 'color', pp_size = 3/ncol(data.num)), envir=my_env)
                                              } else if (diagram[", j, "] == 'point-to-point graph') {
                                              assign(nui", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), TRUE, 'black', pp_size = 3/ncol(data.num)), envir=my_env)
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), TRUE, 'black', pp_size = 3/ncol(data.num)), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw point-to-point graph') {
                                              assign(nui", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), TRUE, 'bw', pp_size = 3/ncol(data.num)), envir=my_env)
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), TRUE, 'bw', pp_size = 3/ncol(data.num)), envir=my_env)
                                              } else if (diagram[", j, "] == 'color point-to-point graph') {
                                              assign(nui", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), TRUE, 'color', pp_size = 3/ncol(data.num)), envir=my_env)
-                                             }")))}
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), TRUE, 'color', pp_size = 3/ncol(data.num)), envir=my_env)
+                                             }")))
+        eval(parse(text=paste0("assign('blank', blank(data, colnames(pp[i])), envir=my_env)
+                                             ")))
+        }
+
 
       line <- eval(parse(
-        text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" nui", letters[1:ncol(data.num)], collapse = ",', ',"), ",', ncol=", ncol(data.num), ")')")))
+        text=paste0("paste0('gridExtra::grid.arrange(' ,",
+                    paste0(" nui", letters[1:i-1], collapse = ",', ',"), ",', ncol=", (ncol(data.num)-1), ")')")))
       write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
     }
     num.plot(data.num)
     }
 }
-    else if (length(data[sapply(data, lubridate::is.instant)])>0 &&
-        dataclass[1] == "datetime" &&
-        dataclass[2] == "datetime" &&
-        (diagram %in% datetime2_v) == TRUE)
+    else if (length(data[sapply(data, lubridate::is.instant)])>1 &&
+             identical(dataclass, c("datetime", "datetime")) &&
+        (diagram %in% matrixplot_2dt) == TRUE)
     {
       data.date <- data[sapply(data, lubridate::is.instant)]
       diagram <- rep(diagram, ncol(data.date))
       out = NULL
       write(paste0("#+ datetime, fig.width=", 2.4*ncol(data.date) ,", fig.height=2.4"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
-      for (i in seq_along(data.date))
+      for (i in seq_along(data.date)[2:ncol(data.date)])
       {
-        for (j in seq_along(data.date)) {eval(parse(text=paste0("dti", letters[j], " <- paste0('dt', ", i, ", '", letters[j],"')")))}
-        num.plot <- function(pp)
+        for (j in seq_along(data.date)[c(1:i-1)]) {eval(parse(text=paste0("dti", letters[j], " <- paste0('dt', ", i, ", '", letters[j],"')")))}
+        date.plot <- function(pp)
         {
-          for (j in seq_along(data.date)) {eval(parse(text=paste0("
+          for (j in seq_along(data.date)[c(1:i-1)]) {eval(parse(text=paste0("
                                              if (diagram[", j, "] == 'scatter plot') {
                                              assign(dti", letters[j], ",
-                                             pp_scatterplot(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'black', FALSE), envir=my_env)
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.date), 'black', FALSE), envir=my_env)
                                              } else if (diagram[", j, "] == 'scatter plot with trend line') {
                                              assign(dti", letters[j], ",
-                                             pp_scatterplot(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'black', TRUE), envir=my_env)
+                                             pp_scatterplot(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.date), 'black', TRUE), envir=my_env)
                                              } else if (diagram[", j, "] == 'binned scatter plot') {
                                              assign(dti", letters[j], ",
-                                             pp_binnedpointgraph(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'black'), envir=my_env)
+                                             pp_binnedpointgraph(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.date), 'black'), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw binned scatter plot') {
                                              assign(dti", letters[j], ",
-                                             pp_binnedpointgraph(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'bw'), envir=my_env)
+                                             pp_binnedpointgraph(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.date), 'bw'), envir=my_env)
                                              } else if (diagram[", j, "] == 'color binned scatter plot') {
                                              assign(dti", letters[j], ",
-                                             pp_binnedpointgraph(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'color'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'binned heatmap') {
-                                             assign(dti", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[i]), colnames(pp[j]), 'black'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'bw binned heatmap') {
-                                             assign(dti", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[i]), colnames(pp[j]), 'bw'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'color binned heatmap') {
-                                             assign(dti", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[i]), colnames(pp[j]), 'color'), envir=my_env)
+                                             pp_binnedpointgraph(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.date), 'color'), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw heatmap') {
                                              assign(dti", letters[j], ",
-                                             pp_raster(data, colnames(pp[i]), colnames(pp[j]), 'bw'), envir=my_env)
+                                             pp_raster(data, colnames(pp[j]), colnames(pp[i]), 'bw'), envir=my_env)
                                              } else if (diagram[", j, "] == 'color heatmap') {
                                              assign(dti", letters[j], ",
-                                             pp_raster(data, colnames(pp[i]), colnames(pp[j]), 'color'), envir=my_env)
+                                             pp_raster(data, colnames(pp[j]), colnames(pp[i]), 'color'), envir=my_env)
                                              } else if (diagram[", j, "] == 'contour plot') {
                                              assign(dti", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'black'), envir=my_env)
+                                             pp_contourmap(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.date), 'black'), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw contour plot') {
                                              assign(dti", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'bw'), envir=my_env)
+                                             pp_contourmap(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.date), 'bw'), envir=my_env)
                                              } else if (diagram[", j, "] == 'color contour plot') {
                                              assign(dti", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'color'), envir=my_env)
+                                             pp_contourmap(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.date), 'color'), envir=my_env)
                                              } else if (diagram[", j, "] == 'contour plot with data points') {
                                              assign(dti", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[i]), colnames(pp[j]), pp_size = 3/ncol(data.num), 'black', TRUE), envir=my_env)
+                                             pp_contourmap(data, colnames(pp[j]), colnames(pp[i]), pp_size = 3/ncol(data.date), 'black', TRUE), envir=my_env)
                                              } else if (diagram[", j, "] == 'path graph') {
                                              assign(dti", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), FALSE, 'black', pp_size = 3/ncol(data.num)), envir=my_env)
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), FALSE, 'black', pp_size = 3/ncol(data.date)), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw path graph') {
                                              assign(dti", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), FALSE, 'bw', pp_size = 3/ncol(data.num)), envir=my_env)
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), FALSE, 'bw', pp_size = 3/ncol(data.date)), envir=my_env)
                                              } else if (diagram[", j, "] == 'color path graph') {
                                              assign(dti", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), FALSE, 'color', pp_size = 3/ncol(data.num)), envir=my_env)
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), FALSE, 'color', pp_size = 3/ncol(data.date)), envir=my_env)
                                              } else if (diagram[", j, "] == 'point-to-point graph') {
                                              assign(dti", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), TRUE, 'black', pp_size = 3/ncol(data.num)), envir=my_env)
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), TRUE, 'black', pp_size = 3/ncol(data.date)), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw point-to-point graph') {
                                              assign(dti", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), TRUE, 'bw', pp_size = 3/ncol(data.num)), envir=my_env)
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), TRUE, 'bw', pp_size = 3/ncol(data.date)), envir=my_env)
                                              } else if (diagram[", j, "] == 'color point-to-point graph') {
                                              assign(dti", letters[j], ",
-                                             pp_pathgraph(data, colnames(pp[i]), colnames(pp[j]), TRUE, 'color', pp_size = 3/ncol(data.num)), envir=my_env)
-                                             }")))}
+                                             pp_pathgraph(data, colnames(pp[j]), colnames(pp[i]), TRUE, 'color', pp_size = 3/ncol(data.date)), envir=my_env)
+                                             }")))
+            eval(parse(text=paste0("assign('blank', blank(data, colnames(pp[i])), envir=my_env)
+                                             ")))
+            # eval(parse(text=paste0("assign(dti", letters[i], ",
+            #                                  blank(data, colnames(pp[i])), envir=my_env)
+            #                                  ")))
+            }
 
           line <- eval(parse(
-            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" dti", letters[1:ncol(data.date)], collapse = ",', ',"), ",', ncol=", ncol(data.date), ")')")))
+            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" dti", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.date)-1, ")')")))
           write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
         }
-        num.plot(data.date)
+        date.plot(data.date)
       }
     }
-
     else if (length(data[sapply(data, is.numeric)])>0 &&
              length(data[sapply(data, lubridate::is.instant)])>0 &&
-             ((dataclass[1] == "datetime" && dataclass[2] == "numeric") |
-             (dataclass[1] == "numeric" && dataclass[2] == "datetime")) &&
+             any(dataclass %in% "datetime") &&
+             any(dataclass %in% "numeric") &&
              (diagram %in% datenum_v) == TRUE)
     {
       data.date <- data[sapply(data, lubridate::is.instant)]
       data.num <- data[sapply(data, is.numeric)]
       diagram <- rep(diagram, ncol(data.date))
       out = NULL
-      write(paste0("#+ datetime, fig.width=", 2.4*ncol(data.date) ,", fig.height=2.4"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
       for (i in seq_along(data.num))
       {
+        write(paste0("#+ fig.width=", 2.4*ncol(data.date) ,", fig.height=2.4"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
         for (j in seq_along(data.date)) {eval(parse(text=paste0("dni", letters[j], " <- paste0('dn', ", i, ", '", letters[j],"')")))}
         datenum.plot <- function(pp)
         {
@@ -346,30 +346,12 @@ if (length(data[sapply(data, is.numeric)])>0 &&
                                              } else if (diagram[", j, "] == 'color binned scatter plot') {
                                              assign(dni", letters[j], ",
                                              pp_binnedpointgraph(data, colnames(pp[sapply(pp, lubridate::is.instant)][j]), colnames(pp[sapply(pp, is.numeric)][i]), pp_size = 1/ncol(data.num), 'color'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'binned heatmap') {
-                                             assign(dni", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[sapply(pp, lubridate::is.instant)][j]), colnames(pp[sapply(pp, is.numeric)][i]), 'black'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'bw binned heatmap') {
-                                             assign(dni", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[sapply(pp, lubridate::is.instant)][j]), colnames(pp[sapply(pp, is.numeric)][i]), 'bw'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'color binned heatmap') {
-                                             assign(dni", letters[j], ",
-                                             pp_heatmap(data, colnames(pp[sapply(pp, lubridate::is.instant)][j]), colnames(pp[sapply(pp, is.numeric)][i]), 'color'), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw heatmap') {
                                              assign(dni", letters[j], ",
                                              pp_raster(data, colnames(pp[sapply(pp, lubridate::is.instant)][j]), colnames(pp[sapply(pp, is.numeric)][i]), 'bw'), envir=my_env)
                                              } else if (diagram[", j, "] == 'color heatmap') {
                                              assign(dni", letters[j], ",
                                              pp_raster(data, colnames(pp[sapply(pp, lubridate::is.instant)][j]), colnames(pp[sapply(pp, is.numeric)][i]), 'color'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'contour plot') {
-                                             assign(dni", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[sapply(pp, lubridate::is.instant)][j]), colnames(pp[sapply(pp, is.numeric)][i]), pp_size = 1/ncol(data.num), 'black'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'bw contour plot') {
-                                             assign(dni", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[sapply(pp, lubridate::is.instant)][j]), colnames(pp[sapply(pp, is.numeric)][i]), pp_size = 1/ncol(data.num), 'bw'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'color contour plot') {
-                                             assign(dni", letters[j], ",
-                                             pp_contourmap(data, colnames(pp[sapply(pp, lubridate::is.instant)][j]), colnames(pp[sapply(pp, is.numeric)][i]), pp_size = 1/ncol(data.num), 'color'), envir=my_env)
                                              } else if (diagram[", j, "] == 'contour plot with data points') {
                                              assign(dni", letters[j], ",
                                              pp_contourmap(data, colnames(pp[sapply(pp, lubridate::is.instant)][j]), colnames(pp[sapply(pp, is.numeric)][i]), pp_size = 1/ncol(data.num), 'black', TRUE), envir=my_env)
@@ -396,27 +378,28 @@ if (length(data[sapply(data, is.numeric)])>0 &&
           line <- eval(parse(
             text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" dni", letters[1:ncol(data.date)], collapse = ",', ',"), ",', ncol=", ncol(data.date), ")')")))
           write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
         }
         datenum.plot(cbind(data.num, data.date))
       }
     }
     else if (length(data[sapply(data, is.numeric)])>0 &&
-             length(data[sapply(data, is.factor)])>0 &&
-             (dataclass == c("factor", "numeric") |
-              dataclass == c("numeric", "factor"))  &&
-             (diagram %in% fac.num_v1) == TRUE)
+             length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)])>0 &&
+             any(dataclass %in% "numeric") &&
+             any(dataclass %in% c("factor")) &&
+             (diagram %in% matrixplot_fac.num) == TRUE)
 {
   data.num <- data[sapply(data, is.numeric)]
-  data.fac <- data[sapply(data, is.factor)]
+  data.fac <- data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)]
   rownames(data.fac) <- NULL
   diagram <- rep(diagram, ncol(data.num))
   out = NULL
   for (i in seq_along(data.fac))
   {
     for (j in seq_along(data.num)) {eval(parse(text=paste0("fni", letters[j], " <- paste0('fn', ", i, ", '", letters[j],"')")))}
-    fac.plot <- function(pp)
+    facnum.plot <- function(pp)
     {
-      long <- round(length(unique(pp[sapply(pp, is.factor)][[i]]))/6 + 0.5, 1)
+      long <- round(length(unique(pp[sapply(pp, is.factor)][[i]]))/6 + 0.6, 1)
       for (j in seq_along(data.num)) {eval(parse(text=paste0("
                                              if (diagram[", j, "] == 'path graph') {
                                              assign(fni", letters[j], ",
@@ -451,64 +434,474 @@ if (length(data[sapply(data, is.numeric)])>0 &&
         text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" fni", letters[1:ncol(data.num)], collapse = ",', ',"), ",', ncol=", ncol(data.num), ")')")))
       write(paste0("#+ fig.width=", 2.4*ncol(data.num) ,", fig.height=", long), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
       write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+      write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
     }
-    fac.plot(cbind(data.num, data.fac))
+    facnum.plot(cbind(data.num, data.fac))
   }
-}
-    else if (length(data[sapply(data, is.numeric)])>0 &&
-             length(data[sapply(data, is.factor)])>0 &&
-             (dataclass == c("factor", "numeric") |
-              dataclass == c("numeric", "factor"))  &&
-             (diagram %in% fac.num_v2) == TRUE)
+    }
+  else if (length(data[sapply(data, is.numeric)])>0 &&
+           length(data[sapply(data, is.ordered)])>0 &&
+           any(dataclass %in% "numeric") &&
+           any(dataclass %in% c("ordered")) &&
+           (diagram %in% matrixplot_ord.num) == TRUE)
+  {
+    data.num <- data[sapply(data, is.numeric)]
+    data.ord <- data[sapply(data, is.ordered)]
+    rownames(data.ord) <- NULL
+    diagram <- rep(diagram, ncol(data.num))
+    out = NULL
+    for (i in seq_along(data.ord))
     {
-      data.num <- data[sapply(data, is.numeric)]
-      data.fac <- data[sapply(data, is.factor)]
-      rownames(data.fac) <- NULL
-      diagram <- rep(diagram, ncol(data.num))
-      out = NULL
-      write(paste0("#+ fig.width=", 2.4*ncol(data.num) ,", fig.height=2.4"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
-      for (i in seq_along(data.fac))
+      for (j in seq_along(data.num)) {eval(parse(text=paste0("oni", letters[j], " <- paste0('on', ", i, ", '", letters[j],"')")))}
+      ordnum.plot <- function(pp)
       {
-        for (j in seq_along(data.num)) {eval(parse(text=paste0("fni", letters[j], " <- paste0('fn', ", i, ", '", letters[j],"')")))}
+        long <- round(length(unique(pp[sapply(pp, is.ordered)][[i]]))/6 + 0.6, 1)
+        for (j in seq_along(data.num)) {eval(parse(text=paste0("
+                                             if (diagram[", j, "] == 'path graph') {
+                                             assign(oni", letters[j], ",
+                                             pp_basicgraph(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_size = 1/ncol(data.num), 'line'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'point graph') {
+                                             assign(oni", letters[j], ",
+                                             pp_basicgraph(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_size = 1/ncol(data.num), 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'tile plot') {
+                                             assign(oni", letters[j], ",
+                                             pp_basicgraph(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_size = 1/ncol(data.num), 'tile'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'binned heatmap') {
+                                             assign(oni", letters[j], ",
+                                             pp_basicgraph(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_size = 1/ncol(data.num), 'bin', 'black'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw binned heatmap') {
+                                             assign(oni", letters[j], ",
+                                             pp_basicgraph(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_size = 1/ncol(data.num), 'bin', 'bw'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color binned heatmap') {
+                                             assign(oni", letters[j], ",
+                                             pp_basicgraph(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_size = 1/ncol(data.num), 'bin', 'color'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'violin plot') {
+                                             assign(oni", letters[j], ",
+                                             pp_basicgraph(data, colnames(pp[sapply(pp, is.factor)][i]), colnames(pp[sapply(pp, is.numeric)][j]), pp_size = 1/ncol(data.num), 'violin'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'filled violin plot') {
+                                             assign(oni", letters[j], ",
+                                             pp_basicgraph(data, colnames(pp[sapply(pp, is.factor)][i]), colnames(pp[sapply(pp, is.numeric)][j]), pp_size = 1/ncol(data.num), 'violin filled'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'box plot') {
+                                             assign(oni", letters[j], ",
+                                             pp_basicgraph(data, colnames(pp[sapply(pp, is.factor)][i]), colnames(pp[sapply(pp, is.numeric)][j]), pp_size = 1/ncol(data.num), 'box'), envir=my_env)
+                                             }")))}
+
+        line <- eval(parse(
+          text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" oni", letters[1:ncol(data.num)], collapse = ",', ',"), ",', ncol=", ncol(data.num), ")')")))
+        write(paste0("#+ fig.width=", 2.4*ncol(data.num) ,", fig.height=", long), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+        write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+        write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+      }
+      ordnum.plot(cbind(data.num, data.ord))
+    }
+  }
+    else if (length(data[sapply(data, is.ordered)])>1 &&
+             identical(dataclass, c("ordered", "ordered")) &&
+             (diagram %in% ord.ord_v0) == TRUE)
+  {
+    data.ord <- data[sapply(data, is.ordered)]
+    diagram <- rep(diagram, ncol(data.ord))
+    out = NULL
+    for (i in seq_along(data.ord)[2:ncol(data.ord)])
+    {
+      GAheight <- length(unique(data.ord[,(i)]))/5+0.5
+      write(paste0("#+ fig.width=", 4*(ncol(data.ord)-1) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+      for (j in seq_along(data.ord)[c(1:i-1)]) {eval(parse(text=paste0("ooi", letters[j], " <- paste0('oo', ", i, ", '", letters[j],"')")))}
+      ord.plot <- function(pp)
+      {
+        for (j in seq_along(data.ord)[c(1:i-1)]) {eval(parse(text=paste0("
+                                             if (diagram[", j, "] == 'bw stacked bar graph') {
+                                             assign(ooi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'bw', 'stack', 'ordinal'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color stacked bar graph') {
+                                             assign(ooi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'color', 'stack', 'ordinal'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw 100% stacked bar graph') {
+                                             assign(ooi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'bw', 'fill', 'ordinal'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color 100% stacked bar graph') {
+                                             assign(ooi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'color', 'fill', 'ordinal'), envir=my_env)
+                                             }")))
+          eval(parse(text=paste0("assign('blank', blank(data, colnames(pp[i])), envir=my_env)
+                                             ")))
+          }
+
+        line <- eval(parse(
+          text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ooi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.ord)-1, ")')")))
+        write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+      }
+      ord.plot(data.ord)
+    }
+    }
+    else if (length(data[sapply(data, is.ordered)])>1 &&
+             identical(dataclass, c("ordered", "ordered")) &&
+             (diagram %in% ord.ord_v1) == TRUE)
+    {
+      data.ord <- data[sapply(data, is.ordered)]
+      data.ord <- data.ord[, c(ncol(data.ord), 1:ncol(data.ord)-1)]
+      diagram <- rep(diagram, ncol(data.ord))
+      out = NULL
+      for (i in seq_along(data.ord)[2:ncol(data.ord)])
+      {
+        GAheight <- length(unique(data.ord[,(i)]))/5+0.5
+        write(paste0("#+ fig.width=", 4*(ncol(data.ord)-1) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+        for (j in seq_along(data.ord)[c(1:i-1)]) {eval(parse(text=paste0("ooi", letters[j], " <- paste0('oo', ", i, ", '", letters[j],"')")))}
+        ord.plot <- function(pp)
+        {
+          for (j in seq_along(data.ord)[c(1:i-1)]) {eval(parse(text=paste0("
+                                             if (diagram[", j, "] == 'transposed bw stacked bar graph') {
+                                             assign(ooi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'bw', 'stack', 'ordinal'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'transposed color stacked bar graph') {
+                                             assign(ooi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'color', 'stack', 'ordinal'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'transposed bw 100% stacked bar graph') {
+                                             assign(ooi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'bw', 'fill', 'ordinal'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'transposed color 100% stacked bar graph') {
+                                             assign(ooi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'color', 'fill', 'ordinal'), envir=my_env)
+                                             }")))
+            eval(parse(text=paste0("assign('blank', blank(data, colnames(pp[i])), envir=my_env)
+                                             ")))
+          }
+
+          line <- eval(parse(
+            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ooi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.ord)-1, ")')")))
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+        }
+        ord.plot(data.ord)
+      }
+    }
+    else if (length(data[sapply(data, is.ordered)])>1 &&
+             identical(dataclass, c("ordered", "ordered")) &&
+             (diagram %in% ord.ord_v2) == TRUE)
+    {
+      data.ord <- data[sapply(data, is.ordered)]
+      diagram <- rep(diagram, ncol(data.ord))
+      out = NULL
+      for (i in seq_along(data.ord)[2:ncol(data.ord)])
+      {
+        GAheight <- length(unique(data.ord[,(i)]))/5+1.5
+        write(paste0("#+ fig.width=", 4*(ncol(data.ord)-1) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+        for (j in seq_along(data.ord)[c(1:i-1)]) {eval(parse(text=paste0("ooi", letters[j], " <- paste0('oo', ", i, ", '", letters[j],"')")))}
+        ord.plot <- function(pp)
+        {
+          for (j in seq_along(data.ord)[c(1:i-1)]) {eval(parse(text=paste0("
+                                             if (diagram[", j, "] == 'bw heatmap') {
+                                             assign(ooi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'bw', 'observed'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color heatmap') {
+                                             assign(ooi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'observed'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color residuals heatmap') {
+                                             assign(ooi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'residuals'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw contribution to x2 heatmap') {
+                                             assign(ooi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'bw', 'contrib'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color contribution to x2 heatmap') {
+                                             assign(ooi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'contrib'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw balloon plot') {
+                                             assign(ooi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'bw', 'observed', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color balloon plot') {
+                                             assign(ooi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'observed', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color residuals balloon plot') {
+                                             assign(ooi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'residuals', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw contribution to x2 balloon plot') {
+                                             assign(ooi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'bw', 'contrib', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color contribution to x2 balloon plot') {
+                                             assign(ooi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'contrib', pp_geom = 'point'), envir=my_env)
+                                             }")))
+            eval(parse(text=paste0("assign('blank', blank(data, colnames(pp[i])), envir=my_env)
+                                             ")))
+          }
+
+          line <- eval(parse(
+            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ooi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.ord)-1, ")')")))
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+        }
+        ord.plot(data.ord)
+      }
+    }
+    else if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)])>1 &&
+             identical(dataclass, c("factor", "factor")) &&
+             (diagram %in% fac.fac_v0) == TRUE)
+    {
+      data.fac <- data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)]
+      diagram <- rep(diagram, ncol(data.fac))
+      out = NULL
+      for (i in seq_along(data.fac)[2:ncol(data.fac)])
+      {
+        GAheight <- length(unique(data.fac[,(i)]))/5+0.5
+        write(paste0("#+ fig.width=", 4*(ncol(data.fac)-1) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+        for (j in seq_along(data.fac)[c(1:i-1)]) {eval(parse(text=paste0("ffi", letters[j], " <- paste0('ff', ", i, ", '", letters[j],"')")))}
         fac.plot <- function(pp)
         {
-          long <- round(length(unique(pp[sapply(pp, is.factor)][[i]]))/6 + 0.5, 1)
-          for (j in seq_along(data.num)) {eval(parse(text=paste0("
-                                             if (diagram[", j, "] == 'bw stacked histogram') {
-                                             assign(fni", letters[j], ",
-                                             pp_histogram2(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i])), envir=my_env)
-                                             } else if (diagram[", j, "] == 'color stacked histogram') {
-                                             assign(fni", letters[j], ",
-                                             pp_histogram2(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_color = 'color'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'bw 100% stacked histogram') {
-                                             assign(fni", letters[j], ",
-                                             pp_histogram2(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_position = 'fill'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'color 100% stacked histogram') {
-                                             assign(fni", letters[j], ",
-                                             pp_histogram2(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_color = 'color', pp_position = 'fill'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'density plot') {
-                                             assign(fni", letters[j], ",
-                                             pp_density2(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), 0.5, 'line', 'bw'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'color density plot') {
-                                             assign(fni", letters[j], ",
-                                             pp_density2(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), 0.5, 'line', 'color'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'filled density plot') {
-                                             assign(fni", letters[j], ",
-                                             pp_density2(data, colnames(pp[sapply(pp, is.factor)][i]), colnames(pp[sapply(pp, is.numeric)][j]), 0.5, 'area', 'bw'), envir=my_env)
-                                             } else if (diagram[", j, "] == 'color filled density plot') {
-                                             assign(fni", letters[j], ",
-                                             pp_density2(data, colnames(pp[sapply(pp, is.factor)][i]), colnames(pp[sapply(pp, is.numeric)][j]), 0.5, 'area', 'color'), envir=my_env)
+          for (j in seq_along(data.fac)[c(1:i-1)]) {eval(parse(text=paste0("
+                                             if (diagram[", j, "] == 'color stacked bar graph') {
+                                             assign(ffi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'color', 'stack'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color 100% stacked bar graph') {
+                                             assign(ffi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'color', 'fill'), envir=my_env)
+                                             }")))
+            eval(parse(text=paste0("assign('blank', blank(data, colnames(pp[i])), envir=my_env)
+                                             ")))
+          }
+
+          line <- eval(parse(
+            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ffi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.fac)-1, ")')")))
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+        }
+        fac.plot(data.fac)
+      }
+    }
+    else if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)])>1 &&
+             identical(dataclass, c("factor", "factor")) &&
+             (diagram %in% fac.fac_v1) == TRUE)
+    {
+      data.fac <- data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)]
+      data.fac <- data.fac[, c(ncol(data.fac), 1:ncol(data.fac)-1)]
+      diagram <- rep(diagram, ncol(data.fac))
+      out = NULL
+      for (i in seq_along(data.fac)[2:ncol(data.fac)])
+      {
+        GAheight <- length(unique(data.fac[,(i)]))/5+0.5
+        write(paste0("#+ fig.width=", 4*(ncol(data.fac)-1) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+        for (j in seq_along(data.fac)[c(1:i-1)]) {eval(parse(text=paste0("ffi", letters[j], " <- paste0('ff', ", i, ", '", letters[j],"')")))}
+        fac.plot <- function(pp)
+        {
+          for (j in seq_along(data.fac)[c(1:i-1)]) {eval(parse(text=paste0("
+                                             if (diagram[", j, "] == 'transposed color stacked bar graph') {
+                                             assign(ffi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'color', 'stack'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'transposed color 100% stacked bar graph') {
+                                             assign(ffi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[i]), colnames(pp[j]), 'color', 'fill'), envir=my_env)
+                                             }")))
+            eval(parse(text=paste0("assign('blank', blank(data, colnames(pp[i])), envir=my_env)
+                                             ")))
+          }
+
+          line <- eval(parse(
+            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ffi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.fac)-1, ")')")))
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+        }
+        fac.plot(data.fac)
+      }
+    }
+    else if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)])>1 &&
+             identical(dataclass, c("factor", "factor")) &&
+             (diagram %in% fac.fac_v2) == TRUE)
+    {
+      data.fac <- data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)]
+      data.fac <- data.fac[, c(ncol(data.fac), 1:ncol(data.fac)-1)]
+      diagram <- rep(diagram, ncol(data.fac))
+      out = NULL
+      for (i in seq_along(data.fac)[2:ncol(data.fac)])
+      {
+        GAheight <- length(unique(data.fac[,(i)]))/5+1.5
+        write(paste0("#+ fig.width=", 4*(ncol(data.fac)-1) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+        for (j in seq_along(data.fac)[c(1:i-1)]) {eval(parse(text=paste0("ffi", letters[j], " <- paste0('ff', ", i, ", '", letters[j],"')")))}
+        fac.plot <- function(pp)
+        {
+          for (j in seq_along(data.fac)[c(1:i-1)]) {eval(parse(text=paste0("
+                                             if (diagram[", j, "] == 'bw heatmap') {
+                                             assign(ffi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'bw', 'observed'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color heatmap') {
+                                             assign(ffi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'observed'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color residuals heatmap') {
+                                             assign(ffi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'residuals'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw contribution to x2 heatmap') {
+                                             assign(ffi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'bw', 'contrib'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color contribution to x2 heatmap') {
+                                             assign(ffi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'contrib'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw balloon plot') {
+                                             assign(ffi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'bw', 'observed', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color balloon plot') {
+                                             assign(ffi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'observed', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color residuals balloon plot') {
+                                             assign(ffi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'residuals', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw contribution to x2 balloon plot') {
+                                             assign(ffi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'bw', 'contrib', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color contribution to x2 balloon plot') {
+                                             assign(ffi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[j]), colnames(pp[i]), 'color', 'contrib', pp_geom = 'point'), envir=my_env)
+                                             }")))
+            eval(parse(text=paste0("assign('blank', blank(data, colnames(pp[i])), envir=my_env)
+                                             ")))
+          }
+
+          line <- eval(parse(
+            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ffi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.fac)-1, ")')")))
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+        }
+        fac.plot(data.fac)
+      }
+    }
+    else if (length(data[sapply(data, is.ordered)])>0 &&
+             length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)])>0 &&
+             any(dataclass %in% "ordered") &&
+             any(dataclass %in% "factor") &&
+             (diagram %in% fac.ord_v0) == TRUE)
+    {
+      data.ord <- data[sapply(data, is.ordered)]
+      data.fac <- data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)]
+      rownames(data.fac) <- NULL
+      diagram <- rep(diagram, ncol(data.ord))
+      out = NULL
+      for (i in seq_along(data.fac))
+      {
+        GAheight <- length(unique(data.fac[,(i)]))/5+0.5
+        write(paste0("#+ fig.width=", 4*ncol(data.ord) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+        for (j in seq_along(data.ord)) {eval(parse(text=paste0("ofi", letters[j], " <- paste0('of', ", i, ", '", letters[j],"')")))}
+        facnum.plot <- function(pp)
+        {
+          long <- round(length(unique(pp[sapply(pp, is.factor)][[i]]))/6 + 0.6, 1)
+          for (j in seq_along(data.ord)) {eval(parse(text=paste0("
+                                             if (diagram[", j, "] == 'bw stacked bar graph') {
+                                             assign(ofi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), colnames(pp[sapply(pp, is.ordered)][j]), 'bw', 'stack', 'ordinal'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color stacked bar graph') {
+                                             assign(ofi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), colnames(pp[sapply(pp, is.ordered)][j]), 'color', 'stack', 'ordinal'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw 100% stacked bar graph') {
+                                             assign(ofi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), colnames(pp[sapply(pp, is.ordered)][j]), 'bw', 'fill', 'ordinal'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color 100% stacked bar graph') {
+                                             assign(ofi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), colnames(pp[sapply(pp, is.ordered)][j]), 'color', 'fill', 'ordinal'), envir=my_env)
                                              }")))}
 
           line <- eval(parse(
-            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" fni", letters[1:ncol(data.num)], collapse = ",', ',"), ",', ncol=", ncol(data.num), ")')")))
+            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ofi", letters[1:ncol(data.ord)], collapse = ",', ',"), ",', ncol=", ncol(data.ord), ")')")))
           write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
         }
-        fac.plot(cbind(data.num, data.fac))
+        facnum.plot(cbind(data.ord, data.fac))
       }
     }
-    else {stop("The combination of these data and graphic type has not been still considered or
-             maybe the data does not include the types of data considered by the 'dataclass' argument.")}
+    else if (length(data[sapply(data, is.ordered)])>0 &&
+             length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)])>0 &&
+             any(dataclass %in% "ordered") &&
+             any(dataclass %in% "factor") &&
+             (diagram %in% fac.ord_v1) == TRUE)
+    {
+      data.ord <- data[sapply(data, is.ordered)]
+      data.fac <- data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)]
+      rownames(data.ord) <- NULL
+      diagram <- rep(diagram, ncol(data.fac))
+      out = NULL
+      for (i in seq_along(data.ord))
+      {
+        GAheight <- length(unique(data.ord[,(i)]))/5+0.5
+        write(paste0("#+ fig.width=", 4*ncol(data.fac) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+        for (j in seq_along(data.fac)) {eval(parse(text=paste0("ofi", letters[j], " <- paste0('of', ", i, ", '", letters[j],"')")))}
+        facnum.plot <- function(pp)
+        {
+          long <- round(length(unique(pp[sapply(pp, is.factor)][[i]]))/6 + 0.6, 1)
+          for (j in seq_along(data.fac)) {eval(parse(text=paste0("
+                                             if (diagram[", j, "] == 'transposed color stacked bar graph') {
+                                             assign(ofi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[sapply(pp, is.ordered)][i]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][j]), 'color', 'stack'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'transposed color 100% stacked bar graph') {
+                                             assign(ofi", letters[j], ",
+                                             pp_stackedbar(data, colnames(pp[sapply(pp, is.ordered)][i]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][j]), 'color', 'fill'), envir=my_env)
+                                             }")))}
+
+          line <- eval(parse(
+            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ofi", letters[1:ncol(data.fac)], collapse = ",', ',"), ",', ncol=", ncol(data.fac), ")')")))
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+        }
+        facnum.plot(cbind(data.ord, data.fac))
+      }
+    }
+    else if (length(data[sapply(data, is.ordered)])>0 &&
+             length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)])>0 &&
+             any(dataclass %in% "ordered") &&
+             any(dataclass %in% "factor") &&
+             (diagram %in% fac.ord_v2) == TRUE)
+    {
+      data.ord <- data[sapply(data, is.ordered)]
+      data.fac <- data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], is.ordered)]
+      rownames(data.fac) <- NULL
+      diagram <- rep(diagram, ncol(data.ord))
+      out = NULL
+      for (i in seq_along(data.fac))
+      {
+        GAheight <- length(unique(data.fac[,(i)]))/5+1.5
+        write(paste0("#+ fig.width=", 4*ncol(data.ord) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+        for (j in seq_along(data.ord)) {eval(parse(text=paste0("ofi", letters[j], " <- paste0('of', ", i, ", '", letters[j],"')")))}
+        facnum.plot <- function(pp)
+        {
+          long <- round(length(unique(pp[sapply(pp, is.factor)][[i]]))/6 + 0.6, 1)
+          for (j in seq_along(data.ord)) {eval(parse(text=paste0("
+                                             if (diagram[", j, "] == 'bw heatmap') {
+                                             assign(ofi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[sapply(pp, is.ordered)][j]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), 'bw', 'observed'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color heatmap') {
+                                             assign(ofi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[sapply(pp, is.ordered)][j]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), 'color', 'observed'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color residuals heatmap') {
+                                             assign(ofi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[sapply(pp, is.ordered)][j]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), 'color', 'residuals'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw contribution to x2 heatmap') {
+                                             assign(ofi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[sapply(pp, is.ordered)][j]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), 'bw', 'contrib'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color contribution to x2 heatmap') {
+                                             assign(ofi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[sapply(pp, is.ordered)][j]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), 'color', 'contrib'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw balloon plot') {
+                                             assign(ofi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[sapply(pp, is.ordered)][j]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), 'bw', 'observed', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color balloon plot') {
+                                             assign(ofi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[sapply(pp, is.ordered)][j]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), 'color', 'observed', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color residuals balloon plot') {
+                                             assign(ofi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[sapply(pp, is.ordered)][j]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), 'color', 'residuals', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'bw contribution to x2 balloon plot') {
+                                             assign(ofi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[sapply(pp, is.ordered)][j]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), 'bw', 'contrib', pp_geom = 'point'), envir=my_env)
+                                             } else if (diagram[", j, "] == 'color contribution to x2 balloon plot') {
+                                             assign(ofi", letters[j], ",
+                                             pp_contingency(data, colnames(pp[sapply(pp, is.ordered)][j]), colnames(pp[sapply(pp, is.factor)][!sapply(pp[sapply(pp, is.factor)], is.ordered)][i]), 'color', 'contrib', pp_geom = 'point'), envir=my_env)
+                                             }")))}
+
+          line <- eval(parse(
+            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ofi", letters[1:ncol(data.ord)], collapse = ",', ',"), ",', ncol=", ncol(data.ord), ")')")))
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+        }
+        facnum.plot(cbind(data.ord, data.fac))
+      }
+    }
+
+
+
+
+
+    else {stop("The combination of these data and graphic type has not been still considered, or
+             maybe the data does not include the types of data considered by the 'dataclass' argument, or
+             maybe the data does not have two columns of the dataclass set.")}
 
   } else {stop(warning_wp_dc)}
 
@@ -516,5 +909,3 @@ rmarkdown::render(file.path(dir, "brinton_outcomes", "matrixplot.R", fsep = .Pla
 pander::openFileInOS(file.path(dir, "brinton_outcomes", "matrixplot.html", fsep = .Platform$file.sep))
 # unlink(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), recursive = TRUE)
   }
-
-
