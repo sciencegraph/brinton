@@ -1,0 +1,13 @@
+citHeader("To cite brinton in publications please use:")
+
+bibentry(bibtype = "Article",
+         title = "{A Graphical EDA Tool with ggplot2: brinton}",
+         author = c(person("Pere", "Millán-Martínez"),
+                    person("Ramon", "Oller")),
+         year = 2021,
+         journal = "The R Journal",
+         doi = {"10.32614/RJ-2021-018"},
+         url = {"https://doi.org/10.32614/RJ-2021-018"},
+         pages = {311--320},
+         volume = {12},
+         number = {2})

@@ -19,6 +19,24 @@ knitr::opts_chunk$set(
 )
 ```
 
+NOTE: This is a short version of the original article [A Graphical EDA Tool with ggplot2: brinton](https://journal.r-project.org/archive/2021/RJ-2021-018/index.html) published by The R Journal:
+
+```{r}
+cat("@article{RJ-2021-018,
+  author = {Pere Millán-Martínez and Ramon Oller},
+  title = {{A Graphical EDA Tool with ggplot2: brinton}},
+  year = {2021},
+  journal = {{The R Journal}},
+  doi = {10.32614/RJ-2021-018},
+  url = {https://doi.org/10.32614/RJ-2021-018},
+  pages = {311--320},
+  volume = {12},
+  number = {2}
+}")
+```
+
+
+
 # Introduction
 
 We created `brinton` library to facilitate exploratory data analysis following the visual information-seeking mantra: "Overview first, zoom and filter, then details on demand." The main idea is to assist the user during these three phases through three functions: `wideplot()`, `longplot()` and `plotup()`. While each of these functions has its own arguments and purpose, all three serve to facilitate exploratory data analysis and the selection of a suitable graphic. 
