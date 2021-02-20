@@ -21,6 +21,7 @@ knitr::opts_chunk$set(
 
 NOTE: This is a short version of the original article [A Graphical EDA Tool with ggplot2: brinton](https://journal.r-project.org/archive/2021/RJ-2021-018/index.html) published by The R Journal:
 
+
 ```{r, echo = FALSE, comment=""}
 cat("@article{RJ-2021-018,
   author = {Pere Millán-Martínez and Ramon Oller},
