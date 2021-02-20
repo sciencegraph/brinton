@@ -1940,6 +1940,9 @@ pp_3uniaxial <- function(data,
            identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      "{getdens2}"
+    )
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +
@@ -1954,6 +1957,9 @@ pp_3uniaxial <- function(data,
            identical(v, c("N", "N"))) {
     vars1 <- vars[1]
     vars2 <- vars[2]
+    q <- glue::glue(
+      "{getdens2}"
+    )
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, y={as.character(substitute(vars2))})) +

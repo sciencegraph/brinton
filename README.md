@@ -35,8 +35,6 @@ And then load the functions included in the package:
 
 ``` r
 library(brinton)
-#> Warning: replacing previous import 'scales::viridis_pal' by
-#> 'viridis::viridis_pal' when loading 'brinton'
 #> M a G i C i N G R a P H S
 ```
 

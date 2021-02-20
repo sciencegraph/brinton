@@ -1,5 +1,3 @@
-library(dplyr)
-
 data(rockArt, package = "DAAG")
 data(ca2006, package = "pscl")
 

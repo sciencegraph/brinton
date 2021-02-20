@@ -146,8 +146,8 @@ cat("2 numeric = c('contour plot', 'bw contour plot', 'color contour plot')")
 
 ```{r 2numeric_08, fig.width=12, fig.height=2.4}
 gridExtra::grid.arrange(brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'contour plot with data points'),
-                        brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw contour plot with data points'),
-                        brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color contour plot with data points'),
+                        brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'bw contour plot with data points'), #BUG
+                        brinton::plotup(iris, c('Sepal.Width', 'Sepal.Length'), 'color contour plot with data points'), #BUG
                         heights=grid::unit(c(2.4), c("in")),
                         ncol=5)
 knitr::include_graphics('../vignettes/figures/2numeric_08-1.png')
