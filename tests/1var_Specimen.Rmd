@@ -445,7 +445,7 @@ knitr::include_graphics('../vignettes/figures/datetime_03-1.png')
 cat("datetime = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')")
 ```
 
-```{r datetime_04, fig.width=12, fig.height=2.4}
+```{r datetime_04, fig.width=12, fig.height=2.4, warning=FALSE}
 gridExtra::grid.arrange(plotup(flights_dt50, "departure", "bw heatmap", output = 'plots pane'),
                         plotup(flights_dt50, "departure", "color heatmap", output = 'plots pane'),
                         heights=grid::unit(c(2.4), c("in")),
