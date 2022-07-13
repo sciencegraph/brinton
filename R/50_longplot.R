@@ -85,7 +85,7 @@ longplot <- function(data,
 
 
   if(is.data.frame(data) == FALSE) {
-    stop("I am so sorry, but this function only works with a data.frame input!\n",
+    stop("I am so sorry, but this function works only with a data.frame input!\n",
          "You have provided an object of class ", class(data))
   }
   if(tibble::is_tibble(data) == TRUE) {
@@ -99,9 +99,8 @@ longplot <- function(data,
 
 # check vars --------------------------------------------------------------
 
-
   if(length(vars) > 2) {
-    stop("I am so sorry but, up to now, only one and two variables combinations have been considered.")
+    stop("Only 1 and 2 variables combinations have been considered.")
   } else {
   if (length(vars) == 1 & (
     is.logical(unlist(data[, vars])) == TRUE |
@@ -121,25 +120,27 @@ longplot <- function(data,
     (lubridate::is.instant(unlist(data[, vars[1]])) == TRUE  &
      is.numeric(unlist(data[, vars[2]])) == TRUE))
   ) {long <- 2}
-    else if (length(vars) == 2 &
-             is.numeric(unlist(data[, vars[1]])) == TRUE &
-             is.numeric(unlist(data[, vars[2]])) == TRUE) {
-      long <- 2
-    }
-    else if (length(vars) == 2 & ((
+  else if (length(vars) == 2 &
+           is.numeric(unlist(data[, vars[1]])) == TRUE &
+           is.numeric(unlist(data[, vars[2]])) == TRUE
+  ) {long <- 2}
+  else if (length(vars) == 2 & ((
     is.numeric(unlist(data[, vars[1]])) == TRUE &
     is.factor(unlist(data[, vars[2]])) == TRUE) |
     (
       is.numeric(unlist(data[, vars[2]])) == TRUE &
       is.factor(unlist(data[, vars[1]])) == TRUE))
   ) {long <- length(unlist(unique(data[, vars][which(sapply(data[, vars], is.factor))])))/4 + 0.5}
-    else if (length(vars) == 2 &
-             is.factor(unlist(data[, vars[1]])) == TRUE &
-             is.factor(unlist(data[, vars[2]])) == TRUE
-    ) {wide <- length(unique(unlist(data[, vars[2]]))) / 5
-    long <- length(unique(unlist(data[, vars[2]]))) / 5
+  else if (length(vars) == 2 &
+           is.factor(unlist(data[, vars[1]])) == TRUE &
+           is.factor(unlist(data[, vars[2]])) == TRUE
+  ) {wide <- length(unique(unlist(data[, vars[2]]))) / 5
+    long  <- length(unique(unlist(data[, vars[2]]))) / 5
     longt <- length(unique(unlist(data[, vars[1]]))) / 5}
-    else{stop("This type of variable has not been yet considered")}
+    else{stop("Only variables of the following classes have been considerated:
+              logical, Date, POSIXct, POSIXlt, numeric, factor, ord.factor and character. ")}
+
+
 
 # setup -------------------------------------------------------------------
 

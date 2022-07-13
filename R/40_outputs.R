@@ -378,7 +378,7 @@ fac.num_v2 <- c(
   'color filled density plot'
 )
 
-matrixplot_fac.num <- c(
+matrixplot_fac.num_v1 <- c(
   'blank',
   'path graph',
   'point graph',
@@ -391,7 +391,19 @@ matrixplot_fac.num <- c(
   'box plot'
 )
 
-matrixplot_ord.num <- c(
+matrixplot_fac.num_v2 <- c(
+  'blank',
+  'bw stacked histogram',
+  'color stacked histogram',
+  'bw 100% stacked histogram',
+  'color 100% stacked histogram',
+  'density plot',
+  'color density plot',
+  'filled density plot',
+  'color filled density plot'
+)
+
+matrixplot_ord.num_v1 <- c(
   'blank',
   'path graph',
   'point graph',
@@ -402,6 +414,19 @@ matrixplot_ord.num <- c(
   'violin plot',
   'filled violin plot',
   'box plot'
+)
+
+matrixplot_ord.num_v2 <- c(
+  'blank',
+  'bw stacked histogram',
+  'color stacked histogram',
+  'bw 100% stacked histogram',
+  'color 100% stacked histogram',
+  'density plot',
+  'bw density plot',
+  'color density plot',
+  'bw filled density plot',
+  'color filled density plot'
 )
 
 ord.num_v1 <- c(

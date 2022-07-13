@@ -1,9 +1,9 @@
-pandoc: 2.7.3
+pandoc: 2.17.1.1
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   brinton: brinton.html
   specimen: specimen.html
   specimen2: specimen2.html
-last_built: 2021-04-02T07:28Z
+last_built: 2022-07-12T13:16Z
 

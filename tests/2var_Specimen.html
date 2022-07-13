@@ -12,19 +12,27 @@
 <meta name="author" content="Pere Millán" />
 
 
-<title>1var_Specimen</title>
+<title>2var_Specimen</title>
 
-<script src="2var_Specimen_files/jquery-1.11.3/jquery.min.js"></script>
+<script src="2var_Specimen_files/header-attrs-2.11/header-attrs.js"></script>
+<script src="2var_Specimen_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="2var_Specimen_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="2var_Specimen_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="2var_Specimen_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="2var_Specimen_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="2var_Specimen_files/navigation-1.1/tabsets.js"></script>
 <link href="2var_Specimen_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="2var_Specimen_files/highlightjs-9.12.0/highlight.js"></script>
-<link href="2var_Specimen_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="2var_Specimen_files/anchor-sections-1.0/anchor-sections.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -36,11 +44,6 @@
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -53,32 +56,7 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+
 
 
 
@@ -88,10 +66,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -108,6 +82,9 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
@@ -120,7 +97,6 @@ summary {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -184,11 +160,11 @@ summary {
 
 
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
-<h1 class="title toc-ignore">1var_Specimen</h1>
+<h1 class="title toc-ignore">2var_Specimen</h1>
 <h4 class="author">Pere Millán</h4>
 <h4 class="date">20/5/2020</h4>
 
@@ -243,7 +219,10 @@ summary {
   margin-top: 0px;
   }
 </style>
-<p>Specimen of the graphics that only require 1 input variable and that, up to now, are being considered by the brinton’s <code>wideplot()</code>, <code>longplot()</code> and <code>brinton::plotup()</code> functions.</p>
+<p>Specimen of the graphics that only require 1 input variable and that,
+up to now, are being considered by the brinton’s
+<code>wideplot()</code>, <code>longplot()</code> and
+<code>brinton::plotup()</code> functions.</p>
 <div id="numeric" class="section level1">
 <h1>2 numeric</h1>
 <p><img src="2var_Specimen_files/figure-html/2numeric_01-1.png" width="1152" /><img src="../vignettes/figures/2numeric_01-1.png" width="1152" /></p>
@@ -395,78 +374,78 @@ summary {
 <pre><code>2 ordered = c(&#39;bw heatmap&#39;, &#39;color heatmap&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2ordered_06-1.png" width="960" /><img src="../vignettes/figures/2ordered_06-1.png" width="960" /></p>
 <pre><code>2 ordered = c(&#39;blank&#39;, &#39;color residuals heatmap&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2ordered_07-1.png" width="960" /><img src="../vignettes/figures/2ordered_06-1.png" width="960" /></p>
+<p><img src="2var_Specimen_files/figure-html/2ordered_07-1.png" width="960" /><img src="../vignettes/figures/2ordered_07-1.png" width="960" /></p>
 <pre><code>2 ordered = c(&#39;bw contribution to x2 heatmap&#39;, &#39;color contribution to x2 heatmap&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2ordered_08-1.png" width="960" /><img src="../vignettes/figures/2ordered_07-1.png" width="960" /></p>
+<p><img src="2var_Specimen_files/figure-html/2ordered_08-1.png" width="960" /><img src="../vignettes/figures/2ordered_08-1.png" width="960" /></p>
 <pre><code>2 ordered = c(&#39;bw balloon plot&#39;, &#39;color balloon plot&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2ordered_09-1.png" width="960" /><img src="../vignettes/figures/2ordered_08-1.png" width="960" /></p>
 <pre><code>2 ordered = c(&#39;blank&#39;, &#39;color residuals balloon plot&#39;)</code></pre>
-<p><img src="2var_Specimen_files/figure-html/2ordered_10-1.png" width="960" /><img src="../vignettes/figures/2ordered_09-1.png" width="960" /></p>
+<p><img src="2var_Specimen_files/figure-html/2ordered_10-1.png" width="960" /><img src="../vignettes/figures/2ordered_10-1.png" width="960" /></p>
 <pre><code>2 ordered = c(&#39;bw contribution to x2 balloon plot&#39;, &#39;color contribution to x2 balloon plot&#39;)</code></pre>
 </div>
 <div id="factor" class="section level1">
 <h1>2 factor</h1>
 <p><img src="2var_Specimen_files/figure-html/2factor_01-1.png" width="960" /><img src="../vignettes/figures/2factor_01-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;color stacked bar graph&#39;, &#39;color freq. reordered stacked bar graph&#39;, &#39;color alphab. reordered stacked bar graph&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;color stacked bar graph&#39;, &#39;color freq. reordered stacked bar graph&#39;, &#39;color alphab. reordered stacked bar graph&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_02-1.png" width="960" /><img src="../vignettes/figures/2factor_02-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;transposed color stacked bar graph&#39;, &#39;transposed color freq. reordered stacked bar graph&#39;, &#39;transposed color alphab. reordered stacked bar graph&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;transposed color stacked bar graph&#39;, &#39;transposed color freq. reordered stacked bar graph&#39;, &#39;transposed color alphab. reordered stacked bar graph&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_03-1.png" width="960" /><img src="../vignettes/figures/2factor_03-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;color 100% stacked bar graph&#39;, &#39;color freq. reordered 100% stacked bar graph&#39;, &#39;color alphab. reordered 100% stacked bar graph&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;color 100% stacked bar graph&#39;, &#39;color freq. reordered 100% stacked bar graph&#39;, &#39;color alphab. reordered 100% stacked bar graph&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_04-1.png" width="960" /><img src="../vignettes/figures/2factor_04-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;transposed color 100% stacked bar graph&#39;, &#39;transposed color freq. reordered 100% stacked bar graph&#39;, &#39;transposed color alphab. reordered 100% stacked bar graph&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;transposed color 100% stacked bar graph&#39;, &#39;transposed color freq. reordered 100% stacked bar graph&#39;, &#39;transposed color alphab. reordered 100% stacked bar graph&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_05-1.png" width="864" /><img src="../vignettes/figures/2factor_05-1.png" width="864" /></p>
-<pre><code>2 ordered = c(&#39;bw heatmap&#39;, &#39;bw freq. reordered heatmap&#39;, &#39;bw alphab. reordered heatmap&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;bw heatmap&#39;, &#39;bw freq. reordered heatmap&#39;, &#39;bw alphab. reordered heatmap&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_06-1.png" width="864" /><img src="../vignettes/figures/2factor_06-1.png" width="864" /></p>
-<pre><code>2 ordered = c(&#39;color heatmap&#39;, &#39;color freq. reordered heatmap&#39;, &#39;color alphab. reordered heatmap&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;color heatmap&#39;, &#39;color freq. reordered heatmap&#39;, &#39;color alphab. reordered heatmap&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_07-1.png" width="864" /><img src="../vignettes/figures/2factor_07-1.png" width="864" /></p>
-<pre><code>2 ordered = c(&#39;color residuals heatmap&#39;, &#39;color freq. reordered residuals heatmap&#39;, &#39;color alphab. reordered residuals heatmap&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;color residuals heatmap&#39;, &#39;color freq. reordered residuals heatmap&#39;, &#39;color alphab. reordered residuals heatmap&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_08-1.png" width="864" /><img src="../vignettes/figures/2factor_08-1.png" width="864" /></p>
-<pre><code>2 ordered = c(&#39;bw contribution to x2 heatmap&#39;, &#39;bw freq. reordered contribution to x2 heatmap&#39;, &#39;bw alphab. reordered contribution to x2 heatmap&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;bw contribution to x2 heatmap&#39;, &#39;bw freq. reordered contribution to x2 heatmap&#39;, &#39;bw alphab. reordered contribution to x2 heatmap&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_09-1.png" width="864" /><img src="../vignettes/figures/2factor_09-1.png" width="864" /></p>
-<pre><code>2 ordered = c(&#39;bw contribution to x2 heatmap&#39;, &#39;bw freq. reordered contribution to x2 heatmap&#39;, &#39;bw alphab. reordered contribution to x2 heatmap&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;bw contribution to x2 heatmap&#39;, &#39;bw freq. reordered contribution to x2 heatmap&#39;, &#39;bw alphab. reordered contribution to x2 heatmap&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_10-1.png" width="864" /><img src="../vignettes/figures/2factor_10-1.png" width="864" /></p>
-<pre><code>2 ordered = c(&#39;bw balloon plot&#39;, &#39;bw freq. reordered balloon plot&#39;, &#39;bw alphab. reordered balloon plot&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;bw balloon plot&#39;, &#39;bw freq. reordered balloon plot&#39;, &#39;bw alphab. reordered balloon plot&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_11-1.png" width="864" /><img src="../vignettes/figures/2factor_11-1.png" width="864" /></p>
-<pre><code>2 ordered = c(&#39;color balloon plot&#39;, &#39;color freq. reordered balloon plot&#39;, &#39;color alphab. reordered balloon plot&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;color balloon plot&#39;, &#39;color freq. reordered balloon plot&#39;, &#39;color alphab. reordered balloon plot&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_12-1.png" width="864" /><img src="../vignettes/figures/2factor_12-1.png" width="864" /></p>
-<pre><code>2 ordered = c(&#39;color residuals balloon plot&#39;, &#39;color freq. reordered residuals balloon plot&#39;, &#39;color alphab. reordered residuals balloon plot&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;color residuals balloon plot&#39;, &#39;color freq. reordered residuals balloon plot&#39;, &#39;color alphab. reordered residuals balloon plot&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_13-1.png" width="864" /><img src="../vignettes/figures/2factor_13-1.png" width="864" /></p>
-<pre><code>2 ordered = c(&#39;bw contribution to x2 balloon plot&#39;, &#39;bw freq. reordered contribution to x2 balloon plot&#39;, &#39;bw alphab. reordered contribution to x2 balloon plot&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;bw contribution to x2 balloon plot&#39;, &#39;bw freq. reordered contribution to x2 balloon plot&#39;, &#39;bw alphab. reordered contribution to x2 balloon plot&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/2factor_14-1.png" width="864" /><img src="../vignettes/figures/2factor_14-1.png" width="864" /></p>
-<pre><code>2 ordered = c(&#39;bw contribution to x2 balloon plot&#39;, &#39;bw freq. reordered contribution to x2 balloon plot&#39;, &#39;bw alphab. reordered contribution to x2 balloon plot&#39;)</code></pre>
+<pre><code>2 factor = c(&#39;bw contribution to x2 balloon plot&#39;, &#39;bw freq. reordered contribution to x2 balloon plot&#39;, &#39;bw alphab. reordered contribution to x2 balloon plot&#39;)</code></pre>
 </div>
 <div id="factorordered-factor" class="section level1">
 <h1>factor~ordered factor</h1>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_01-1.png" width="1056" /><img src="../vignettes/figures/fac-ord_01-1.png" width="1056" /></p>
-<pre><code>2 ordered = c(&#39;color stacked bar graph&#39;, &#39;color freq. reordered stacked bar graph&#39;, &#39;color alphab. reordered stacked bar graph&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;color stacked bar graph&#39;, &#39;color freq. reordered stacked bar graph&#39;, &#39;color alphab. reordered stacked bar graph&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_02-1.png" width="1056" /><img src="../vignettes/figures/fac-ord_02-1.png" width="1056" /></p>
-<pre><code>2 ordered = c(&#39;color stacked bar graph&#39;, &#39;color freq. reordered stacked bar graph&#39;, &#39;color alphab. reordered stacked bar graph&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;color stacked bar graph&#39;, &#39;color freq. reordered stacked bar graph&#39;, &#39;color alphab. reordered stacked bar graph&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_03-1.png" width="1056" /><img src="../vignettes/figures/fac-ord_03-1.png" width="1056" /></p>
-<pre><code>2 ordered = c(&#39;transposed color stacked bar graph&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;transposed color stacked bar graph&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_04-1.png" width="1056" /><img src="../vignettes/figures/fac-ord_04-1.png" width="1056" /></p>
-<pre><code>2 ordered = c(&#39;color 100% stacked bar graph&#39;, &#39;color freq. reordered 100% stacked bar graph&#39;, &#39;color alphab. reordered 100% stacked bar graph&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;color 100% stacked bar graph&#39;, &#39;color freq. reordered 100% stacked bar graph&#39;, &#39;color alphab. reordered 100% stacked bar graph&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_05-1.png" width="1056" /><img src="../vignettes/figures/fac-ord_05-1.png" width="1056" /></p>
-<pre><code>2 ordered = c(&#39;transposed color 100% stacked bar graph&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;transposed color 100% stacked bar graph&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_06-1.png" width="960" /><img src="../vignettes/figures/fac-ord_06-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;bw heatmap&#39;, &#39;bw freq. reordered heatmap&#39;, &#39;bw alphab. reordered heatmap&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;bw heatmap&#39;, &#39;bw freq. reordered heatmap&#39;, &#39;bw alphab. reordered heatmap&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_07-1.png" width="960" /><img src="../vignettes/figures/fac-ord_07-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;color heatmap&#39;, &#39;color freq. reordered heatmap&#39;, &#39;color alphab. reordered heatmap&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;color heatmap&#39;, &#39;color freq. reordered heatmap&#39;, &#39;color alphab. reordered heatmap&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_08-1.png" width="960" /><img src="../vignettes/figures/fac-ord_08-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;color residuals heatmap&#39;, &#39;color freq. reordered residuals heatmap&#39;, &#39;color alphab. reordered residuals heatmap&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;color residuals heatmap&#39;, &#39;color freq. reordered residuals heatmap&#39;, &#39;color alphab. reordered residuals heatmap&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_09-1.png" width="960" /><img src="../vignettes/figures/fac-ord_09-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;bw contribution to x2 heatmap&#39;, &#39;bw freq. reordered contribution to x2 heatmap&#39;, &#39;bw alphab. reordered contribution to x2 heatmap&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;bw contribution to x2 heatmap&#39;, &#39;bw freq. reordered contribution to x2 heatmap&#39;, &#39;bw alphab. reordered contribution to x2 heatmap&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_10-1.png" width="960" /><img src="../vignettes/figures/fac-ord_10-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;bw contribution to x2 heatmap&#39;, &#39;bw freq. reordered contribution to x2 heatmap&#39;, &#39;bw alphab. reordered contribution to x2 heatmap&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;bw contribution to x2 heatmap&#39;, &#39;bw freq. reordered contribution to x2 heatmap&#39;, &#39;bw alphab. reordered contribution to x2 heatmap&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_11-1.png" width="960" /><img src="../vignettes/figures/fac-ord_11-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;bw balloon plot&#39;, &#39;bw freq. reordered balloon plot&#39;, &#39;bw alphab. reordered balloon plot&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;bw balloon plot&#39;, &#39;bw freq. reordered balloon plot&#39;, &#39;bw alphab. reordered balloon plot&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_12-1.png" width="960" /><img src="../vignettes/figures/fac-ord_12-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;color balloon plot&#39;, &#39;color freq. reordered balloon plot&#39;, &#39;color alphab. reordered balloon plot&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;color balloon plot&#39;, &#39;color freq. reordered balloon plot&#39;, &#39;color alphab. reordered balloon plot&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_13-1.png" width="960" /><img src="../vignettes/figures/fac-ord_13-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;color residuals balloon plot&#39;, &#39;color freq. reordered residuals balloon plot&#39;, &#39;color alphab. reordered residuals balloon plot&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;color residuals balloon plot&#39;, &#39;color freq. reordered residuals balloon plot&#39;, &#39;color alphab. reordered residuals balloon plot&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_14-1.png" width="960" /><img src="../vignettes/figures/fac-ord_14-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;bw contribution to x2 balloon plot&#39;, &#39;bw freq. reordered contribution to x2 balloon plot&#39;, &#39;bw alphab. reordered contribution to x2 balloon plot&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;bw contribution to x2 balloon plot&#39;, &#39;bw freq. reordered contribution to x2 balloon plot&#39;, &#39;bw alphab. reordered contribution to x2 balloon plot&#39;)</code></pre>
 <p><img src="2var_Specimen_files/figure-html/fac-ord_15-1.png" width="960" /><img src="../vignettes/figures/fac-ord_15-1.png" width="960" /></p>
-<pre><code>2 ordered = c(&#39;bw contribution to x2 balloon plot&#39;, &#39;bw freq. reordered contribution to x2 balloon plot&#39;, &#39;bw alphab. reordered contribution to x2 balloon plot&#39;)</code></pre>
+<pre><code>factor-ordered = c(&#39;bw contribution to x2 balloon plot&#39;, &#39;bw freq. reordered contribution to x2 balloon plot&#39;, &#39;bw alphab. reordered contribution to x2 balloon plot&#39;)</code></pre>
 </div>
 
 
@@ -496,7 +475,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>

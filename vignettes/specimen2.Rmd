@@ -254,22 +254,27 @@ cat("2ord = c('bw heatmap', 'color heatmap')")
 
 ```{r 2ordered_06, fig.width=10, fig.height=2}
 knitr::include_graphics('figures/2ordered_06-1.png')
-cat("2ord = c('bw stacked bar graph', 'color stacked bar graph')")
+cat("2ord = c('blank', 'color residuals heatmap')")
 ```
 
 ```{r 2ordered_07, fig.width=10, fig.height=2}
 knitr::include_graphics('figures/2ordered_07-1.png')
-cat("2ord = c('bw stacked bar graph', 'color stacked bar graph')")
+cat("2ord = c('bw contribution to x2 heatmap', 'color contribution to x2 heatmap')")
 ```
 
 ```{r 2ordered_08, fig.width=10, fig.height=2}
 knitr::include_graphics('figures/2ordered_08-1.png')
-cat("2ord = c('bw stacked bar graph', 'color stacked bar graph')")
+cat("2ord = c('bw balloon plot', 'color balloon plot')")
 ```
 
 ```{r 2ordered_09, fig.width=10, fig.height=2}
 knitr::include_graphics('figures/2ordered_09-1.png')
-cat("2ord = c('bw stacked bar graph', 'color stacked bar graph')")
+cat("2ord = c('blank', 'color residuals balloon plot')")
+```
+
+```{r 2ordered_10, fig.width=10, fig.height=2}
+knitr::include_graphics('figures/2ordered_10-1.png')
+cat("2ord = c('bw contribution to x2 balloon plot', 'color contribution to x2 balloon plot')")
 ```
 
 # 2 Factor
@@ -278,6 +283,7 @@ cat("2ord = c('bw stacked bar graph', 'color stacked bar graph')")
 knitr::include_graphics('figures/2factor_01-1.png')
 cat("2fac = c('color stacked bar graph', 'color freq. reordered stacked bar graph', 'color alphab. reordered stacked bar graph')")
 ```
+
 ```{r 2factor_02, fig.width=10, fig.height=1.75}
 knitr::include_graphics('figures/2factor_02-1.png')
 cat("2fac = c('transposed color stacked bar graph', 'transposed color freq. reordered stacked bar graph', 'transposed color alphab. reordered stacked bar graph')")

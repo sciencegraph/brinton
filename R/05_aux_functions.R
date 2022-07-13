@@ -55,9 +55,16 @@ short_label <- function(df, var, n, m) {
 
 # borrowed from: https://slowkow.com/notes/ggplot2-color-by-density/
 get_density <- function(x, y, ...) {
+  if (length(unique(x)) == 1) {stop("It is not possible to retrieve a density since one variable is actually a constant.")}
+  # if (length(unique(x)) != 1 & length(unique(y)) != 1) {
   dens <- MASS::kde2d(x, y, ...)
   ix <- findInterval(x, dens$x)
   iy <- findInterval(y, dens$y)
   ii <- cbind(ix, iy)
   return(dens$z[ii])
-}
+  }
+  # else
+  # {
+  #   return(rep(c(1,2), length.out = (length(x))))
+  # }
+# }

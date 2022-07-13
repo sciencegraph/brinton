@@ -1,5 +1,5 @@
 ---
-title: "1var_Specimen"
+title: "2var_Specimen"
 author: "Pere Millán"
 date: "20/5/2020"
 output:
@@ -341,7 +341,7 @@ cat("2 datetime = c('scatter plot', 'scatter plot with trend line')")
 ```
 
 ```{r 2datetime_02, fig.width=12, fig.height=2.4}
-gridExtra::grid.arrange(brinton::plotup(ds, c('dep_time', 'arr_time'), 'binned heatmap'),
+gridExtra::grid.arrange(brinton::plotup(ds, c('dep_time', 'arr_time'), 'binned scatter plot'),
                         brinton::plotup(ds, c('dep_time', 'arr_time'), 'bw binned scatter plot'),
                         brinton::plotup(ds, c('dep_time', 'arr_time'), 'color binned scatter plot'),
                         heights=grid::unit(c(2.4), c("in")),
@@ -400,7 +400,7 @@ cat("numeric~datetime = c('scatter plot', 'scatter plot with trend line')")
 ```
 
 ```{r date-num_02, fig.width=12, fig.height=2.4}
-gridExtra::grid.arrange(brinton::plotup(MASS, c('start', 'downloads'), 'binned heatmap'),
+gridExtra::grid.arrange(brinton::plotup(MASS, c('start', 'downloads'), 'binned scatter plot'),
                         brinton::plotup(MASS, c('start', 'downloads'), 'bw binned scatter plot'),
                         brinton::plotup(MASS, c('start', 'downloads'), 'color binned scatter plot'),
                         heights=grid::unit(c(2.4), c("in")),
@@ -745,7 +745,7 @@ gridExtra::grid.arrange(brinton::plotup(esoph, c('agegp', 'alcgp'), 'bw contribu
                         brinton::plotup(esoph, c('agegp', 'alcgp'), 'color contribution to x2 heatmap'),
                         heights=grid::unit(c(2), c("in")),
                         ncol=3)
-knitr::include_graphics('../vignettes/figures/2ordered_06-1.png')
+knitr::include_graphics('../vignettes/figures/2ordered_07-1.png')
 cat("2 ordered = c('bw contribution to x2 heatmap', 'color contribution to x2 heatmap')")
 ```
 
@@ -754,7 +754,7 @@ gridExtra::grid.arrange(brinton::plotup(esoph, c('agegp', 'alcgp'), 'bw balloon 
                         brinton::plotup(esoph, c('agegp', 'alcgp'), 'color balloon plot'),
                         heights=grid::unit(c(2), c("in")),
                         ncol=3)
-knitr::include_graphics('../vignettes/figures/2ordered_07-1.png')
+knitr::include_graphics('../vignettes/figures/2ordered_08-1.png')
 cat("2 ordered = c('bw balloon plot', 'color balloon plot')")
 ```
 
@@ -772,7 +772,7 @@ gridExtra::grid.arrange(brinton::plotup(esoph, c('agegp', 'alcgp'), 'bw contribu
                         brinton::plotup(esoph, c('agegp', 'alcgp'), 'color contribution to x2 balloon plot'),
                         heights=grid::unit(c(2), c("in")),
                         ncol=3)
-knitr::include_graphics('../vignettes/figures/2ordered_09-1.png')
+knitr::include_graphics('../vignettes/figures/2ordered_10-1.png')
 cat("2 ordered = c('bw contribution to x2 balloon plot', 'color contribution to x2 balloon plot')")
 ```
 
@@ -785,8 +785,9 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(1.75), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_01-1.png')
-cat("2 ordered = c('color stacked bar graph', 'color freq. reordered stacked bar graph', 'color alphab. reordered stacked bar graph')")
+cat("2 factor = c('color stacked bar graph', 'color freq. reordered stacked bar graph', 'color alphab. reordered stacked bar graph')")
 ```
+
 ```{r 2factor_02, fig.width=10, fig.height=1.75}
 gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), 'transposed color stacked bar graph'),
                         brinton::plotup(mediation::jobs, c("educ", "marital"), 'transposed color freq. reordered stacked bar graph'),
@@ -794,7 +795,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(1.75), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_02-1.png')
-cat("2 ordered = c('transposed color stacked bar graph', 'transposed color freq. reordered stacked bar graph', 'transposed color alphab. reordered stacked bar graph')")
+cat("2 factor = c('transposed color stacked bar graph', 'transposed color freq. reordered stacked bar graph', 'transposed color alphab. reordered stacked bar graph')")
 ```
 
 ```{r 2factor_03, fig.width=10, fig.height=1.75}
@@ -804,7 +805,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(1.75), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_03-1.png')
-cat("2 ordered = c('color 100% stacked bar graph', 'color freq. reordered 100% stacked bar graph', 'color alphab. reordered 100% stacked bar graph')")
+cat("2 factor = c('color 100% stacked bar graph', 'color freq. reordered 100% stacked bar graph', 'color alphab. reordered 100% stacked bar graph')")
 ```
 
 
@@ -815,7 +816,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(1.75), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_04-1.png')
-cat("2 ordered = c('transposed color 100% stacked bar graph', 'transposed color freq. reordered 100% stacked bar graph', 'transposed color alphab. reordered 100% stacked bar graph')")
+cat("2 factor = c('transposed color 100% stacked bar graph', 'transposed color freq. reordered 100% stacked bar graph', 'transposed color alphab. reordered 100% stacked bar graph')")
 ```
 
 ```{r 2factor_05, fig.width=9, fig.height=2.1}
@@ -825,7 +826,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(2.1), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_05-1.png')
-cat("2 ordered = c('bw heatmap', 'bw freq. reordered heatmap', 'bw alphab. reordered heatmap')")
+cat("2 factor = c('bw heatmap', 'bw freq. reordered heatmap', 'bw alphab. reordered heatmap')")
 ```
 
 ```{r 2factor_06, fig.width=9, fig.height=2.1}
@@ -835,7 +836,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(2.1), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_06-1.png')
-cat("2 ordered = c('color heatmap', 'color freq. reordered heatmap', 'color alphab. reordered heatmap')")
+cat("2 factor = c('color heatmap', 'color freq. reordered heatmap', 'color alphab. reordered heatmap')")
 ```
 
 ```{r 2factor_07, fig.width=9, fig.height=2.1}
@@ -845,7 +846,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(2.1), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_07-1.png')
-cat("2 ordered = c('color residuals heatmap', 'color freq. reordered residuals heatmap', 'color alphab. reordered residuals heatmap')")
+cat("2 factor = c('color residuals heatmap', 'color freq. reordered residuals heatmap', 'color alphab. reordered residuals heatmap')")
 ```
 
 ```{r 2factor_08, fig.width=9, fig.height=2.1}
@@ -855,7 +856,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(2.1), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_08-1.png')
-cat("2 ordered = c('bw contribution to x2 heatmap', 'bw freq. reordered contribution to x2 heatmap', 'bw alphab. reordered contribution to x2 heatmap')")
+cat("2 factor = c('bw contribution to x2 heatmap', 'bw freq. reordered contribution to x2 heatmap', 'bw alphab. reordered contribution to x2 heatmap')")
 ```
 
 ```{r 2factor_09, fig.width=9, fig.height=2.1}
@@ -865,7 +866,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(2.1), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_09-1.png')
-cat("2 ordered = c('bw contribution to x2 heatmap', 'bw freq. reordered contribution to x2 heatmap', 'bw alphab. reordered contribution to x2 heatmap')")
+cat("2 factor = c('bw contribution to x2 heatmap', 'bw freq. reordered contribution to x2 heatmap', 'bw alphab. reordered contribution to x2 heatmap')")
 ```
 
 ```{r 2factor_10, fig.width=9, fig.height=2.1}
@@ -875,7 +876,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(2.1), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_10-1.png')
-cat("2 ordered = c('bw balloon plot', 'bw freq. reordered balloon plot', 'bw alphab. reordered balloon plot')")
+cat("2 factor = c('bw balloon plot', 'bw freq. reordered balloon plot', 'bw alphab. reordered balloon plot')")
 ```
 
 ```{r 2factor_11, fig.width=9, fig.height=2.1}
@@ -885,7 +886,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(2.1), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_11-1.png')
-cat("2 ordered = c('color balloon plot', 'color freq. reordered balloon plot', 'color alphab. reordered balloon plot')")
+cat("2 factor = c('color balloon plot', 'color freq. reordered balloon plot', 'color alphab. reordered balloon plot')")
 ```
 
 ```{r 2factor_12, fig.width=9, fig.height=2.1}
@@ -895,7 +896,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(2.1), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_12-1.png')
-cat("2 ordered = c('color residuals balloon plot', 'color freq. reordered residuals balloon plot', 'color alphab. reordered residuals balloon plot')")
+cat("2 factor = c('color residuals balloon plot', 'color freq. reordered residuals balloon plot', 'color alphab. reordered residuals balloon plot')")
 ```
 
 ```{r 2factor_13, fig.width=9, fig.height=2.1}
@@ -905,7 +906,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(2.1), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_13-1.png')
-cat("2 ordered = c('bw contribution to x2 balloon plot', 'bw freq. reordered contribution to x2 balloon plot', 'bw alphab. reordered contribution to x2 balloon plot')")
+cat("2 factor = c('bw contribution to x2 balloon plot', 'bw freq. reordered contribution to x2 balloon plot', 'bw alphab. reordered contribution to x2 balloon plot')")
 ```
 
 ```{r 2factor_14, fig.width=9, fig.height=2.1}
@@ -915,7 +916,7 @@ gridExtra::grid.arrange(brinton::plotup(mediation::jobs, c("educ", "marital"), '
                         heights=grid::unit(c(2.1), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/2factor_14-1.png')
-cat("2 ordered = c('bw contribution to x2 balloon plot', 'bw freq. reordered contribution to x2 balloon plot', 'bw alphab. reordered contribution to x2 balloon plot')")
+cat("2 factor = c('bw contribution to x2 balloon plot', 'bw freq. reordered contribution to x2 balloon plot', 'bw alphab. reordered contribution to x2 balloon plot')")
 ```
 
 # factor~ordered factor
@@ -927,7 +928,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'bw
                         heights=grid::unit(c(1.75), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_01-1.png')
-cat("2 ordered = c('color stacked bar graph', 'color freq. reordered stacked bar graph', 'color alphab. reordered stacked bar graph')")
+cat("factor-ordered = c('color stacked bar graph', 'color freq. reordered stacked bar graph', 'color alphab. reordered stacked bar graph')")
 ```
 
 ```{r fac-ord_02, fig.width=11, fig.height=1.75}
@@ -937,7 +938,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'co
                         heights=grid::unit(c(1.75), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_02-1.png')
-cat("2 ordered = c('color stacked bar graph', 'color freq. reordered stacked bar graph', 'color alphab. reordered stacked bar graph')")
+cat("factor-ordered = c('color stacked bar graph', 'color freq. reordered stacked bar graph', 'color alphab. reordered stacked bar graph')")
 ```
 
 ```{r fac-ord_03, fig.width=11, fig.height=2.25}
@@ -945,7 +946,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'tr
                         heights=grid::unit(c(2.25), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_03-1.png')
-cat("2 ordered = c('transposed color stacked bar graph')")
+cat("factor-ordered = c('transposed color stacked bar graph')")
 ```
 
 ```{r fac-ord_04, fig.width=11, fig.height=1.75}
@@ -955,7 +956,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'co
                         heights=grid::unit(c(1.75), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_04-1.png')
-cat("2 ordered = c('color 100% stacked bar graph', 'color freq. reordered 100% stacked bar graph', 'color alphab. reordered 100% stacked bar graph')")
+cat("factor-ordered = c('color 100% stacked bar graph', 'color freq. reordered 100% stacked bar graph', 'color alphab. reordered 100% stacked bar graph')")
 ```
 
 
@@ -964,7 +965,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'tr
                         heights=grid::unit(c(2.25), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_05-1.png')
-cat("2 ordered = c('transposed color 100% stacked bar graph')")
+cat("factor-ordered = c('transposed color 100% stacked bar graph')")
 ```
 
 
@@ -975,7 +976,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'bw
                         heights=grid::unit(c(2.3), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_06-1.png')
-cat("2 ordered = c('bw heatmap', 'bw freq. reordered heatmap', 'bw alphab. reordered heatmap')")
+cat("factor-ordered = c('bw heatmap', 'bw freq. reordered heatmap', 'bw alphab. reordered heatmap')")
 ```
 
 ```{r fac-ord_07, fig.width=10, fig.height=2.3}
@@ -985,7 +986,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'co
                         heights=grid::unit(c(2.3), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_07-1.png')
-cat("2 ordered = c('color heatmap', 'color freq. reordered heatmap', 'color alphab. reordered heatmap')")
+cat("factor-ordered = c('color heatmap', 'color freq. reordered heatmap', 'color alphab. reordered heatmap')")
 ```
 
 ```{r fac-ord_08, fig.width=10, fig.height=2.3}
@@ -995,7 +996,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'co
                         heights=grid::unit(c(2.3), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_08-1.png')
-cat("2 ordered = c('color residuals heatmap', 'color freq. reordered residuals heatmap', 'color alphab. reordered residuals heatmap')")
+cat("factor-ordered = c('color residuals heatmap', 'color freq. reordered residuals heatmap', 'color alphab. reordered residuals heatmap')")
 ```
 
 ```{r fac-ord_09, fig.width=10, fig.height=2.3}
@@ -1005,7 +1006,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'bw
                         heights=grid::unit(c(2.3), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_09-1.png')
-cat("2 ordered = c('bw contribution to x2 heatmap', 'bw freq. reordered contribution to x2 heatmap', 'bw alphab. reordered contribution to x2 heatmap')")
+cat("factor-ordered = c('bw contribution to x2 heatmap', 'bw freq. reordered contribution to x2 heatmap', 'bw alphab. reordered contribution to x2 heatmap')")
 ```
 
 ```{r fac-ord_10, fig.width=10, fig.height=2.3}
@@ -1015,7 +1016,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'co
                         heights=grid::unit(c(2.3), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_10-1.png')
-cat("2 ordered = c('bw contribution to x2 heatmap', 'bw freq. reordered contribution to x2 heatmap', 'bw alphab. reordered contribution to x2 heatmap')")
+cat("factor-ordered = c('bw contribution to x2 heatmap', 'bw freq. reordered contribution to x2 heatmap', 'bw alphab. reordered contribution to x2 heatmap')")
 ```
 
 ```{r fac-ord_11, fig.width=10, fig.height=2.3}
@@ -1025,7 +1026,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'bw
                         heights=grid::unit(c(2.3), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_11-1.png')
-cat("2 ordered = c('bw balloon plot', 'bw freq. reordered balloon plot', 'bw alphab. reordered balloon plot')")
+cat("factor-ordered = c('bw balloon plot', 'bw freq. reordered balloon plot', 'bw alphab. reordered balloon plot')")
 ```
 
 ```{r fac-ord_12, fig.width=10, fig.height=2.3}
@@ -1035,7 +1036,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'co
                         heights=grid::unit(c(2.3), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_12-1.png')
-cat("2 ordered = c('color balloon plot', 'color freq. reordered balloon plot', 'color alphab. reordered balloon plot')")
+cat("factor-ordered = c('color balloon plot', 'color freq. reordered balloon plot', 'color alphab. reordered balloon plot')")
 ```
 
 ```{r fac-ord_13, fig.width=10, fig.height=2.3}
@@ -1045,7 +1046,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'co
                         heights=grid::unit(c(2.3), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_13-1.png')
-cat("2 ordered = c('color residuals balloon plot', 'color freq. reordered residuals balloon plot', 'color alphab. reordered residuals balloon plot')")
+cat("factor-ordered = c('color residuals balloon plot', 'color freq. reordered residuals balloon plot', 'color alphab. reordered residuals balloon plot')")
 ```
 
 ```{r fac-ord_14, fig.width=10, fig.height=2.3}
@@ -1055,7 +1056,7 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'bw
                         heights=grid::unit(c(2.3), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_14-1.png')
-cat("2 ordered = c('bw contribution to x2 balloon plot', 'bw freq. reordered contribution to x2 balloon plot', 'bw alphab. reordered contribution to x2 balloon plot')")
+cat("factor-ordered = c('bw contribution to x2 balloon plot', 'bw freq. reordered contribution to x2 balloon plot', 'bw alphab. reordered contribution to x2 balloon plot')")
 ```
 
 ```{r fac-ord_15, fig.width=10, fig.height=2.3}
@@ -1065,6 +1066,6 @@ gridExtra::grid.arrange(brinton::plotup(Ecdat::HI, c("education", "region"), 'co
                         heights=grid::unit(c(2.3), c("in")),
                         ncol=3)
 knitr::include_graphics('../vignettes/figures/fac-ord_15-1.png')
-cat("2 ordered = c('bw contribution to x2 balloon plot', 'bw freq. reordered contribution to x2 balloon plot', 'bw alphab. reordered contribution to x2 balloon plot')")
+cat("factor-ordered = c('bw contribution to x2 balloon plot', 'bw freq. reordered contribution to x2 balloon plot', 'bw alphab. reordered contribution to x2 balloon plot')")
 ```
 

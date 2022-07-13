@@ -450,7 +450,7 @@ pp_1DD_stripegraph <- function(pp_df,
   pp_df$pp_var <- unlist(pp_df[, pp_var])
   pp_df$pp_dens <- add_density_1D(pp_df, pp_var)
 
-  p_labs <- labs(y=names(pp_df[pp_var]), x="seq")
+  p_labs <- labs(x="seq", subtitle = names(pp_df[pp_var]))
   p_plot <- ggplot(pp_df, aes(x=seq_along(pp_var)), environment = environment()) + p_labs + pp_theme() + amb.y
   p_tile <- geom_tile(aes_string(y=1), fill = "black")
   p_tile_c <- geom_tile(aes_string(y=1, fill=pp_var))
@@ -478,8 +478,8 @@ pp_binned_stripegraph <- function(pp_df,
 
   p_labs    <- labs(x=names(pp_df[pp_var]))
   p_plot    <- ggplot(pp_df, aes_string(x=pp_var), environment = environment()) + pp_theme() + amb.y
-  p_bin2d   <- geom_bin2d(aes(y=1), binwidth = c(pp_binwidth, 1), fill = "black")
-  p_bin2d_c <- geom_bin2d(aes(y=1), binwidth = c(pp_binwidth, 1))
+  p_bin2d   <- geom_bin2d(aes(y=1), binwidth = pp_binwidth, fill = "black")
+  p_bin2d_c <- geom_bin2d(aes(y=1), binwidth = pp_binwidth)
 
   if (pp_color == "black") {
     p_plot + p_bin2d
@@ -1023,7 +1023,7 @@ pp_density2 <- function(pp_df,
   pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
   pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
 
-  p_labs  <- labs(x=names(pp_df[pp_var1]))
+  p_labs  <- labs(x=names(pp_df[pp_var1]), subtitle = names(pp_df[pp_var2]))
   p_plot_b <- ggplot(pp_df, aes_string(x=pp_var1, group = pp_var2), environment = environment()) + p_labs + pp_theme()
   p_plot_c <- ggplot(pp_df, aes_string(x=pp_var1, color = pp_var2), environment = environment()) + p_labs + pp_theme()
   p_plot_f <- ggplot(pp_df, aes_string(x=pp_var2, fill = pp_var1), environment = environment()) + p_labs + pp_theme()
@@ -1031,13 +1031,15 @@ pp_density2 <- function(pp_df,
   if (pp_aes == "line" & pp_color == "black") {
     p_plot_b + geom_density(size=pp_size, color = "black")
   } else if (pp_aes == "line" & pp_color == "bw") {
-    p_plot_g + geom_density(size=0.5*pp_size) + scl_gray_disc_l + amb.z
+    p_plot_g + geom_density(size=1*pp_size) + scl_gray_disc_l + amb.z
   } else if (pp_aes == "line" & pp_color == "viridis") {
     p_plot_g + geom_density(size=0.5*pp_size) + scl_viridis_l + amb.z
   } else if (pp_aes == "area" & pp_color == "bw") {
     p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.7, color = "black") + scl_gray_disc_a + amb.z
   } else if (pp_aes == "line" & pp_color == "color") {
     p_plot_c + geom_density(size=pp_size, alpha = 0.5) + scl_col_disc_l + amb.z
+  } else if (pp_aes == "area" & pp_color == "bw") {
+    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.5, color = "white") + scl_gray_disc_a + amb.z
   } else if (pp_aes == "area" & pp_color == "color") {
     p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.5, color = "white") + scl_col_disc_a + amb.z
   } else if (pp_aes == "area" & pp_color == "viridis") {
@@ -1054,7 +1056,7 @@ pp_histogram2 <- function(pp_df,
   pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
   pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
 
-  p_labs    <- labs(x=names(pp_df[pp_var1]))
+  p_labs    <- labs(x=names(pp_df[pp_var1]), subtitle = names(pp_df[pp_var2]))
   p_plot    <- ggplot(pp_df, aes_string(x=pp_var1, color=pp_var2, fill=pp_var2), environment = environment()) + p_labs + pp_theme()
   p_hist_s  <- geom_histogram(center = 0, position = "stack")
   p_hist_f  <- geom_histogram(center = 0, position = "fill")

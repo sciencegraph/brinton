@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
       </span>
     </div>
 
@@ -46,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -75,7 +75,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/sciencegraph/brinton/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -89,14 +89,15 @@
 
       
 
-      </header><script src="brinton_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="brinton_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="brinton_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="brinton_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Automated Graphical Data Analysis with brinton</h1>
-                        <h4 class="author">Pere Millán-Martínez &amp; Ramon Oller Piqué</h4>
+      <h1 data-toc-skip>Automated Graphical Data Analysis with
+brinton</h1>
+                        <h4 class="author">Pere Millán-Martínez &amp;
+Ramon Oller Piqué</h4>
             
-            <h4 class="date">2021-04-02</h4>
+            <h4 class="date">2022-07-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sciencegraph/brinton/blob/master/vignettes/brinton.Rmd"><code>vignettes/brinton.Rmd</code></a></small>
       <div class="hidden name"><code>brinton.Rmd</code></div>
@@ -105,7 +106,9 @@
 
     
     
-<p>NOTE: This is a short version of the original article <a href="https://journal.r-project.org/archive/2021/RJ-2021-018/index.html">A Graphical EDA Tool with ggplot2: brinton</a> published by The R Journal:</p>
+<p>NOTE: This is a short version of the original article <a href="https://journal.r-project.org/archive/2021/RJ-2021-018/index.html">A
+Graphical EDA Tool with ggplot2: brinton</a> published by The R
+Journal:</p>
 <pre><code>@article{RJ-2021-018,
   author = {Pere Millán-Martínez and Ramon Oller},
   title = {{A Graphical EDA Tool with ggplot2: brinton}},
@@ -120,8 +123,19 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>We created <code>brinton</code> library to facilitate exploratory data analysis following the visual information-seeking mantra: “Overview first, zoom and filter, then details on demand.” The main idea is to assist the user during these three phases through three functions: <code><a href="../reference/wideplot.html">wideplot()</a></code>, <code><a href="../reference/longplot.html">longplot()</a></code> and <code><a href="../reference/plotup.html">plotup()</a></code>. While each of these functions has its own arguments and purpose, all three serve to facilitate exploratory data analysis and the selection of a suitable graphic.</p>
-<p>The library can be installed easily from the Comprehensive R Archive Network (CRAN) using the <strong>R</strong> console. When the library is loaded into memory, it provides a startup message that pays homage to Henry D. Hubbard’s enthusiastic introduction to the book Graphic Presentation by Willard Cope Brinton in 1939:</p>
+<p>We created <code>brinton</code> library to facilitate exploratory
+data analysis following the visual information-seeking mantra: “Overview
+first, zoom and filter, then details on demand.” The main idea is to
+assist the user during these three phases through three functions:
+<code><a href="../reference/wideplot.html">wideplot()</a></code>, <code><a href="../reference/longplot.html">longplot()</a></code> and
+<code><a href="../reference/plotup.html">plotup()</a></code>. While each of these functions has its own
+arguments and purpose, all three serve to facilitate exploratory data
+analysis and the selection of a suitable graphic.</p>
+<p>The library can be installed easily from the Comprehensive R Archive
+Network (CRAN) using the <strong>R</strong> console. When the library is
+loaded into memory, it provides a startup message that pays homage to
+Henry D. Hubbard’s enthusiastic introduction to the book Graphic
+Presentation by Willard Cope Brinton in 1939:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">'brinton'</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://sciencegraph.github.io/brinton/">brinton</a></span><span class="op">)</span></code></pre></div>
@@ -130,16 +144,57 @@
 <div id="brintons-functions" class="section level1">
 <h1 class="hasAnchor">
 <a href="#brintons-functions" class="anchor"></a>brinton’s functions</h1>
-<p>The <code><a href="../reference/wideplot.html">wideplot()</a></code> function allows the user to explore a dataset as a whole using a grid of graphics in which each variable is represented through multiple graphics. Once we have explored the dataset as a whole, the <code><a href="../reference/longplot.html">longplot()</a></code> allows us to explore other graphics for a given variable. This function also presents a grid of graphics, but instead of showing a selection of graphics for each variable, it presents the full array of graphics available in the library to represent a single variable. Once we have narrowed in on a certain graphic, we can use the <code><a href="../reference/plotup.html">plotup()</a></code> function, which presents the values of a variable on a single graphic. We can access the code of the resulting graph and adapt it as needed. These three functions expand the graphic types that are presented automatically by the autoGEDA libraries in the <strong>R</strong> environment.</p>
+<p>The <code><a href="../reference/wideplot.html">wideplot()</a></code> function allows the user to explore a
+dataset as a whole using a grid of graphics in which each variable is
+represented through multiple graphics. Once we have explored the dataset
+as a whole, the <code><a href="../reference/longplot.html">longplot()</a></code> allows us to explore other
+graphics for a given variable. This function also presents a grid of
+graphics, but instead of showing a selection of graphics for each
+variable, it presents the full array of graphics available in the
+library to represent a single variable. Once we have narrowed in on a
+certain graphic, we can use the <code><a href="../reference/plotup.html">plotup()</a></code> function, which
+presents the values of a variable on a single graphic. We can access the
+code of the resulting graph and adapt it as needed. These three
+functions expand the graphic types that are presented automatically by
+the autoGEDA libraries in the <strong>R</strong> environment.</p>
 <div id="the-wideplot-function" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-wideplot-function" class="anchor"></a>The wideplot function</h2>
-<p>The <code><a href="../reference/wideplot.html">wideplot()</a></code> function returns a graphical summary of the variables included in the dataset to which it has been applied. First it groups the variables according to the following sequence: <code>logical</code>, <code>ordered</code>, <code>factor</code>, <code>character</code>, <code>datetime</code>, <code>numeric</code>. Next, it creates a multipanel graphic in <strong>html</strong> format, in which each variable of the dataset is represented in a row of the grid, while each column displays the different graphics possible for each variable. We called the resulting graphic type wideplot because it shows an array of graphics for all of the columns of the dataset. The structure of the function, the arguments it permits and its default values are as follows:</p>
+<p>The <code><a href="../reference/wideplot.html">wideplot()</a></code> function returns a graphical summary of
+the variables included in the dataset to which it has been applied.
+First it groups the variables according to the following sequence:
+<code>logical</code>, <code>ordered</code>, <code>factor</code>,
+<code>character</code>, <code>datetime</code>, <code>numeric</code>.
+Next, it creates a multipanel graphic in <strong>html</strong> format,
+in which each variable of the dataset is represented in a row of the
+grid, while each column displays the different graphics possible for
+each variable. We called the resulting graphic type wideplot because it
+shows an array of graphics for all of the columns of the dataset. The
+structure of the function, the arguments it permits and its default
+values are as follows:</p>
 <pre><code><a href="../reference/wideplot.html">wideplot(data, dataclass = NULL, logical = NULL, ordered = NULL,
   factor = NULL, character = NULL, datetime = NULL, numeric = NULL,
   group = NULL, ncol = 7, label = 'FALSE')</a></code></pre>
-<p>The only argument necessary to obtain a result is <code>data</code> that expects a <code>data-frame</code> class object; <code>ncol</code> filters the first <em>n</em> columns of the grid, between 3 and 7, which will be shown. The fewer columns displayed, the larger the size of the resulting graphics, a feature that is especially useful if the scale labels dwarf the graphics area; <code>label</code> adds to the grid a vector below each group of rows according to the variable type, with the names and order of the graphics; <code>logical</code>, <code>ordered</code>, <code>factor</code>, <code>character</code>, <code>datetime</code> and <code>numeric</code> make it possible to choose which graphics appear in the grid and in what order, for each variable type. Finally, <code>group</code> changes the selection of graphics that are shown by default according to the criteria of the table 1.</p>
-<p>The <code><a href="../reference/wideplot.html">wideplot()</a></code> function takes inspiration from this function, but instead of describing the dataset in textual or tabular form, it does it graphically. We can easily compare the results of these two functions, for example, with the dataset esoph from a case-control study of esophageal cancer in Ille-et-Vilaine, France. The dataset has three ordered factor-type variables and two numerical variables:</p>
+<p>The only argument necessary to obtain a result is <code>data</code>
+that expects a <code>data-frame</code> class object; <code>ncol</code>
+filters the first <em>n</em> columns of the grid, between 3 and 7, which
+will be shown. The fewer columns displayed, the larger the size of the
+resulting graphics, a feature that is especially useful if the scale
+labels dwarf the graphics area; <code>label</code> adds to the grid a
+vector below each group of rows according to the variable type, with the
+names and order of the graphics; <code>logical</code>,
+<code>ordered</code>, <code>factor</code>, <code>character</code>,
+<code>datetime</code> and <code>numeric</code> make it possible to
+choose which graphics appear in the grid and in what order, for each
+variable type. Finally, <code>group</code> changes the selection of
+graphics that are shown by default according to the criteria of the
+table 1.</p>
+<p>The <code><a href="../reference/wideplot.html">wideplot()</a></code> function takes inspiration from this
+function, but instead of describing the dataset in textual or tabular
+form, it does it graphically. We can easily compare the results of these
+two functions, for example, with the dataset esoph from a case-control
+study of esophageal cancer in Ille-et-Vilaine, France. The dataset has
+three ordered factor-type variables and two numerical variables:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">esoph</span><span class="op">)</span></code></pre></div>
 <pre><code>## 'data.frame':    88 obs. of  5 variables:
@@ -155,7 +210,16 @@
 Figure 1
 </p>
 </div>
-<p>If the order and graphic types to be shown for each variable type are not specified and if the graphic types aren’t filtered using the argument <code>group</code>, then the default graphic will contain an opinion-based selection graphics for each variable type, organized especially to facilitate comparison between graphics of the same row and between graphics of the same column. The user can overwrite this default selection of graphics as needed, using the arguments <code>logical</code>, <code>ordered</code>, <code>factor</code>, <code>character</code>, <code>datetime</code> and <code>numeric</code>.</p>
+<p>If the order and graphic types to be shown for each variable type are
+not specified and if the graphic types aren’t filtered using the
+argument <code>group</code>, then the default graphic will contain an
+opinion-based selection graphics for each variable type, organized
+especially to facilitate comparison between graphics of the same row and
+between graphics of the same column. The user can overwrite this default
+selection of graphics as needed, using the arguments
+<code>logical</code>, <code>ordered</code>, <code>factor</code>,
+<code>character</code>, <code>datetime</code> and
+<code>numeric</code>.</p>
 <table class="table">
 <colgroup>
 <col width="6%">
@@ -168,27 +232,34 @@ Figure 1
 <tbody>
 <tr class="odd">
 <td align="left">sequence</td>
-<td align="left">includes the sequence in which the values are observed so that an axis develops this sequence. e.g., line graph, point-to-point graph</td>
+<td align="left">includes the sequence in which the values are observed
+so that an axis develops this sequence. e.g., line graph, point-to-point
+graph</td>
 </tr>
 <tr class="even">
 <td align="left">scatter</td>
-<td align="left">marks represent individual observations. e.g., point graph, stripe graph</td>
+<td align="left">marks represent individual observations. e.g., point
+graph, stripe graph</td>
 </tr>
 <tr class="odd">
 <td align="left">bin</td>
-<td align="left">marks represent aggregated observations based on class intervals. e.g., histogram, bar graph</td>
+<td align="left">marks represent aggregated observations based on class
+intervals. e.g., histogram, bar graph</td>
 </tr>
 <tr class="even">
 <td align="left">model</td>
-<td align="left">represents models based on observations. e.g. density plot, violin plot</td>
+<td align="left">represents models based on observations. e.g. density
+plot, violin plot</td>
 </tr>
 <tr class="odd">
 <td align="left">symbol</td>
-<td align="left">represents models based on observations and not only points, lines or areas. e.g., box plo.</td>
+<td align="left">represents models based on observations and not only
+points, lines or areas. e.g., box plo.</td>
 </tr>
 <tr class="even">
 <td align="left">GOF</td>
-<td align="left">represents the goodness of fit of some values with respect to a model. e.g. qq plot</td>
+<td align="left">represents the goodness of fit of some values with
+respect to a model. e.g. qq plot</td>
 </tr>
 <tr class="odd">
 <td align="left">random</td>
@@ -200,7 +271,15 @@ Figure 1
 <div id="the-longplot-function" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-longplot-function" class="anchor"></a>The longplot function</h2>
-<p>To facilitate economy of calculation, the <code><a href="../reference/wideplot.html">wideplot()</a></code> function presents a limited number of graphics in each row. If the user wants to expand the array of suggested graphics for a given variable, he or she should use the <code><a href="../reference/longplot.html">longplot()</a></code> function, which returns a grid with all of the graphics considered by the library for that variable. The structure of the function is very simple <code><a href="../reference/longplot.html">longplot(data, vars, label = TRUE)</a></code> and we can easily check the outcome of applying this function to the variable <code>alcgp</code> of the dataset <code>esoph</code>:</p>
+<p>To facilitate economy of calculation, the <code><a href="../reference/wideplot.html">wideplot()</a></code>
+function presents a limited number of graphics in each row. If the user
+wants to expand the array of suggested graphics for a given variable, he
+or she should use the <code><a href="../reference/longplot.html">longplot()</a></code> function, which returns a
+grid with all of the graphics considered by the library for that
+variable. The structure of the function is very simple
+<code><a href="../reference/longplot.html">longplot(data, vars, label = TRUE)</a></code> and we can easily check
+the outcome of applying this function to the variable <code>alcgp</code>
+of the dataset <code>esoph</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/longplot.html">longplot</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="st">'alcgp'</span><span class="op">)</span></code></pre></div>
 <div class="figure">
@@ -208,13 +287,40 @@ Figure 1
 Figure 2
 </p>
 </div>
-<p>The arguments of the function are <code>data</code>, which must be a <code>data-frame</code> class object; <code>vars</code>, which requires the name of a specific variable of the dataset; and <code>label</code>, which does not have to be defined and which adds a vector below each row of the grid indicating the name of each graphic. Unlike the grid of the <code><a href="../reference/wideplot.html">wideplot()</a></code> function, the grid of the <code><a href="../reference/longplot.html">longplot()</a></code> function does not include parameters to limit the array of graphics to be presented. We made this decision because the main advantage of this function is precisely that it presents all of the graphic representations available for a given variable. However, we do not rule out adding filters that limit the number of graphics to be shown if this feature seems useful as the catalog fills with graphics. Each graphic presented can be called explicitly by name using the functions <code><a href="../reference/wideplot.html">wideplot()</a></code> and <code><a href="../reference/plotup.html">plotup()</a></code>, which is why the argument <code>label</code> has been set to <code>TRUE</code> in this case.</p>
-<p>The array of graphics that the <code><a href="../reference/longplot.html">longplot()</a></code> function returns is sorted so that in the rows we find different graphic types and in the columns different variations of the same graphic type. This organization, however, is not absolute and in some cases in order to compress the results, we find different graphic types in the columns of the same row.</p>
+<p>The arguments of the function are <code>data</code>, which must be a
+<code>data-frame</code> class object; <code>vars</code>, which requires
+the name of a specific variable of the dataset; and <code>label</code>,
+which does not have to be defined and which adds a vector below each row
+of the grid indicating the name of each graphic. Unlike the grid of the
+<code><a href="../reference/wideplot.html">wideplot()</a></code> function, the grid of the
+<code><a href="../reference/longplot.html">longplot()</a></code> function does not include parameters to limit
+the array of graphics to be presented. We made this decision because the
+main advantage of this function is precisely that it presents all of the
+graphic representations available for a given variable. However, we do
+not rule out adding filters that limit the number of graphics to be
+shown if this feature seems useful as the catalog fills with graphics.
+Each graphic presented can be called explicitly by name using the
+functions <code><a href="../reference/wideplot.html">wideplot()</a></code> and <code><a href="../reference/plotup.html">plotup()</a></code>, which is
+why the argument <code>label</code> has been set to <code>TRUE</code> in
+this case.</p>
+<p>The array of graphics that the <code><a href="../reference/longplot.html">longplot()</a></code> function
+returns is sorted so that in the rows we find different graphic types
+and in the columns different variations of the same graphic type. This
+organization, however, is not absolute and in some cases in order to
+compress the results, we find different graphic types in the columns of
+the same row.</p>
 </div>
 <div id="the-plotup-function" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-plotup-function" class="anchor"></a>The plotup function</h2>
-<p>The <code><a href="../reference/plotup.html">plotup()</a></code> function has the following structure: <code><a href="../reference/plotup.html">plotup(data, vars, diagram, output = 'html')</a></code>. By default, this function returns an <strong>html</strong> document with a single graphic based on a variable from a given dataset and the name of the desired graphic, from among the names included by the specimen that we present in the next subsection. We can easily check the outcome of applying this function to produce a line graph from the variable <code>ncases</code> of the dataset <code>esoph</code>:</p>
+<p>The <code><a href="../reference/plotup.html">plotup()</a></code> function has the following structure:
+<code><a href="../reference/plotup.html">plotup(data, vars, diagram, output = 'html')</a></code>. By default,
+this function returns an <strong>html</strong> document with a single
+graphic based on a variable from a given dataset and the name of the
+desired graphic, from among the names included by the specimen that we
+present in the next subsection. We can easily check the outcome of
+applying this function to produce a line graph from the variable
+<code>ncases</code> of the dataset <code>esoph</code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotup.html">plotup</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="st">'ncases'</span>, <span class="st">'line graph'</span><span class="op">)</span></code></pre></div>
 <div class="figure">
@@ -222,7 +328,16 @@ Figure 2
 Figure 3
 </p>
 </div>
-<p>This function requires three arguments: <code>data</code>, <code>vars</code> and <code>diagram</code>. The fourth argument, <code>output</code>, is optional and has the default value of <strong>html</strong>. However, if it is set to <code>plots pane</code>, instead of generating a graphic in an <strong>html</strong> page, it generates a graphic in the plots pane of RStudio. If, instead, it is set to ’’console´´, the function returns the code used by the library to generate this precise graphic. This feature is especially useful to adapt the default graphic to the specific needs and preferences of the user.</p>
+<p>This function requires three arguments: <code>data</code>,
+<code>vars</code> and <code>diagram</code>. The fourth argument,
+<code>output</code>, is optional and has the default value of
+<strong>html</strong>. However, if it is set to <code>plots pane</code>,
+instead of generating a graphic in an <strong>html</strong> page, it
+generates a graphic in the plots pane of RStudio. If, instead, it is set
+to ’’console´´, the function returns the code used by the library to
+generate this precise graphic. This feature is especially useful to
+adapt the default graphic to the specific needs and preferences of the
+user.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotup.html">plotup</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">esoph</span>, vars <span class="op">=</span> <span class="st">'ncases'</span>, diagram <span class="op">=</span><span class="st">'line graph'</span>, output <span class="op">=</span> <span class="st">'console'</span><span class="op">)</span></code></pre></div>
 <pre><code>
@@ -237,8 +352,18 @@ ggplot(esoph, aes(x=seq_along(ncases), y=ncases)) +
 <div id="the-specimen" class="section level1">
 <h1 class="hasAnchor">
 <a href="#the-specimen" class="anchor"></a>The specimen</h1>
-<p>The documentation of the library includes the vignette ‘1v specimen’, which contains a specimen with images of all the graphic types for a single variable, incorporated into the library according to the variable type. These graphs serve as an example so that the user can rapidly check whether a graphic has been incorporated, the type or types of variable for which it has been incorporated, and the label with which it has been identified. The suitability of a particular graphic will depend on the datasets of interest and the variables of each particular user.</p>
-<p>In order to keep the package as compact as possible, the specimens of graphics that require more than one input variable are not built whithin the package but they can be found at <a href="https://sciencegraph.github.io/brinton/articles/">sciencegraph.github.io/brinton/articles/</a>.</p>
+<p>The documentation of the library includes the vignette ‘1v specimen’,
+which contains a specimen with images of all the graphic types for a
+single variable, incorporated into the library according to the variable
+type. These graphs serve as an example so that the user can rapidly
+check whether a graphic has been incorporated, the type or types of
+variable for which it has been incorporated, and the label with which it
+has been identified. The suitability of a particular graphic will depend
+on the datasets of interest and the variables of each particular
+user.</p>
+<p>In order to keep the package as compact as possible, the specimens of
+graphics that require more than one input variable are not built whithin
+the package but they can be found at <a href="https://sciencegraph.github.io/brinton/articles/">sciencegraph.github.io/brinton/articles/</a>.</p>
 </div>
   </div>
 

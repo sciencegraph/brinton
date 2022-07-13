@@ -4,7 +4,7 @@ devtools::run_examples()
 devtools::document()
 pkgdown::build_site()
 devtools::build()
-install.packages("D:///brinton_0.2.2.tar.gz", repos = NULL, type="source")
+install.packages("C:/Users/34601/Documents/brinton_0.2.5.tar.gz", repos = NULL, type="source")
 -- source the 'test-wideplot.R' file in tests folder --
 -- source the 'test-longplot.R' file in tests folder --
 -- source the 'test-plotup-preamble.R' file in tests folder --
@@ -12,7 +12,7 @@ CTRL+ALT+T -- in order to run the test available in the 'testthat' folder
 devtools::check(document = FALSE, build_args = c('--resave-data=best'))
 devtools::check_win_devel()
 -- check email --
--- 1er stagget --
+-- 1er stag it --
 -- 2on commit --
 git push -f origin master
 -- check results al travis-ci.com --

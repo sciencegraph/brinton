@@ -49,7 +49,7 @@ plotup <- function(data,
 
 
     if(is.data.frame(data) == FALSE) {
-    stop("I am so sorry, but this function only works with a data.frame input!\n",
+    stop("This function only works with a data.frame input!\n",
          "You have provided an object of class ", class(data))
   }
   if(tibble::is_tibble(data) == TRUE) {
@@ -63,8 +63,8 @@ plotup <- function(data,
   if (length(vars) == 1) {
     if (is.logical(unlist(data[, vars])) == TRUE) {v <- "L"}
     else if (is.character(unlist(data[, vars])) == TRUE) {v <- "C"}
-    else if (is.factor(unlist(data[, vars])) == TRUE &
-             is.ordered(unlist(data[, vars])) == FALSE) {v <- "F"}
+    else if (is.ordered(unlist(data[, vars])) == FALSE &
+             is.factor(unlist(data[, vars])) == TRUE) {v <- "F"}
     else if (is.ordered(unlist(data[, vars])) == TRUE) {v <- "O"}
     else if (lubridate::is.instant(unlist(data[, vars])) == TRUE) {v <- "D"}
     else if (is.numeric(unlist(data[, vars])) == TRUE) {v <- "N"}
@@ -72,15 +72,15 @@ plotup <- function(data,
   else if (length(vars) == 2) {
     if (is.logical(unlist(data[, vars[1]])) == TRUE) {v <- "L"}
     else if (is.character(unlist(data[, vars[1]])) == TRUE) {v <- "C"}
-    else if (is.factor(unlist(data[, vars[1]])) == TRUE &
-             is.ordered(unlist(data[, vars[1]])) == FALSE) {v <- "F"}
+    else if (is.ordered(unlist(data[, vars[1]])) == FALSE &
+             is.factor(unlist(data[, vars[1]])) == TRUE) {v <- "F"}
     else if (is.ordered(unlist(data[, vars[1]])) == TRUE) {v <- "O"}
     else if (lubridate::is.instant(unlist(data[, vars[1]])) == TRUE) {v <- "D"}
     else if (is.numeric(unlist(data[, vars[1]])) == TRUE) {v <- "N"}
     if (is.logical(unlist(data[, vars[2]])) == TRUE) {v[2] <- "L"}
     else if (is.character(unlist(data[, vars[2]])) == TRUE) {v[2] <- "C"}
-    else if (is.factor(unlist(data[, vars[2]])) == TRUE &
-             is.ordered(unlist(data[, vars[2]])) == FALSE) {v[2] <- "F"}
+    else if (is.ordered(unlist(data[, vars[2]])) == FALSE &
+             is.factor(unlist(data[, vars[2]])) == TRUE) {v[2] <- "F"}
     else if (is.ordered(unlist(data[, vars[2]])) == TRUE) {v[2] <- "O"}
     else if (lubridate::is.instant(unlist(data[, vars[2]])) == TRUE) {v[2] <- "D"}
     else if (is.numeric(unlist(data[, vars[2]])) == TRUE) {v[2] <- "N"}
@@ -94,8 +94,94 @@ plotup <- function(data,
     stop(paste0("The 'vars'",  string))
   }
     if(length(vars) > 2) {
-    stop("I am so sorry but, up to now, only one and two variables combinations have been considered.")
+    stop("Up to now, only one and two variables combinations have been considered.")
     }
+
+# check diagrams ----------------------------------------------------------
+
+  if (length(vars) == 1) {
+    trythis_1 <- paste0("
+  This diagram's name is not available for a '", class(unlist(data[, vars])) ,"' input variable.
+
+  Please take a look at the specimen:
+  https://sciencegraph.github.io/brinton/articles/specimen.html
+
+  Or try, for instance, one of these diagrams: ")
+
+      if (v == "L" & any(!diagram %in% logical_v)) {
+        stop(paste0(trythis_1, paste0(logical_v[c(2:length(logical_v))], collapse = ", ")))
+        }
+      else if (v == "C" & any(!diagram %in% character_v)) {
+        stop(paste0(trythis_1, paste0(character_v[c(2:length(character_v))], collapse = ", ")))
+        }
+      else if (v == "F" &
+               any(!diagram %in% factor_v)) {
+        stop(paste0(trythis_1, paste0(factor_v[c(2:length(factor_v))], collapse = ", ")))
+      }
+      else if (v == "O" &
+               any(!diagram %in% ordered_v)) {
+        stop(paste0(trythis_1, paste0(ordered_v[c(2:length(ordered_v))], collapse = ", ")))
+      }
+      else if (v == "D" &
+               any(!diagram %in% datetime_v)) {
+        stop(paste0(trythis_1, paste0(datetime_v[c(2:length(datetime_v))], collapse = ", ")))
+      }
+      else if ( v == "N" & any(!diagram %in% numeric_v)) {
+        stop(paste0(trythis_1, paste0(datetime_v[c(2:length(datetime_v))], collapse = ", ")))
+      }
+  }
+
+
+  if (length(vars) == 2) {
+    trythis_2 <- paste0("
+  This diagram's name is not available for the combination of c('", class(unlist(data[, vars[1]]))[1], "', '", class(unlist(data[, vars[2]]))[1], "') input variables.
+
+  Please take a look at the specimen:
+  https://sciencegraph.github.io/brinton/articles/specimen2.html
+
+  Or try, for instance, one of these diagrams: ")
+
+    if (all(v == "N") &
+        any(!diagram %in% numeric2_v))
+    {stop(paste0(trythis_2, paste0(numeric2_v[c(2:length(numeric2_v))],
+                                   collapse = ", ")))}
+    else if (all(v == "D") &
+      any(!diagram %in% datenum_v))
+    {stop(paste0(trythis_2, paste0(
+      datenum_v[c(2:length(datenum_v))], collapse = ", ")))}
+    else if (all(v == "F") &
+             any(!diagram %in% c(fac.fac_v0, fac.fac_v1, fac.fac_v2)))
+    {stop(paste0(trythis_2, paste0(
+      c(fac.fac_v0[c(2:length(fac.fac_v0))],
+        fac.fac_v1[c(2:length(fac.fac_v1))],
+        fac.fac_v2[c(2:length(fac.fac_v2))]), collapse = ", ")))}
+    else if (all(v == "O") &
+      any(!diagram %in% c(ord.ord_v0, ord.ord_v1, ord.ord_v2)))
+    {stop(paste0(trythis_2, paste0(
+      c(ord.ord_v0[c(2:length(ord.ord_v0))],
+        ord.ord_v1[c(2:length(ord.ord_v1))],
+        ord.ord_v2[c(2:length(ord.ord_v2))]), collapse = ", ")))}
+    else if (("F" %in% v) & ("O" %in% v) &
+             any(!diagram %in% c(fac.ord_v0, fac.ord_v1, fac.ord_v2)))
+    {stop(paste0(trythis_2, paste0(
+      c(fac.ord_v0[c(2:length(fac.ord_v0))],
+        fac.ord_v1[c(2:length(fac.ord_v1))],
+        fac.ord_v2[c(2:length(fac.ord_v2))]), collapse = ", ")))}
+    else if (("D" %in% v) & ("N" %in% v) &
+             any(!diagram %in% datenum_v))
+    {stop(paste0(trythis_2, paste0(datenum_v, collapse = ", ")))}
+    else if (("O" %in% v) & ("N" %in% v) &
+             any(!diagram %in% c(ord.num_v1, ord.num_v2)))
+    {stop(paste0(trythis_2, paste0(
+      c(ord.num_v1[c(2:length(ord.num_v1))],
+        ord.num_v2[c(2:length(ord.num_v2))]), collapse = ", ")))}
+    else if (("F" %in% v) & ("N" %in% v) &
+             any(!diagram %in% c(fac.num_v1, fac.num_v2)))
+    {stop(paste0(trythis_2, paste0(
+      c(fac.num_v1[c(2:length(fac.num_v1))],
+        fac.num_v2[c(2:length(fac.num_v2))]), collapse = ", ")))}
+  }
+
 
 # figure dims -------------------------------------------------------------
   GAwidth <- 10
@@ -391,6 +477,9 @@ plotup <- function(data,
   scl_viridis_ad    <- "viridis::scale_fill_viridis(direction = -1)"
   scl_viridis_l     <- "viridis::scale_color_viridis(discrete=TRUE, direction = -1)"
   p_legend          <- "guides(fill=guide_legend(title=as.character({as.character(substitute(vars1))}), keyheight = unit(0.4, 'cm'),
+                                        title.theme = element_text(size = 9, colour = 'gray20'),
+                                        reverse = TRUE))"
+  p_legendt          <- "guides(fill=guide_legend(title=as.character({as.character(substitute(vars2))}), keyheight = unit(0.4, 'cm'),
                                         title.theme = element_text(size = 9, colour = 'gray20'),
                                         reverse = TRUE))"
   p_labs_fill       <- "labs(x =  names(df)[1], y = names(df)[2], fill = names(df)[3])"
@@ -786,7 +875,8 @@ pp_3uniaxial <- function(data,
            any(v == c("N"))) {
     vars <- vars[1]
     q <- glue::glue(
-      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100"
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE) -
+                        min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100"
     )
     p <- glue::glue(
       "
@@ -800,7 +890,8 @@ pp_3uniaxial <- function(data,
            any(v == c("N"))) {
     vars <- vars[1]
     q <- glue::glue(
-      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100"
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE) -
+                        min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100"
     )
     p <- glue::glue(
       "
@@ -815,7 +906,8 @@ pp_3uniaxial <- function(data,
            any(v == c("N"))) {
     vars <- vars[1]
     q <- glue::glue(
-      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100"
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE) -
+                        min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/100"
     )
     p <- glue::glue(
       "
@@ -1587,12 +1679,13 @@ pp_3uniaxial <- function(data,
            any(v == c("N"))) {
     vars <- vars[1]
     q <- glue::glue(
-      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20"
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE) -
+                        min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20"
     )
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
-      \x20\x20geom_bin2d(aes(y=1), binwidth = c(binwidth, 1), fill='black') +
+      \x20\x20geom_bin2d(aes(y=1), binwidth = binwidth, fill='black') +
       \x20\x20{theme_basic_y}"
     )
   }
@@ -1601,12 +1694,13 @@ pp_3uniaxial <- function(data,
            any(v == c("N"))) {
     vars <- vars[1]
     q <- glue::glue(
-      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20"
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE) -
+                        min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20"
     )
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
-      \x20\x20geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +
+      \x20\x20geom_bin2d(aes(y=1), binwidth = binwidth) +
       \x20\x20{scale_bw_a} +
       \x20\x20{theme_basic_yz}"
     )
@@ -1616,12 +1710,13 @@ pp_3uniaxial <- function(data,
            any(v == c("N"))) {
     vars <- vars[1]
     q <- glue::glue(
-      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE)-min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20"
+      "binwidth <- (max({substitute(data)}['{substitute(vars)}'], na.rm=TRUE) -
+                        min({substitute(data)}['{substitute(vars)}'], na.rm=TRUE))/20"
     )
     p <- glue::glue(
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars))})) +
-      \x20\x20geom_bin2d(aes(y=1), binwidth = c(binwidth, 1)) +
+      \x20\x20geom_bin2d(aes(y=1), binwidth = binwidth) +
       \x20\x20{scale_color_a} +
       \x20\x20{theme_basic_yz}"
     )
@@ -1634,7 +1729,7 @@ pp_3uniaxial <- function(data,
       "
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}))) +
       \x20\x20geom_tile(aes(y=1), fill = 'black') +
-      \x20\x20labs(y = '', x = 'seq') +
+      \x20\x20labs(y = '', x = 'seq', subtitle = '{as.character(substitute(vars))}') +
       \x20\x20{theme_basic_y}"
     )
   }
@@ -1650,7 +1745,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}))) +
       \x20\x20geom_tile(aes(y=1, fill={as.character(substitute(vars))})) +
       \x20\x20{scale_bw_a} +
-      \x20\x20labs(y = '', x = 'seq') +
+      \x20\x20labs(y = '', x = 'seq', subtitle = '{as.character(substitute(vars))}') +
       \x20\x20{theme_basic_yz}"
     )
   }
@@ -1666,7 +1761,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x=seq_along({as.character(substitute(vars))}))) +
       \x20\x20geom_tile(aes(y=1, fill={as.character(substitute(vars))})) +
       \x20\x20{scale_value_a} +
-      \x20\x20labs(y = '', x = 'seq') +
+      \x20\x20labs(y = '', x = 'seq', subtitle = '{as.character(substitute(vars))}') +
       \x20\x20{theme_basic_yz}"
     )
   }
@@ -3004,6 +3099,7 @@ pp_3uniaxial <- function(data,
       \x20\x20geom_histogram(center = 0, position = 'stack') +
       \x20\x20{scl_gray_disc_l} +
       \x20\x20{scl_gray_disc_a} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3019,6 +3115,7 @@ pp_3uniaxial <- function(data,
       \x20\x20geom_histogram(center = 0, position = 'stack') +
       \x20\x20{scl_viridis_l} +
       \x20\x20{scl_viridis_a} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3034,6 +3131,7 @@ pp_3uniaxial <- function(data,
       \x20\x20geom_histogram(center = 0, position = 'stack') +
       \x20\x20{scl_color_disc_l} +
       \x20\x20{scl_color_disc_a} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3050,6 +3148,7 @@ pp_3uniaxial <- function(data,
       \x20\x20scale_y_continuous(breaks = c(0, 1), labels = c('0%', '100%')) +
       \x20\x20{scl_gray_disc_l} +
       \x20\x20{scl_gray_disc_a} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3066,6 +3165,7 @@ pp_3uniaxial <- function(data,
       \x20\x20scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1), labels = c('0%', '20%', '40%', '60%', '80%', '100%')) +
       \x20\x20{scl_viridis_l} +
       \x20\x20{scl_viridis_a} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3082,6 +3182,7 @@ pp_3uniaxial <- function(data,
       \x20\x20scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1), labels = c('0%', '20%', '40%', '60%', '80%', '100%')) +
       \x20\x20{scl_color_disc_l} +
       \x20\x20{scl_color_disc_a} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3095,6 +3196,7 @@ pp_3uniaxial <- function(data,
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, group={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5) +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic}"
     )
   }
@@ -3109,6 +3211,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5) +
       \x20\x20{scl_gray_disc_l} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3123,6 +3226,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5) +
       \x20\x20{scl_viridis_l} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3137,6 +3241,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, color={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5) +
       \x20\x20{scl_color_disc_l} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3151,6 +3256,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5, alpha = 0.7, color = 'black') +
       \x20\x20{scl_gray_disc_a} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3164,6 +3270,7 @@ pp_3uniaxial <- function(data,
       "
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, group={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5, alpha = 0.3, color = 'black', fill = 'black') +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3178,6 +3285,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5, alpha = 0.3, color = 'white') +
       \x20\x20{scl_viridis_a} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3192,6 +3300,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_density(size=0.5, alpha = 0.3, color = 'white') +
       \x20\x20{scl_color_disc_a} +
+      \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
       \x20\x20{theme_basic_z}"
     )
   }
@@ -3527,7 +3636,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3543,7 +3652,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3589,7 +3698,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data_aux))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3631,7 +3740,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data_aux))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3732,7 +3841,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_viridis_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3766,7 +3875,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_color_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3782,7 +3891,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3833,7 +3942,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_color_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3879,7 +3988,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_color_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3894,7 +4003,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_gray_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3909,7 +4018,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_viridis_a} +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3925,7 +4034,7 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3942,7 +4051,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_gray_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3959,7 +4068,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_viridis_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20{p_legendt} +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )

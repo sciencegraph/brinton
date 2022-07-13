@@ -19,7 +19,7 @@ This package introduces:
 
 + `wideplot()` graphics for exploring the structure of a dataset through a grid of variables and graphic types. 
 + `longplot()` graphics, which present the entire catalog of available graphics for representing one particular variable or a limited selection of variables using a grid of graphic types and variations on these types. 
-+ `matrixplot()` graphics, a generalization of a matrix plot in the sense that the graphic that is replicated in each cell of the matrix can be selected from the catalogue of bivariate graphics. 
++ `matrixplot()` graphics, a generalization of a pairs plot in the sense that the graphic that is replicated in each cell of the matrix can be selected from the catalogue of bivariate graphics. 
 + `plotup()` function, which complements the previous three functions in that it presents a particular graphic for a specific variable or a limited number of variables of a dataset.
 
 Future work will include the ability to draw `longplot()` and `plotup()` graphics from a selection of a wider number and combinations of types of variables within a dataset.
@@ -46,25 +46,49 @@ When a new dataset comes up, R users use to call the `str()` function that descr
 wideplot(esoph)
 ```
 
+```{r readme01, echo=FALSE, eval=TRUE, out.width = "90%"}
+knitr::include_graphics("vignettes/figures/readme_01.png")
+```
+
+
 This function includes the argument `dataclass` that sets the types of variables to be included in the grid as well as the order in which they are listed. As an example, the following line will plot only the numeric variables included in the iris dataset:
 ```{r wideplot2, eval = FALSE}
 wideplot(esoph, dataclass = c("numeric"))
 ```
 
-
-Although, the `wideplot()` function shows only a small set of the graphics suitable for each type of data. If the user wants to see all the available graphics for some specific variable included in the dataset, then the `longplot()` is useful. As an example, just run:
-```{r longplot, eval = FALSE}
-longplot(esoph, "ncases")
+```{r readme02, echo=FALSE, eval=TRUE, out.width = "90%"}
+knitr::include_graphics("vignettes/figures/readme_02.png")
 ```
 
-Any of the graphics presented in the `longplot()` output can also be presented. If one wants to compare the output of some other specific graphics one can, for instance, run:
+Although, the `wideplot()` function shows only a small set of the graphics suitable for each type of data. If the user wants to see all the available graphics for some specific variable or a combination of two specific variables  included in the dataset, then the `longplot()` is useful. As an example, just run:
+```{r longplot, eval = FALSE}
+longplot(esoph, "alcgp")
+```
+
+```{r readme03, echo=FALSE, eval=TRUE, out.width = "90%"}
+knitr::include_graphics("vignettes/figures/readme_03.png")
+```
+
+```{r longplot2, eval = FALSE}
+longplot(esoph, c("alcgp", "agegp"))
+```
+
+```{r readme04, echo=FALSE, eval=TRUE, out.width = "90%"}
+knitr::include_graphics("vignettes/figures/readme_04.png")
+```
+
+Any of the graphics presented in the `longplot()` output can also be included as an output of the `wideplot()` function. If one wants to compare the output of some other specific graphics one can, for instance, run:
 ```{r wideplot3, eval = FALSE}
 wideplot(
   esoph,
   dataclass = c("numeric"),
-  numeric = c("point graph", "binned point graph", "binned heatmap"),
+  numeric = c("point graph", "binned heatmap", "bw binned heatmap", "color binned heatmap"),
   label = TRUE
 )
+```
+
+```{r readme05, echo=FALSE, eval=TRUE, out.width = "90%"}
+knitr::include_graphics("vignettes/figures/readme_05.png")
 ```
 
 Sometimes, specially with character variables, there is not enought space for the graphic area, and the user may want to increase the width of the columns in the matrix. The user can then modify the defalut value of the `ncol` argument:
@@ -72,10 +96,14 @@ Sometimes, specially with character variables, there is not enought space for th
 wideplot(
   esoph,
   dataclass = c("numeric"),
-  numeric = c("point graph", "binned point graph", "binned heatmap"),
+  numeric = c("point graph", "binned heatmap", "bw binned heatmap", "color binned heatmap"),
   label = TRUE,
-  ncol = 3
+  ncol = 4
 )
+```
+
+```{r readme06, echo=FALSE, eval=TRUE, out.width = "90%"}
+knitr::include_graphics("vignettes/figures/readme_06.png")
 ```
 
 While the wideplot function displays a grid of univariate graphics, if a matrix of bivariate graphics is intended for variables of one particular type, the matrixplot() function is useful. Type for instance the following code:
@@ -83,9 +111,17 @@ While the wideplot function displays a grid of univariate graphics, if a matrix 
 matrixplot(esoph, dataclass = "ordered", diagram = "color heatmap")
 ```
 
+```{r readme07, echo=FALSE, eval=TRUE, out.width = "90%"}
+knitr::include_graphics("vignettes/figures/readme_07.png")
+```
+
 Same thing if the desired matrix has to include graphics from variables of two different types (please note that the graphic type has to be compatible):
 ```{r matrixplot2, eval = FALSE}
 matrixplot(esoph, dataclass = c("numeric", "ordered"), diagram = "box plot")
+```
+
+```{r readme08, echo=FALSE, eval=TRUE, out.width = "90%"}
+knitr::include_graphics("vignettes/figures/readme_08.png")
 ```
 
 If the user is interested in one particular graphic then the function `plotup()` is useful. 
@@ -98,9 +134,13 @@ Or, as an example of a graphic that requires more than one input variable:
 plotup(esoph, c("agegp", "alcgp"), "color stacked bar graph")
 ```
 
-The default output of the `plotup()` function is a `c("gg", "ggplot")` object but the `output`  argument allows, as a side effect, to write and present the graphic in a html file or to print the ggplot2 function in the console:
-```{r plotspane1, eval=FALSE}
+The default output of the `plotup()` function is a `c("gg", "ggplot")` object but the `output` argument allows, as a side effect, to write and present the graphic in a html file or to print the ggplot2 function in the console:
+```{r plotspane1, evak = FALSE}
 plotup(esoph, c("agegp", "alcgp"), "color stacked bar graph", output = "html")
+```
+
+```{r readme09, echo=FALSE, eval=TRUE, out.width = "90%"}
+knitr::include_graphics("vignettes/figures/readme_09.png")
 ```
 
 ```{r console}
