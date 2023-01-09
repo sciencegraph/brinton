@@ -38,3 +38,7 @@ if (interactive()) {
 longplot(esoph, "tobgp")
 }
 }
+\seealso{
+Specimens of grphics for \href{https://sciencegraph.github.io/brinton/articles/specimen.html}{univariate}
+and \href{https://sciencegraph.github.io/brinton/articles/specimen2.html}{bivariate} data.
+}

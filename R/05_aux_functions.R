@@ -18,27 +18,33 @@ add_density_1D <- function(a, b) {
   return(dens)
 }
 
-add_plots <- function(a, b) {
-  write(
-    paste0(
-      "gridExtra::grid.arrange(",
-      paste0(a, 1:b, collapse = ", "),
-      ", ncol=5)"
-    ),
-    file.path(dir, "brinton_outcomes", "longplot.R"),
-    append = TRUE
-  )
+#' @noRd
+remove_attr <- function(x) {
+  for (i in length(x)) attr(x[[i]], "names") <- NULL
+  return(x)
 }
 
-add_label <- function(a, b) {
-  char_types <-
-    paste0(a, " = c('", paste0(b, collapse = "', '"), "')")
-  write(
-    paste0('cat("', char_types, '")'),
-    file.path(dir, "brinton_outcomes", "longplot.R"),
-    append = TRUE
-  )
-}
+# add_plots <- function(a, b) {
+#   write(
+#     paste0(
+#       "gridExtra::grid.arrange(",
+#       paste0(a, 1:b, collapse = ", "),
+#       ", ncol=5)"
+#     ),
+#     file.path(dir, "brinton_outcomes", "longplot.R"),
+#     append = TRUE
+#   )
+# }
+
+# add_label <- function(a, b) {
+#   char_types <-
+#     paste0(a, " = c('", paste0(b, collapse = "', '"), "')")
+#   write(
+#     paste0('cat("', char_types, '")'),
+#     file.path(dir, "brinton_outcomes", "longplot.R"),
+#     append = TRUE
+#   )
+# }
 
 short_label <- function(df, var, n, m) {
   df$var <- unlist(df[,var])

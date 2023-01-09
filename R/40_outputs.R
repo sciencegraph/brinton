@@ -701,6 +701,7 @@ output_matrix <- "#' ---
 #'   }
 #' </style>
 #+ preamble, echo=FALSE, message=FALSE
+suppressPackageStartupMessages(library(patchwork))
 knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment=NA, dev='png')
 "
 

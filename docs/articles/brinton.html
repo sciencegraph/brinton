@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,18 +40,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.7</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/brinton.html">Get started</a>
 </li>
@@ -74,7 +70,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/sciencegraph/brinton/">
+  <a href="https://github.com/sciencegraph/brinton/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -89,24 +85,25 @@
 
       
 
-      </header><script src="brinton_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Automated Graphical Data Analysis with
 brinton</h1>
-                        <h4 class="author">Pere Millán-Martínez &amp;
-Ramon Oller Piqué</h4>
+                        <h4 data-toc-skip class="author">Pere
+Millán-Martínez &amp; Ramon Oller Piqué</h4>
             
-            <h4 class="date">2022-07-12</h4>
+            <h4 data-toc-skip class="date">2022-12-29</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/sciencegraph/brinton/blob/master/vignettes/brinton.Rmd"><code>vignettes/brinton.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/sciencegraph/brinton/blob/HEAD/vignettes/brinton.Rmd" class="external-link"><code>vignettes/brinton.Rmd</code></a></small>
       <div class="hidden name"><code>brinton.Rmd</code></div>
 
     </div>
 
     
     
-<p>NOTE: This is a short version of the original article <a href="https://journal.r-project.org/archive/2021/RJ-2021-018/index.html">A
+<p>NOTE: This vignette a short version, with the necessary updates, of
+the original article <a href="https://journal.r-project.org/archive/2021/RJ-2021-018/index.html" class="external-link">A
 Graphical EDA Tool with ggplot2: brinton</a> published by The R
 Journal:</p>
 <pre><code>@article{RJ-2021-018,
@@ -120,30 +117,48 @@ Journal:</p>
   volume = {12},
   number = {2}
 }</code></pre>
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>We created <code>brinton</code> library to facilitate exploratory
 data analysis following the visual information-seeking mantra: “Overview
-first, zoom and filter, then details on demand.” The main idea is to
-assist the user during these three phases through three functions:
-<code><a href="../reference/wideplot.html">wideplot()</a></code>, <code><a href="../reference/longplot.html">longplot()</a></code> and
-<code><a href="../reference/plotup.html">plotup()</a></code>. While each of these functions has its own
-arguments and purpose, all three serve to facilitate exploratory data
-analysis and the selection of a suitable graphic.</p>
+first, zoom and filter, then details on demand”. The main idea is to
+assist the user during these three phases through four functions:
+<code><a href="../reference/wideplot.html">wideplot()</a></code>, <code><a href="../reference/matrixplot.html">matrixplot()</a></code>,
+<code><a href="../reference/longplot.html">longplot()</a></code> and <code><a href="../reference/plotup.html">plotup()</a></code>. While each of these
+functions has its own arguments and purpose, all four serve to
+facilitate exploratory data analysis and the selection of a suitable
+graphic.</p>
 <p>The library can be installed easily from the Comprehensive R Archive
 Network (CRAN) using the <strong>R</strong> console. When the library is
 loaded into memory, it provides a startup message that pays homage to
 Henry D. Hubbard’s enthusiastic introduction to the book Graphic
 Presentation by Willard Cope Brinton in 1939:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">'brinton'</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://sciencegraph.github.io/brinton/">brinton</a></span><span class="op">)</span></code></pre></div>
-<pre><code>## M a G i C i N G R a P H S</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'brinton'</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sciencegraph.github.io/brinton/" class="external-link">brinton</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## M a G i C i N G R a P H S</span></span></code></pre>
 </div>
-<div id="brintons-functions" class="section level1">
-<h1 class="hasAnchor">
-<a href="#brintons-functions" class="anchor"></a>brinton’s functions</h1>
+<div class="section level2">
+<h2 id="the-specimens">The specimens<a class="anchor" aria-label="anchor" href="#the-specimens"></a>
+</h2>
+<p>The <code><a href="../reference/wideplot.html">wideplot()</a></code>, <code><a href="../reference/matrixplot.html">matrixplot()</a></code> and
+<code><a href="../reference/plotup.html">plotup()</a></code> functions include arguments that allows the user
+to nominally plot specific graphics. The names and an example of each
+type of graphic are shown in the <code>1v specimen</code> and
+<code>2v specimen</code> vignettes dedicated to graphics that requiere
+one or two input variables. These graphics serve as an example so that
+the user can rapidly check whether a graphic has been incorporated, the
+type or types of variable for which it has been incorporated, and the
+label with which it has been identified. The suitability of a particular
+graphic will depend on the datasets of interest and the variables of
+each particular user.</p>
+<p>In order to keep the package as compact as possible, these vignettes
+are not built whithin the package but they can be found at <a href="https://sciencegraph.github.io/brinton/articles/" class="external-link">sciencegraph.github.io/brinton/articles/</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="brintons-functions">brinton’s functions<a class="anchor" aria-label="anchor" href="#brintons-functions"></a>
+</h2>
 <p>The <code><a href="../reference/wideplot.html">wideplot()</a></code> function allows the user to explore a
 dataset as a whole using a grid of graphics in which each variable is
 represented through multiple graphics. Once we have explored the dataset
@@ -157,9 +172,9 @@ presents the values of a variable on a single graphic. We can access the
 code of the resulting graph and adapt it as needed. These three
 functions expand the graphic types that are presented automatically by
 the autoGEDA libraries in the <strong>R</strong> environment.</p>
-<div id="the-wideplot-function" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-wideplot-function" class="anchor"></a>The wideplot function</h2>
+<div class="section level3">
+<h3 id="the-wideplot-function">The wideplot function<a class="anchor" aria-label="anchor" href="#the-wideplot-function"></a>
+</h3>
 <p>The <code><a href="../reference/wideplot.html">wideplot()</a></code> function returns a graphical summary of
 the variables included in the dataset to which it has been applied.
 First it groups the variables according to the following sequence:
@@ -172,9 +187,9 @@ each variable. We called the resulting graphic type wideplot because it
 shows an array of graphics for all of the columns of the dataset. The
 structure of the function, the arguments it permits and its default
 values are as follows:</p>
-<pre><code><a href="../reference/wideplot.html">wideplot(data, dataclass = NULL, logical = NULL, ordered = NULL,
-  factor = NULL, character = NULL, datetime = NULL, numeric = NULL,
-  group = NULL, ncol = 7, label = 'FALSE')</a></code></pre>
+<pre><code><span><span class="fu"><a href="../reference/wideplot.html">wideplot</a></span><span class="op">(</span><span class="va">data</span>, dataclass <span class="op">=</span> <span class="cn">NULL</span>, logical <span class="op">=</span> <span class="cn">NULL</span>, ordered <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  factor <span class="op">=</span> <span class="cn">NULL</span>, character <span class="op">=</span> <span class="cn">NULL</span>, datetime <span class="op">=</span> <span class="cn">NULL</span>, numeric <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group <span class="op">=</span> <span class="cn">NULL</span>, ncol <span class="op">=</span> <span class="fl">7</span>, label <span class="op">=</span> <span class="st">'FALSE'</span><span class="op">)</span></span></code></pre>
 <p>The only argument necessary to obtain a result is <code>data</code>
 that expects a <code>data-frame</code> class object; <code>ncol</code>
 filters the first <em>n</em> columns of the grid, between 3 and 7, which
@@ -191,20 +206,21 @@ graphics that are shown by default according to the criteria of the
 table 1.</p>
 <p>The <code><a href="../reference/wideplot.html">wideplot()</a></code> function takes inspiration from this
 function, but instead of describing the dataset in textual or tabular
-form, it does it graphically. We can easily compare the results of these
-two functions, for example, with the dataset esoph from a case-control
-study of esophageal cancer in Ille-et-Vilaine, France. The dataset has
-three ordered factor-type variables and two numerical variables:</p>
+form, it does it graphically (see figure 1). We can easily compare the
+results of these two functions, for example, with the dataset esoph from
+a case-control study of esophageal cancer in Ille-et-Vilaine, France.
+The dataset has three ordered factor-type variables and two numerical
+variables:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">esoph</span><span class="op">)</span></code></pre></div>
-<pre><code>## 'data.frame':    88 obs. of  5 variables:
-##  $ agegp    : Ord.factor w/ 6 levels "25-34"&lt;"35-44"&lt;..: 1 1 1 1 1 1 1 1 1 1 ...
-##  $ alcgp    : Ord.factor w/ 4 levels "0-39g/day"&lt;"40-79"&lt;..: 1 1 1 1 2 2 2 2 3 3 ...
-##  $ tobgp    : Ord.factor w/ 4 levels "0-9g/day"&lt;"10-19"&lt;..: 1 2 3 4 1 2 3 4 1 2 ...
-##  $ ncases   : num  0 0 0 0 0 0 0 0 0 0 ...
-##  $ ncontrols: num  40 10 6 5 27 7 4 7 2 1 ...</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">esoph</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 'data.frame':    88 obs. of  5 variables:</span></span>
+<span><span class="co">##  $ agegp    : Ord.factor w/ 6 levels "25-34"&lt;"35-44"&lt;..: 1 1 1 1 1 1 1 1 1 1 ...</span></span>
+<span><span class="co">##  $ alcgp    : Ord.factor w/ 4 levels "0-39g/day"&lt;"40-79"&lt;..: 1 1 1 1 2 2 2 2 3 3 ...</span></span>
+<span><span class="co">##  $ tobgp    : Ord.factor w/ 4 levels "0-9g/day"&lt;"10-19"&lt;..: 1 2 3 4 1 2 3 4 1 2 ...</span></span>
+<span><span class="co">##  $ ncases   : num  0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">##  $ ncontrols: num  40 10 6 5 27 7 4 7 2 1 ...</span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/wideplot.html">wideplot</a></span><span class="op">(</span><span class="va">esoph</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/wideplot.html">wideplot</a></span><span class="op">(</span><span class="va">esoph</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="figures/wideplot_esoph.png" alt="Figure 1" width="80%"><p class="caption">
 Figure 1
@@ -268,23 +284,92 @@ respect to a model. e.g. qq plot</td>
 </tbody>
 </table>
 </div>
-<div id="the-longplot-function" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-longplot-function" class="anchor"></a>The longplot function</h2>
+<div class="section level3">
+<h3 id="the-matrixplot-function">The matrixplot function<a class="anchor" aria-label="anchor" href="#the-matrixplot-function"></a>
+</h3>
+<p>We place the <code><a href="../reference/matrixplot.html">matrixplot()</a></code> function as a second step
+right after understanding the structure of the dataset using the
+<code><a href="../reference/wideplot.html">wideplot()</a></code> function.</p>
+<p>The <code><a href="../reference/matrixplot.html">matrixplot()</a></code> function produces a variant of a type
+of plot known as a <em>pairs plot</em> that is intended to look at the
+interrelationships between pairs of variables (or in other words
+bivariate analysis) and thus raise the level of analysis. The bivariate
+analysis allows, for example, to observe if two variables are
+correlated, to quantify that correlation, to compare the distribution of
+two or more groups or to make counts with respect to pairs of
+observations (bivariate frequencies). It creates a multipanel graphic in
+<strong>html</strong> format, in which each panel represents the
+relations between the values of two variables. The structure of the
+function, the arguments it permits and its default values are as
+follows:</p>
+<pre><code>matrixplot(data, dataclass = NULL, diagram = NULL</code></pre>
+<p>The <code>dataclass</code> argument expects a vector with the types
+of variables to be combined in each panel of the matrixplot output.
+Depending on whether this argument contains a single type of variable or
+two different types, the function produces arrays of graphs with
+different characteristics as detailed below.</p>
+<div class="section level4">
+<h4 id="two-different-outputs">Two different outputs<a class="anchor" aria-label="anchor" href="#two-different-outputs"></a>
+</h4>
+<p>A first scenario occurs if the pairs of variables that combine each
+panel of the array are of the same class. This scenario can occur in
+three different circumstances: if the argument <code>dataclass</code> is
+a null vector, then the argument defaults to the value
+<code>dataclass = c('numeric', 'numeric')</code>; if the argument is not
+null but is a vector of length 1, for example <code>'ordered'</code>,
+the pairs of variables will be between variables of this same specified
+class, in this case it would be
+<code>dataclass = c('ordered', 'ordered ')</code>; if the argument is a
+vector of length 2 with the same variable class repeated, for example
+<code>dataclass = c('factor', 'factor')</code>.</p>
+<p>When this first scenario occurs, an output could have been a classic
+square matrix, in which the diagonal shows the names of the variables
+like the one in the figure @ref(fig:pairsplot). The output, however,
+obtained by the <code><a href="../reference/matrixplot.html">matrixplot()</a></code> function, is the matrix
+containing only the cells below the leading diagonal, and combining only
+the variables of the data set of the class specified by the
+<code>dataclass</code> argument (see figure 2).</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/matrixplot.html">matrixplot</a></span><span class="op">(</span><span class="va">esoph</span>, dataclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ordered"</span><span class="op">)</span>, diagram <span class="op">=</span> <span class="st">"color heatmap"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="figures/matrixplot_esoph.png" alt="Figure 2" width="80%"><p class="caption">
+Figure 2
+</p>
+</div>
+<p>The second scenario occurs if the pairs of variables that are
+combined in each panel of the graph are of different classes. This
+scenario can only occur when the <code>dataclass</code> argument is a
+vector of length 2 with two different variable classes, eg
+<code>dataclass = c('numeric', 'factor')</code>. In this case, the
+resulting graph matrix is a rectangular matrix in which the columns
+represent variables of one type and the rows of the other type (see
+figure 3).</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/matrixplot.html">matrixplot</a></span><span class="op">(</span><span class="va">esoph</span>, dataclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"numeric"</span>, <span class="st">"ordered"</span><span class="op">)</span>, diagram <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"box plot"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="figures/matrixplot2_esoph.png" alt="Figure 3" width="80%"><p class="caption">
+Figure 3
+</p>
+</div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="the-longplot-function">The longplot function<a class="anchor" aria-label="anchor" href="#the-longplot-function"></a>
+</h3>
 <p>To facilitate economy of calculation, the <code><a href="../reference/wideplot.html">wideplot()</a></code>
 function presents a limited number of graphics in each row. If the user
 wants to expand the array of suggested graphics for a given variable, he
 or she should use the <code><a href="../reference/longplot.html">longplot()</a></code> function, which returns a
 grid with all of the graphics considered by the library for that
-variable. The structure of the function is very simple
-<code><a href="../reference/longplot.html">longplot(data, vars, label = TRUE)</a></code> and we can easily check
+variable (see figure 4). The structure of the function is very simple
+<code>longplot(data, vars, label = TRUE)</code> and we can easily check
 the outcome of applying this function to the variable <code>alcgp</code>
 of the dataset <code>esoph</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/longplot.html">longplot</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="st">'alcgp'</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/longplot.html">longplot</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="st">'alcgp'</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="figures/longplot_esoph_alcgp.png" alt="Figure 2" width="80%"><p class="caption">
-Figure 2
+<img src="figures/longplot_esoph_alcgp.png" alt="Figure 4" width="80%"><p class="caption">
+Figure 4
 </p>
 </div>
 <p>The arguments of the function are <code>data</code>, which must be a
@@ -310,22 +395,22 @@ organization, however, is not absolute and in some cases in order to
 compress the results, we find different graphic types in the columns of
 the same row.</p>
 </div>
-<div id="the-plotup-function" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-plotup-function" class="anchor"></a>The plotup function</h2>
+<div class="section level3">
+<h3 id="the-plotup-function">The plotup function<a class="anchor" aria-label="anchor" href="#the-plotup-function"></a>
+</h3>
 <p>The <code><a href="../reference/plotup.html">plotup()</a></code> function has the following structure:
-<code><a href="../reference/plotup.html">plotup(data, vars, diagram, output = 'html')</a></code>. By default,
+<code>plotup(data, vars, diagram, output = 'html')</code>. By default,
 this function returns an <strong>html</strong> document with a single
 graphic based on a variable from a given dataset and the name of the
-desired graphic, from among the names included by the specimen that we
-present in the next subsection. We can easily check the outcome of
-applying this function to produce a line graph from the variable
-<code>ncases</code> of the dataset <code>esoph</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotup.html">plotup</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="st">'ncases'</span>, <span class="st">'line graph'</span><span class="op">)</span></code></pre></div>
+desired graphic, from among the names included by the specimen. We can
+easily check the outcome of applying this function to produce a line
+graph from the variable <code>ncases</code> of the dataset
+<code>esoph</code> (see figure 5):</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotup.html">plotup</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="st">'ncases'</span>, <span class="st">'line graph'</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="figures/plotup_esoph_ncases_linegraph.png" alt="Figure 3" width="80%"><p class="caption">
-Figure 3
+<img src="figures/plotup_esoph_ncases_linegraph.png" alt="Figure 5" width="80%"><p class="caption">
+Figure 5
 </p>
 </div>
 <p>This function requires three arguments: <code>data</code>,
@@ -338,32 +423,16 @@ to ’’console´´, the function returns the code used by the library to
 generate this precise graphic. This feature is especially useful to
 adapt the default graphic to the specific needs and preferences of the
 user.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotup.html">plotup</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">esoph</span>, vars <span class="op">=</span> <span class="st">'ncases'</span>, diagram <span class="op">=</span><span class="st">'line graph'</span>, output <span class="op">=</span> <span class="st">'console'</span><span class="op">)</span></code></pre></div>
-<pre><code>
-ggplot(esoph, aes(x=seq_along(ncases), y=ncases)) +
-  geom_line() +
-  labs(x='seq') +
-  theme_minimal() +
-  theme(panel.grid = element_line(colour = NA),
-    axis.ticks = element_line(color = 'black'))</code></pre>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotup.html">plotup</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">esoph</span>, vars <span class="op">=</span> <span class="st">'ncases'</span>, diagram <span class="op">=</span><span class="st">'line graph'</span>, output <span class="op">=</span> <span class="st">'console'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">esoph</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">ncases</span><span class="op">)</span>, y<span class="op">=</span><span class="va">ncases</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x<span class="op">=</span><span class="st">'seq'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    axis.ticks <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>color <span class="op">=</span> <span class="st">'black'</span><span class="op">)</span><span class="op">)</span></span></code></pre>
 </div>
-</div>
-<div id="the-specimen" class="section level1">
-<h1 class="hasAnchor">
-<a href="#the-specimen" class="anchor"></a>The specimen</h1>
-<p>The documentation of the library includes the vignette ‘1v specimen’,
-which contains a specimen with images of all the graphic types for a
-single variable, incorporated into the library according to the variable
-type. These graphs serve as an example so that the user can rapidly
-check whether a graphic has been incorporated, the type or types of
-variable for which it has been incorporated, and the label with which it
-has been identified. The suitability of a particular graphic will depend
-on the datasets of interest and the variables of each particular
-user.</p>
-<p>In order to keep the package as compact as possible, the specimens of
-graphics that require more than one input variable are not built whithin
-the package but they can be found at <a href="https://sciencegraph.github.io/brinton/articles/">sciencegraph.github.io/brinton/articles/</a>.</p>
 </div>
   </div>
 
@@ -378,11 +447,13 @@ the package but they can be found at <a href="https://sciencegraph.github.io/bri
 
 
       <footer><div class="copyright">
-  <p>Developed by Pere Millán-Martínez.</p>
+  <p></p>
+<p>Developed by Pere Millán-Martínez.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -390,6 +461,8 @@ the package but they can be found at <a href="https://sciencegraph.github.io/bri
 
   
 
+
+  
 
   </body>
 </html>

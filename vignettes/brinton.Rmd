@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-NOTE: This is a short version of the original article [A Graphical EDA Tool with ggplot2: brinton](https://journal.r-project.org/archive/2021/RJ-2021-018/index.html) published by The R Journal:
+NOTE: This vignette a short version, with the necessary updates, of the original article [A Graphical EDA Tool with ggplot2: brinton](https://journal.r-project.org/archive/2021/RJ-2021-018/index.html) published by The R Journal:
 
 
 ```{r, echo = FALSE, comment=""}
@@ -40,7 +40,7 @@ cat("@article{RJ-2021-018,
 
 # Introduction
 
-We created `brinton` library to facilitate exploratory data analysis following the visual information-seeking mantra: "Overview first, zoom and filter, then details on demand." The main idea is to assist the user during these three phases through three functions: `wideplot()`, `longplot()` and `plotup()`. While each of these functions has its own arguments and purpose, all three serve to facilitate exploratory data analysis and the selection of a suitable graphic. 
+We created `brinton` library to facilitate exploratory data analysis following the visual information-seeking mantra: "Overview first, zoom and filter, then details on demand". The main idea is to assist the user during these three phases through four functions: `wideplot()`, `matrixplot()`, `longplot()` and `plotup()`. While each of these functions has its own arguments and purpose, all four serve to facilitate exploratory data analysis and the selection of a suitable graphic.
 
 The library can be installed easily from the Comprehensive R Archive Network (CRAN) using the **R** console. When the library is loaded into memory, it provides a startup message that pays homage to Henry D. Hubbard’s enthusiastic introduction to the book Graphic Presentation by Willard Cope Brinton in 1939:
 
@@ -52,6 +52,12 @@ library(brinton)
 ```{r, echo = FALSE}
 suppressWarnings(library(brinton))
 ```
+
+# The specimens
+
+The `wideplot()`, `matrixplot()` and `plotup()` functions include arguments that allows the user to nominally plot specific graphics. The names and an example of each type of graphic are shown in the `1v specimen` and `2v specimen` vignettes dedicated to graphics that requiere one or two input variables. These graphics serve as an example so that the user can rapidly check whether a graphic has been incorporated, the type or types of variable for which it has been incorporated, and the label with which it has been identified. The suitability of a particular graphic will depend on the datasets of interest and the variables of each particular user.
+
+In order to keep the package as compact as possible, these vignettes are not built whithin the package but they can be found at [sciencegraph.github.io/brinton/articles/](https://sciencegraph.github.io/brinton/articles/). 
 
 # brinton's functions
 
@@ -69,7 +75,7 @@ cat("wideplot(data, dataclass = NULL, logical = NULL, ordered = NULL,
 
 The only argument necessary to obtain a result is `data` that expects a `data-frame` class object; `ncol` filters the first *n* columns of the grid, between 3 and 7, which will be shown. The fewer columns displayed, the larger the size of the resulting graphics, a feature that is especially useful if the scale labels dwarf the graphics area; `label` adds to the grid a vector below each group of rows according to the variable type, with the names and order of the graphics; `logical`, `ordered`, `factor`, `character`, `datetime` and `numeric` make it possible to choose which graphics appear in the grid and in what order, for each variable type. Finally, `group` changes the selection of graphics that are shown by default according to the criteria of the table 1.
 
-The `wideplot()` function takes inspiration from this function, but instead of describing the dataset in textual or tabular form, it does it graphically. We can easily compare the results of these two functions, for example, with the dataset esoph from a case-control study of esophageal cancer in Ille-et-Vilaine, France. The dataset has three ordered factor-type variables and two numerical variables:
+The `wideplot()` function takes inspiration from this function, but instead of describing the dataset in textual or tabular form, it does it graphically (see figure 1). We can easily compare the results of these two functions, for example, with the dataset esoph from a case-control study of esophageal cancer in Ille-et-Vilaine, France. The dataset has three ordered factor-type variables and two numerical variables:
 
 ```{r, size="small"}
 str(esoph)
@@ -91,15 +97,51 @@ table1 <- data.frame("group" = c("sequence", "scatter", "bin", "model", "symbol"
 knitr::kable(table1)
 ```
 
+## The matrixplot function
+
+We place the `matrixplot()` function as a second step right after understanding the structure of the dataset using the `wideplot()` function.
+
+The `matrixplot()` function produces a variant of a type of plot known as a *pairs plot* that is intended to look at the interrelationships between pairs of variables (or in other words bivariate analysis) and thus raise the level of analysis. The bivariate analysis allows, for example, to observe if two variables are correlated, to quantify that correlation, to compare the distribution of two or more groups or to make counts with respect to pairs of observations (bivariate frequencies). It creates a multipanel graphic in **html** format, in which each panel represents the relations between the values of two variables. The structure of the function, the arguments it permits and its default values are as follows:
+
+```{r, echo=FALSE, comment=""}
+cat("matrixplot(data, dataclass = NULL, diagram = NULL")
+```
+
+The `dataclass` argument expects a vector with the types of variables to be combined in each panel of the matrixplot output. Depending on whether this argument contains a single type of variable or two different types, the function produces arrays of graphs with different characteristics as detailed below.
+
+### Two different outputs
+
+A first scenario occurs if the pairs of variables that combine each panel of the array are of the same class. This scenario can occur in three different circumstances: if the argument `dataclass` is a null vector, then the argument defaults to the value `dataclass = c('numeric', 'numeric')`; if the argument is not null but is a vector of length 1, for example `'ordered'`, the pairs of variables will be between variables of this same specified class, in this case it would be `dataclass = c('ordered', 'ordered ')`; if the argument is a vector of length 2 with the same variable class repeated, for example `dataclass = c('factor', 'factor')`.
+
+When this first scenario occurs, an output could have been a classic square matrix, in which the diagonal shows the names of the variables like the one in the figure \@ref(fig:pairsplot). The output, however, obtained by the `matrixplot()` function, is the matrix containing only the cells below the leading diagonal, and combining only the variables of the data set of the class specified by the `dataclass` argument (see figure 2).
+
+```{r, eval = FALSE}
+matrixplot(esoph, dataclass = c("ordered"), diagram = "color heatmap")
+```
+
+```{r matrixplotesoph, echo=FALSE, out.width = '80%', fig.cap="Figure 2"}
+knitr::include_graphics("figures/matrixplot_esoph.png")
+```
+
+The second scenario occurs if the pairs of variables that are combined in each panel of the graph are of different classes. This scenario can only occur when the `dataclass` argument is a vector of length 2 with two different variable classes, eg `dataclass = c('numeric', 'factor')`. In this case, the resulting graph matrix is a rectangular matrix in which the columns represent variables of one type and the rows of the other type (see figure 3).
+
+```{r, eval = FALSE}
+matrixplot(esoph, dataclass = c("numeric", "ordered"), diagram = c("box plot"))
+```
+
+```{r matrixplot2esoph, echo=FALSE, out.width = '80%', fig.cap="Figure 3"}
+knitr::include_graphics("figures/matrixplot2_esoph.png")
+```
+
 ## The longplot function
 
-To facilitate economy of calculation, the `wideplot()` function presents a limited number of graphics in each row. If the user wants to expand the array of suggested graphics for a given variable, he or she should use the `longplot()` function, which returns a grid with all of the graphics considered by the library for that variable. The structure of the function is very simple `longplot(data, vars, label = TRUE)` and we can easily check the outcome of applying this function to the variable `alcgp` of the dataset `esoph`:
+To facilitate economy of calculation, the `wideplot()` function presents a limited number of graphics in each row. If the user wants to expand the array of suggested graphics for a given variable, he or she should use the `longplot()` function, which returns a grid with all of the graphics considered by the library for that variable (see figure 4). The structure of the function is very simple `longplot(data, vars, label = TRUE)` and we can easily check the outcome of applying this function to the variable `alcgp` of the dataset `esoph`:
 
 ```{r, eval=FALSE}
 longplot(esoph, 'alcgp')
 ```
 
-```{r longplotesophagegp, echo=FALSE, out.width = '80%', fig.cap="Figure 2"}
+```{r longplotesophagegp, echo=FALSE, out.width = '80%', fig.cap="Figure 4"}
 knitr::include_graphics("figures/longplot_esoph_alcgp.png")
 ```
 
@@ -109,13 +151,13 @@ The array of graphics that the `longplot()` function returns is sorted so that i
 
 ## The plotup function
 
-The `plotup()` function has the following structure: `plotup(data, vars, diagram, output = 'html')`. By default, this function returns an **html** document with a single graphic based on a variable from a given dataset and the name of the desired graphic, from among the names included by the specimen that we present in the next subsection. We can easily check the outcome of applying this function to produce a line graph from the variable `ncases` of the dataset `esoph`:
+The `plotup()` function has the following structure: `plotup(data, vars, diagram, output = 'html')`. By default, this function returns an **html** document with a single graphic based on a variable from a given dataset and the name of the desired graphic, from among the names included by the specimen. We can easily check the outcome of applying this function to produce a line graph from the variable `ncases` of the dataset `esoph` (see figure 5):
 
 ```{r, eval=FALSE}
 plotup(esoph, 'ncases', 'line graph')
 ```
 
-```{r plotupesophncaseslinegraph, echo=FALSE, out.width = '80%', fig.cap="Figure 3"}
+```{r plotupesophncaseslinegraph, echo=FALSE, out.width = '80%', fig.cap="Figure 5"}
 knitr::include_graphics('figures/plotup_esoph_ncases_linegraph.png')
 ```
 
@@ -125,8 +167,3 @@ This function requires three arguments: `data`, `vars` and `diagram`. The fourth
 plotup(data = esoph, vars = 'ncases', diagram ='line graph', output = 'console')
 ```
 
-# The specimen
-
-The documentation of the library includes the vignette '1v specimen', which contains a specimen with images of all the graphic types for a single variable, incorporated into the library according to the variable type. These graphs serve as an example so that the user can rapidly check whether a graphic has been incorporated, the type or types of variable for which it has been incorporated, and the label with which it has been identified. The suitability of a particular graphic will depend on the datasets of interest and the variables of each particular user. 
-
-In order to keep the package as compact as possible, the specimens of graphics that require more than one input variable are not built whithin the package but they can be found at [sciencegraph.github.io/brinton/articles/](https://sciencegraph.github.io/brinton/articles/).

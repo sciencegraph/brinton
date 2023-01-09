@@ -4,7 +4,11 @@ my_env <- new.env(parent = emptyenv())
 #'
 #' A wideplot is a grid of graphics where the graphics within each row
 #' corresponds to graphical representations of each one of the variables
-#' considered within a given dataset.
+#' considered within a given dataset. The types of variables and the
+#' types of graphics are limited to those included in the \href{https://sciencegraph.github.io/brinton/articles/specimen.html}{specimen} of
+#' graphics that require one input variable.
+#'
+#' @seealso Specimen for \href{https://sciencegraph.github.io/brinton/articles/specimen.html}{univariate} data.
 #'
 #' @param data Data.frame. Default dataset to use for plot. Unquoted. If not
 #' already a data.frame, it should be first coerced to by \emph{as.data.frame()}.
@@ -383,19 +387,24 @@ wideplot <- function(data,
   my_env <- new.env()
   dir.create(file.path(dir, "brinton_outcomes", fsep = .Platform$file.sep), showWarnings = FALSE)
   writeLines(output_wide, file.path(dir, "brinton_outcomes", "wideplot.R"))
-  write(paste0("cat('", deparse(substitute(data)), " dataframe')"), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
+  write(paste0("cat('", sys.call()[2], " dataframe')"), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
 
 ## Format validation: function's object
 
 if(is.data.frame(data) == FALSE) {
-  stop("I am so sorry, but this function only works with a data.frame input!\n",
-       "You have provided an object of class ", class(data))
+    stop("I am so sorry, but this function only works with a data.frame input!\n",
+         "You have provided an object of class ", class(data))
   }
 if(tibble::is_tibble(data) == TRUE) {
-  stop(warning_tibble)
-  # data <- as.data.frame(data)
+    # stop(warning_tibble)
+    data <- as.data.frame(data)
+  }
+if(sum(as.vector(sapply(data, is.list) == TRUE)) > 0) {
+    data <- data[sapply(data, is.list) == F]
   }
 
+  data_list <- lapply(data, FUN=remove_attr)
+  data <- as.data.frame(data_list)
 ## Format validation: function's parameters
 
 string      <- " argument expects a character vector"
@@ -461,7 +470,7 @@ if (length(data[sapply(data, is.logical)])>0)
     for (j in 1:ncol) {eval(parse(text=paste0("lgi", letters[j], " <- paste0('lg', ", i, ", '", letters[j],"')")))}
     logic.plot <- function(pp)
     {
-      long <- round(length(unique(pp[[i]]))/6 + 0.5, 1)
+      long <- round(length(unique(pp[[i]]))/6 + 0.65, 1)
       # if (long > 20 ) {stop(warning_long)}
       for (j in 1:ncol) {eval(parse(text=paste0("
                                              if (logical[", j, "] == 'line graph') {
@@ -502,9 +511,10 @@ if (length(data[sapply(data, is.logical)])>0)
                                              blank(pp, colnames(pp[i])), envir=my_env)
                                              } else {print(warning_wrong)}")))}
       line <- eval(parse(
-        text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" lgi", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-      write(paste0("#+ logical", i, ", fig.width=13, fig.height=", long), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra
-      write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra
+        text=paste0("paste0(", paste0("lgi", letters[1:ncol], collapse = ", ' + ', "), ", ' + patchwork::plot_layout(widths = rep(1, ", ncol, "))')")
+        ))
+      write(paste0("#+ logical", i, ", fig.width=13, fig.height=", long), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
+      write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
     }
     logic.plot(data.logic)
   }
@@ -529,7 +539,7 @@ if (length(data[sapply(data, is.ordered)])>0)
     for (j in 1:ncol) {eval(parse(text=paste0("ofi", letters[j], " <- paste0('of', ", i, ", '", letters[j],"')")))}
     ofac.plot <- function(pp)
     {
-      long <- round(length(unique(pp[[i]]))/6 + 0.5, 1)
+      long <- round(length(unique(pp[[i]]))/6 + 0.65, 1)
       # if (long > 20 ) {stop(warning_long)}
       for (j in 1:ncol) {eval(parse(text=paste0("
                                              if (ordered[", j, "] == 'line graph') {
@@ -571,9 +581,10 @@ if (length(data[sapply(data, is.ordered)])>0)
                                              } else {print(warning_wrong)}")))}
 
       line <- eval(parse(
-        text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ofi", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-      write(paste0("#+ ordered", i, ", fig.width=13, fig.height=", long), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra
-      write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra
+        text=paste0("paste0(", paste0("ofi", letters[1:ncol], collapse = ", ' + ', "), ", ' + patchwork::plot_layout(widths = rep(1, ", ncol, "))')")
+        ))
+      write(paste0("#+ ordered", i, ", fig.width=13, fig.height=", long), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
+      write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
       }
     ofac.plot(data.ofac)
   }
@@ -599,7 +610,7 @@ if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], 
     for (j in 1:ncol) {eval(parse(text=paste0("fti", letters[j], " <- paste0('ft', ", i, ", '", letters[j],"')")))}
     fac.plot <- function(pp)
     {
-      long <- round(length(unique(pp[[i]]))/6 + 0.5, 1)
+      long <- round(length(unique(pp[[i]]))/6 + 0.65, 1)
       # if (long > 20 ) {stop(warning_long)}
       for (j in 1:ncol) {eval(parse(text=paste0("
                                                 if (factor[", j, "] == 'line graph') {
@@ -743,9 +754,10 @@ if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], 
                               )
         }
       line <- eval(parse(
-        text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" fti", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-      write(paste0("#+ factor", i, ", fig.width=13, fig.height=", long), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra
-      write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE) # gridExtra
+        text=paste0("paste0(", paste0("fti", letters[1:ncol], collapse = ", ' + ', "), ", ' + patchwork::plot_layout(widths = rep(1, ", ncol, "))')")
+        ))
+      write(paste0("#+ factor", i, ", fig.width=13, fig.height=", long), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
+      write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
       }
     fac.plot(data.fac)
   }
@@ -766,7 +778,7 @@ if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], 
       rownames(data.date) <- NULL
       out = NULL
       # plot a row of graphics for every column
-      write(paste0("#+ datetime, fig.width=13, fig.height=", round(12/ncol, 1)), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra
+      write(paste0("#+ datetime, fig.width=13, fig.height=", round(12/ncol, 1)), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  #
       for (i in seq_along(data.date))
       {
         for (j in 1:ncol) {eval(parse(text=paste0("dti", letters[j], " <- paste0('dt', ", i, ", '", letters[j],"')")))}
@@ -809,8 +821,9 @@ if (length(data[sapply(data, is.factor)][!sapply(data[sapply(data, is.factor)], 
                                                     } else {print(warning_wrong)}")))}
 
           line <- eval(parse(
-            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" dti", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-          write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra
+            text=paste0("paste0(", paste0("dti", letters[1:ncol], collapse = ", ' + ', "), ", ' + patchwork::plot_layout(widths = rep(1, ", ncol, "))')")
+            ))
+          write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
           }
         date.plot(data.date)
       }
@@ -828,7 +841,7 @@ if (length(data[sapply(data, is.numeric)])>0)
 {
   data.num <- data[sapply(data, is.numeric)]
   out = NULL
-  write(paste0("#+ numeric, fig.width=13, fig.height=", round(12/ncol,1)), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE) # gridExtra
+  write(paste0("#+ numeric, fig.width=13, fig.height=", round(12/ncol,1)), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
   for (i in seq_along(data.num))
   {
     for (j in 1:ncol) {eval(parse(text=paste0("nui", letters[j], " <- paste0('nu', ", i, ", '", letters[j],"')")))}
@@ -978,8 +991,9 @@ if (length(data[sapply(data, is.numeric)])>0)
                                              } else {print(warning_wrong)}")))}
 
       line <- eval(parse(
-        text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" nui", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-      write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra
+        text=paste0("paste0(", paste0("nui", letters[1:ncol], collapse = ", ' + ', "), ", ' + patchwork::plot_layout(widths = rep(1, ", ncol, "))')")
+        ))
+      write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
     }
     num.plot(data.num)
   }
@@ -1005,7 +1019,7 @@ if (length(data[sapply(data, is.character)])>0)
     for (j in 1:ncol) {eval(parse(text=paste0("chi", letters[j], " <- paste0('ch', ", i, ", '", letters[j],"')")))}
     char.plot <- function(pp)
     {
-      long <- round(length(unique(pp[[i]]))/6 + 0.5, 1)
+      long <- round(length(unique(pp[[i]]))/6 + 0.65, 1)
       # if (long > 20 ) {stop(warning_long)}
       for (j in 1:ncol) {eval(parse(text=paste0("
                                              if (character[", j, "] == 'line graph') {
@@ -1145,9 +1159,10 @@ if (length(data[sapply(data, is.character)])>0)
                                              blank(pp, colnames(pp[i])), envir=my_env)
                                              } else {print(warning_wrong)}")))}
       line <- eval(parse(
-      text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" chi", letters[1:ncol], collapse = ",', ',"), ",', ncol=", ncol, ")')")))
-      write(paste0("#+ character", i, ", fig.width=13, fig.height=", long), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra
-      write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)  # gridExtra
+      text=paste0("paste0(", paste0("chi", letters[1:ncol], collapse = ", ' + ', "), ", ' + patchwork::plot_layout(widths = rep(1, ", ncol, "))')")
+      ))
+      write(paste0("#+ character", i, ", fig.width=13, fig.height=", long), file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
+      write(line, file.path(dir, "brinton_outcomes", "wideplot.R"), append=TRUE)
       }
     char.plot(data.char)
   }

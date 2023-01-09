@@ -2,7 +2,8 @@
 % Please edit documentation in R/70_plotup.R
 \name{plotup}
 \alias{plotup}
-\title{Returns a ggplot object of a specific graphic explicitly called by name.}
+\title{Returns a ggplot object of a specific graphic explicitly called by name
+from the ones included in the \href{https://sciencegraph.github.io/brinton/articles/}{specimens}}
 \usage{
 plotup(data, vars, diagram, output = "plots pane", dir = tempdir())
 }
@@ -31,9 +32,8 @@ is set to it 'html' or 'console', the function cause a side-effect: either creat
 displaying a temporary html file, or printing the ggplot2 code to the console.
 }
 \description{
-In order to present the graphic, the user must define a dataset, at
-least one variable whitin this dataset and a compatible type of graphic.
-Future work will include graphics that can combine up to three variables.
+Returns a ggplot object of a specific graphic explicitly called by name
+from the ones included in the \href{https://sciencegraph.github.io/brinton/articles/}{specimens}
 }
 \examples{
 plotup(iris, "Petal.Width", "color heatmap")
@@ -41,4 +41,8 @@ plotup(iris, "Petal.Width", "color heatmap", output = "console")
 if (interactive()) {
 plotup(iris, "Petal.Width", "color heatmap", output = "html")
 }
+}
+\seealso{
+Specimens of graphics for \href{https://sciencegraph.github.io/brinton/articles/specimen.html}{univariate}
+and \href{https://sciencegraph.github.io/brinton/articles/specimen2.html}{bivariate} data.
 }

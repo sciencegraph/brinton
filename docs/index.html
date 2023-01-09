@@ -19,13 +19,15 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="A Graphical EDA Tool">
 <meta property="og:description" content="An automated graphical exploratory data analysis (EDA) tool that introduces: 
-  a.) wideplot() graphics for exploring the structure of a dataset through a grid of variables 
+  a.) wideplot graphics for exploring the structure of a dataset through a grid of variables 
       and graphic types. 
-  b.) longplot() graphics, which present the entire catalog of available graphics for representing 
+  b.) longplot graphics, which present the entire catalog of available graphics for representing 
       a particular variable using a grid of graphic types and variations on these types.
-  c.) plotup() function, which presents a particular graphic for a specific variable of a dataset. 
+  c.) plotup function, which presents a particular graphic for a specific variable of a dataset. 
       The plotup() function also makes it possible to obtain the code used to generate the graphic, 
-      meaning that the user can adjust its properties as needed.">
+      meaning that the user can adjust its properties as needed.
+  d.) matrixplot graphics that is a grid of a particular graphic showing bivariate relationships
+      between all pairs of variables of a certain(s) type(s) in a multivariate data set.">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -33,6 +35,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -45,18 +49,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.7</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/brinton.html">Get started</a>
 </li>
@@ -81,7 +79,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/sciencegraph/brinton/">
+  <a href="https://github.com/sciencegraph/brinton/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -98,207 +96,158 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="brinton-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#brinton-" class="anchor"></a>brinton
-<img src="reference/figures/logo.png" align="right" alt="" width="60">
+<div class="section level1">
+<div class="page-header"><h1 id="brinton-">brinton <img src="reference/figures/logo.png" align="right" alt="" width="60"><a class="anchor" aria-label="anchor" href="#brinton-"></a>
 </h1></div>
 <p>This package introduces:</p>
 <ul>
 <li>
-<code><a href="reference/wideplot.html">wideplot()</a></code> graphics for exploring the structure of a
-dataset through a grid of variables and graphic types.</li>
+<code><a href="reference/wideplot.html">wideplot()</a></code> graphics for exploring the structure of a dataset through a grid of variables and graphic types.</li>
 <li>
-<code><a href="reference/longplot.html">longplot()</a></code> graphics, which present the entire catalog
-of available graphics for representing one particular variable or a
-limited selection of variables using a grid of graphic types and
-variations on these types.</li>
+<code><a href="reference/longplot.html">longplot()</a></code> graphics, which present the entire catalog of available graphics for representing one particular variable or a limited selection of variables using a grid of graphic types and variations on these types.</li>
 <li>
-<code><a href="reference/matrixplot.html">matrixplot()</a></code> graphics, a generalization of a pairs plot
-in the sense that the graphic that is replicated in each cell of the
-matrix can be selected from the catalogue of bivariate graphics.</li>
+<code><a href="reference/matrixplot.html">matrixplot()</a></code> graphics, a generalization of a pairs plot in the sense that the graphic that is replicated in each cell of the matrix can be selected from the catalogue of bivariate graphics.</li>
 <li>
-<code><a href="reference/plotup.html">plotup()</a></code> function, which complements the previous three
-functions in that it presents a particular graphic for a specific
-variable or a limited number of variables of a dataset.</li>
+<code><a href="reference/plotup.html">plotup()</a></code> function, which complements the previous three functions in that it presents a particular graphic for a specific variable or a limited number of variables of a dataset.</li>
 </ul>
-<p>Future work will include the ability to draw <code><a href="reference/longplot.html">longplot()</a></code>
-and <code><a href="reference/plotup.html">plotup()</a></code> graphics from a selection of a wider number
-and combinations of types of variables within a dataset.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of brinton from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
+<p>Future work will include the ability to draw <code><a href="reference/longplot.html">longplot()</a></code> and <code><a href="reference/plotup.html">plotup()</a></code> graphics from a selection of a wider number and combinations of types of variables within a dataset.</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the released version of brinton from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"brinton"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"brinton"</span><span class="op">)</span></span></code></pre></div>
 <p>And then load the functions included in the package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://sciencegraph.github.io/brinton/">brinton</a></span><span class="op">)</span>
-<span class="co">#&gt; Warning: package 'brinton' was built under R version 4.0.5</span>
-<span class="co">#&gt; M a G i C i N G R a P H S</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sciencegraph.github.io/brinton/" class="external-link">brinton</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'lifecycle::last_warnings' by</span></span>
+<span><span class="co">#&gt; 'rlang::last_warnings' when loading 'tibble'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'lifecycle::last_warnings' by</span></span>
+<span><span class="co">#&gt; 'rlang::last_warnings' when loading 'pillar'</span></span>
+<span><span class="co">#&gt; M a G i C i N G R a P H S</span></span></code></pre></div>
 </div>
-<div id="example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
-<p>When a new dataset comes up, R users use to call the
-<code><a href="https://rdrr.io/r/utils/str.html">str()</a></code> function that describes textually the main
-characteristics of this dataset. The new <code><a href="reference/wideplot.html">wideplot()</a></code>
-function does the same but graphically. As an example, just run:</p>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<p>When a new dataset comes up, R users use to call the <code><a href="https://rdrr.io/r/utils/str.html" class="external-link">str()</a></code> function that describes textually the main characteristics of this dataset. The new <code><a href="reference/wideplot.html">wideplot()</a></code> function does the same but graphically. As an example, just run:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/wideplot.html">wideplot</a></span><span class="op">(</span><span class="va">esoph</span><span class="op">)</span></code></pre></div>
-<p><img src="articles/figures/readme_01.png" width="90%"></p>
-<p>This function includes the argument <code>dataclass</code> that sets
-the types of variables to be included in the grid as well as the order
-in which they are listed. As an example, the following line will plot
-only the numeric variables included in the iris dataset:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/wideplot.html">wideplot</a></span><span class="op">(</span><span class="va">esoph</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_01ss.png" width="100%"></p>
+<p>This function includes the argument <code>dataclass</code> that sets the types of variables to be included in the grid as well as the order in which they are listed. As an example, the following line will plot only the numeric variables included in the iris dataset:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/wideplot.html">wideplot</a></span><span class="op">(</span><span class="va">esoph</span>, dataclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"numeric"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="articles/figures/readme_02.png" width="90%"></p>
-<p>Although, the <code><a href="reference/wideplot.html">wideplot()</a></code> function shows only a small set
-of the graphics suitable for each type of data. If the user wants to see
-all the available graphics for some specific variable or a combination
-of two specific variables included in the dataset, then the
-<code><a href="reference/longplot.html">longplot()</a></code> is useful. As an example, just run:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/wideplot.html">wideplot</a></span><span class="op">(</span><span class="va">esoph</span>, dataclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"numeric"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_02ss.png" width="100%"></p>
+<p>Although, the <code><a href="reference/wideplot.html">wideplot()</a></code> function shows only a small set of the graphics suitable for each type of data. If the user wants to see all the available graphics for some specific variable or a combination of two specific variables included in the dataset, then the <code><a href="reference/longplot.html">longplot()</a></code> is useful. As an example, just run:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/longplot.html">longplot</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="st">"alcgp"</span><span class="op">)</span></code></pre></div>
-<p><img src="articles/figures/readme_03.png" width="90%"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/longplot.html">longplot</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="st">"alcgp"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_03ss.png" width="100%"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/longplot.html">longplot</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"alcgp"</span>, <span class="st">"agegp"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="articles/figures/readme_04.png" width="90%"></p>
-<p>Any of the graphics presented in the <code><a href="reference/longplot.html">longplot()</a></code> output
-can also be included as an output of the <code><a href="reference/wideplot.html">wideplot()</a></code>
-function. If one wants to compare the output of some other specific
-graphics one can, for instance, run:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/longplot.html">longplot</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"alcgp"</span>, <span class="st">"agegp"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_04ss.png" width="100%"></p>
+<p>Any of the graphics presented in the <code><a href="reference/longplot.html">longplot()</a></code> output can also be included as an output of the <code><a href="reference/wideplot.html">wideplot()</a></code> function. If one wants to compare the output of some other specific graphics one can, for instance, run:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/wideplot.html">wideplot</a></span><span class="op">(</span>
-  <span class="va">esoph</span>,
-  dataclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"numeric"</span><span class="op">)</span>,
-  numeric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"point graph"</span>, <span class="st">"binned heatmap"</span>, <span class="st">"bw binned heatmap"</span>, <span class="st">"color binned heatmap"</span><span class="op">)</span>,
-  label <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
-<p><img src="articles/figures/readme_05.png" width="90%"></p>
-<p>Sometimes, specially with character variables, there is not enought
-space for the graphic area, and the user may want to increase the width
-of the columns in the matrix. The user can then modify the defalut value
-of the <code>ncol</code> argument:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/wideplot.html">wideplot</a></span><span class="op">(</span></span>
+<span>  <span class="va">esoph</span>,</span>
+<span>  dataclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"numeric"</span><span class="op">)</span>,</span>
+<span>  numeric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"point graph"</span>, <span class="st">"binned heatmap"</span>, <span class="st">"bw binned heatmap"</span>, <span class="st">"color binned heatmap"</span><span class="op">)</span>,</span>
+<span>  label <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_05ss.png" width="100%"></p>
+<p>Sometimes, specially with character variables, there is not enought space for the graphic area, and the user may want to increase the width of the columns in the matrix. The user can then modify the defalut value of the <code>ncol</code> argument:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/wideplot.html">wideplot</a></span><span class="op">(</span>
-  <span class="va">esoph</span>,
-  dataclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"numeric"</span><span class="op">)</span>,
-  numeric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"point graph"</span>, <span class="st">"binned heatmap"</span>, <span class="st">"bw binned heatmap"</span>, <span class="st">"color binned heatmap"</span><span class="op">)</span>,
-  label <span class="op">=</span> <span class="cn">TRUE</span>,
-  ncol <span class="op">=</span> <span class="fl">4</span>
-<span class="op">)</span></code></pre></div>
-<p><img src="articles/figures/readme_06.png" width="90%"></p>
-<p>While the wideplot function displays a grid of univariate graphics,
-if a matrix of bivariate graphics is intended for variables of one
-particular type, the matrixplot() function is useful. Type for instance
-the following code:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/wideplot.html">wideplot</a></span><span class="op">(</span></span>
+<span>  <span class="va">esoph</span>,</span>
+<span>  dataclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"numeric"</span><span class="op">)</span>,</span>
+<span>  numeric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"point graph"</span>, <span class="st">"binned heatmap"</span>, <span class="st">"bw binned heatmap"</span>, <span class="st">"color binned heatmap"</span><span class="op">)</span>,</span>
+<span>  label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ncol <span class="op">=</span> <span class="fl">4</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_06ss.png" width="100%"></p>
+<p>While the wideplot function displays a grid of univariate graphics, if a matrix of bivariate graphics is intended for variables of one particular type, the matrixplot() function is useful. Type for instance the following code:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/matrixplot.html">matrixplot</a></span><span class="op">(</span><span class="va">esoph</span>, dataclass <span class="op">=</span> <span class="st">"ordered"</span>, diagram <span class="op">=</span> <span class="st">"color heatmap"</span><span class="op">)</span></code></pre></div>
-<p><img src="articles/figures/readme_07.png" width="90%"></p>
-<p>Same thing if the desired matrix has to include graphics from
-variables of two different types (please note that the graphic type has
-to be compatible):</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/matrixplot.html">matrixplot</a></span><span class="op">(</span><span class="va">esoph</span>, dataclass <span class="op">=</span> <span class="st">"ordered"</span>, diagram <span class="op">=</span> <span class="st">"color heatmap"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_07ss.png" width="100%"></p>
+<p>Same thing if the desired matrix has to include graphics from variables of two different types (please note that the graphic type has to be compatible):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/matrixplot.html">matrixplot</a></span><span class="op">(</span><span class="va">esoph</span>, dataclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"numeric"</span>, <span class="st">"ordered"</span><span class="op">)</span>, diagram <span class="op">=</span> <span class="st">"box plot"</span><span class="op">)</span></code></pre></div>
-<p><img src="articles/figures/readme_08.png" width="90%"></p>
-<p>If the user is interested in one particular graphic then the function
-<code><a href="reference/plotup.html">plotup()</a></code> is useful.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/matrixplot.html">matrixplot</a></span><span class="op">(</span><span class="va">esoph</span>, dataclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"numeric"</span>, <span class="st">"ordered"</span><span class="op">)</span>, diagram <span class="op">=</span> <span class="st">"box plot"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_08ss.png" width="100%"></p>
+<p>If the user is interested in one particular graphic then the function <code><a href="reference/plotup.html">plotup()</a></code> is useful.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plotup.html">plotup</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="st">"ncases"</span>, <span class="st">"color histogram"</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-plotup1-1.png" width="40%"></p>
-<p>Or, as an example of a graphic that requires more than one input
-variable:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/plotup.html">plotup</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="st">"ncases"</span>, <span class="st">"color histogram"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/plotup1-1.png" width="40%"></p>
+<p>Or, as an example of a graphic that requires more than one input variable:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plotup.html">plotup</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"agegp"</span>, <span class="st">"alcgp"</span><span class="op">)</span>, <span class="st">"color stacked bar graph"</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-plotup2-1.png" width="40%"></p>
-<p>The default output of the <code><a href="reference/plotup.html">plotup()</a></code> function is a
-<code><a href="https://rdrr.io/r/base/c.html">c("gg", "ggplot")</a></code> object but the <code>output</code>
-argument allows, as a side effect, to write and present the graphic in a
-html file or to print the ggplot2 function in the console:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/plotup.html">plotup</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agegp"</span>, <span class="st">"alcgp"</span><span class="op">)</span>, <span class="st">"color stacked bar graph"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/plotup2-1.png" width="40%"></p>
+<p>The default output of the <code><a href="reference/plotup.html">plotup()</a></code> function is a <code>c("gg", "ggplot")</code> object but the <code>output</code> argument allows, as a side effect, to write and present the graphic in a html file or to print the ggplot2 function in the console:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plotup.html">plotup</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"agegp"</span>, <span class="st">"alcgp"</span><span class="op">)</span>, <span class="st">"color stacked bar graph"</span>, output <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; processing file: plotup.spin.Rmd</span>
-<span class="co">#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |..................                                                    |  25%</span>
-<span class="co">#&gt;   ordinary text without R code</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   |                                                                              |...................................                                   |  50%</span>
-<span class="co">#&gt; label: preamble (with options) </span>
-<span class="co">#&gt; List of 2</span>
-<span class="co">#&gt;  $ echo   : logi FALSE</span>
-<span class="co">#&gt;  $ message: logi FALSE</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   |                                                                              |....................................................                  |  75%</span>
-<span class="co">#&gt; label: plot</span>
-<span class="co">#&gt;   |                                                                              |......................................................................| 100%</span>
-<span class="co">#&gt;   ordinary text without R code</span>
-<span class="co">#&gt; output file: plotup.knit.md</span>
-<span class="co">#&gt; "C:/Program Files/RStudio/bin/quarto/bin/pandoc" +RTS -K512m -RTS plotup.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output plotup.html --lua-filter "C:\Users\pmillan\Documents\R\win-library\4.0\rmarkdown\rmarkdown\lua\pagebreak.lua" --lua-filter "C:\Users\pmillan\Documents\R\win-library\4.0\rmarkdown\rmarkdown\lua\latex-div.lua" --self-contained --variable bs3=TRUE --standalone --section-divs --template "C:\Users\pmillan\Documents\R\win-library\4.0\rmarkdown\rmd\h\default.html" --no-highlight --variable highlightjs=1 --variable theme=bootstrap --include-in-header "C:\Users\pmillan\AppData\Local\Temp\RtmpEPBmqP\rmarkdown-str8838606887a.html" --mathjax --variable "mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Output created: plotup.html</span></code></pre></div>
-<p><img src="articles/figures/readme_09.png" width="90%"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/plotup.html">plotup</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agegp"</span>, <span class="st">"alcgp"</span><span class="op">)</span>, <span class="st">"color stacked bar graph"</span>, output <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/readme_09ss.png" width="100%"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plotup.html">plotup</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"agegp"</span>, <span class="st">"alcgp"</span><span class="op">)</span>, <span class="st">"color stacked bar graph"</span>, output <span class="op">=</span> <span class="st">"console"</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ggplot(esoph, aes(x=alcgp, fill=agegp)) +</span>
-<span class="co">#&gt;   geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +</span>
-<span class="co">#&gt;   viridis::scale_fill_viridis(discrete=TRUE, direction = -1) +</span>
-<span class="co">#&gt;   guides(fill=guide_legend(title=as.character({as.character(substitute(vars1))}), keyheight = unit(0.4, 'cm'),</span>
-<span class="co">#&gt;                                         title.theme = element_text(size = 9, colour = 'gray20'),</span>
-<span class="co">#&gt;                                         reverse = TRUE)) +</span>
-<span class="co">#&gt;   coord_flip() +</span>
-<span class="co">#&gt;   theme_minimal() +</span>
-<span class="co">#&gt;   theme(panel.grid = element_line(colour = NA),</span>
-<span class="co">#&gt;     axis.ticks.x = element_line(color = 'black'))</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/plotup.html">plotup</a></span><span class="op">(</span><span class="va">esoph</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agegp"</span>, <span class="st">"alcgp"</span><span class="op">)</span>, <span class="st">"color stacked bar graph"</span>, output <span class="op">=</span> <span class="st">"console"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ggplot(esoph, aes(x=alcgp, fill=agegp)) +</span></span>
+<span><span class="co">#&gt;   geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +</span></span>
+<span><span class="co">#&gt;   viridis::scale_fill_viridis(discrete=TRUE, direction = -1) +</span></span>
+<span><span class="co">#&gt;   guides(fill=guide_legend(title='agegp',</span></span>
+<span><span class="co">#&gt;     keyheight = unit(0.4, 'cm'),</span></span>
+<span><span class="co">#&gt;     title.theme = element_text(size = 9, colour = 'gray20'),</span></span>
+<span><span class="co">#&gt;     reverse = TRUE)) +</span></span>
+<span><span class="co">#&gt;   coord_flip() +</span></span>
+<span><span class="co">#&gt;   theme_minimal() +</span></span>
+<span><span class="co">#&gt;   theme(panel.grid = element_line(colour = NA),</span></span>
+<span><span class="co">#&gt;     axis.ticks.x = element_line(color = 'black'))</span></span></code></pre></div>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=brinton">https://​cloud.r-project.org/​package=brinton</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/sciencegraph/brinton/">https://​github.com/​sciencegraph/​brinton/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/sciencegraph/brinton/issues">https://​github.com/​sciencegraph/​brinton/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=brinton" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/sciencegraph/brinton/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/sciencegraph/brinton/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></li>
+<li><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></li>
 </ul>
 </div>
+
+
 <div class="citation">
-<h2>Citation</h2>
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html">Citing brinton</a></li>
+<li><a href="authors.html#citation">Citing brinton</a></li>
 </ul>
 </div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Pere Millán-Martínez <br><small class="roles"> Author, maintainer </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
+
+
 
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Pere Millán-Martínez.</p>
+  <p></p>
+<p>Developed by Pere Millán-Martínez.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -306,6 +255,8 @@ html file or to print the ggplot2 function in the console:</p>
 
   
 
+
+  
 
   </body>
 </html>

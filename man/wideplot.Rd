@@ -238,7 +238,9 @@ into a range of different graphics in one row of the matrix.
 \description{
 A wideplot is a grid of graphics where the graphics within each row
 corresponds to graphical representations of each one of the variables
-considered within a given dataset.
+considered within a given dataset. The types of variables and the
+types of graphics are limited to those included in the \href{https://sciencegraph.github.io/brinton/articles/specimen.html}{specimen} of
+graphics that require one input variable.
 }
 \examples{
 if (interactive()) {
@@ -246,4 +248,7 @@ wideplot(sleep, dataclass = c("factor"),
 factor=c("point graph", "line graph", "tile plot"),
 numeric = c("point graph", "line graph", "stepped line graph"))
 }
+}
+\seealso{
+Specimen for \href{https://sciencegraph.github.io/brinton/articles/specimen.html}{univariate} data.
 }

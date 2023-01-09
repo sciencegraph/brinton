@@ -1,9 +1,12 @@
 my_env <- new.env(parent = emptyenv())
 
-#' Displays a matrix of a particular graphic for bivariate data in a html file.
+#' Displays a matrixplot of a particular type of graphic from those included in
+#' the \href{https://sciencegraph.github.io/brinton/articles/specimen2.html}{specimen} for bivariate data in a html file.
 #'
-#' A matrixplot is a grid of a particular graphic showing bivariate relationships
+#' A matrixplot is a grid of a particular type of graphic showing bivariate relationships
 #' between all pairs of variables of a certain(s) type(s) in a multivariate data set.
+#'
+#' @seealso Specimen for \href{https://sciencegraph.github.io/brinton/articles/specimen2.html}{bivariate} data.
 #'
 #' @param data Data.frame. Default dataset to use for plot. Unquoted. If not
 #' already a data.frame, it should be first coerced to by \emph{as.data.frame()}.
@@ -49,10 +52,16 @@ matrixplot <- function(data,
         class(data)
       )
     }
-    if (tibble::is_tibble(data) == TRUE) {
-      stop(warning_tibble)
-      # data <- as.data.frame(data)
+    if(tibble::is_tibble(data) == TRUE) {
+      # stop(warning_tibble)
+      data <- as.data.frame(data)
     }
+    if(sum(as.vector(sapply(data, is.list) == TRUE)) > 0) {
+      data <- data[sapply(data, is.list) == F]
+    }
+
+    data_list <- lapply(data, FUN=remove_attr)
+    data <- as.data.frame(data_list)
 
     ## Value validation: function's arguments
     if (is.null(dataclass) == TRUE) {
@@ -128,7 +137,7 @@ matrixplot <- function(data,
         " produced from the " ,
         deparse(substitute(dataclass)),
         " dataclasses of the ",
-        deparse(substitute(data)),
+        sys.call()[2],
         " dataframe')"
       ),
       file = file.path(dir, "brinton_outcomes", "matrixplot.R"),
@@ -141,7 +150,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
   data.num <- data[sapply(data, is.numeric)]
   diagram <- rep(diagram, ncol(data.num))
   out = NULL
-  write(paste0("#+ numeric, fig.width=", 2.4*ncol(data.num) ,", fig.height=2.4"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+  write(paste0("#+ numeric, fig.width=", 2.4*(ncol(data.num)-1) ,", fig.height=", 2.4*(ncol(data.num)-1) ,""), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
   for (i in seq_along(data.num)[2:ncol(data.num)])
   {
     for (j in seq_along(data.num)[c(1:i-1)]) {eval(parse(text=paste0("nui", letters[j], " <- paste0('nu', ", i, ", '", letters[j],"')")))}
@@ -251,15 +260,15 @@ if (length(data[sapply(data, is.numeric)])>1 &&
         eval(parse(text=paste0("assign('blank', blank(data, colnames(pp[i])), envir=my_env)
                                              ")))
         }
-
-
       line <- eval(parse(
-        text=paste0("paste0('gridExtra::grid.arrange(' ,",
-                    paste0(" nui", letters[1:i-1], collapse = ",', ',"), ",', ncol=", (ncol(data.num)-1), ")')")))
-      write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+      text=paste0("paste0( ", paste0(" nui", letters[1:i-1], collapse = ", ' + ', "), ", '  + ", paste0(rep("plot_spacer()", ncol(data.num) - i), collapse = " + "), "', ' + ')")))
+      write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
     }
     num.plot(data.num)
-    }
+  }
+  lines <- readLines(file.path(dir, "brinton_outcomes", "matrixplot.R"))
+  writeLines(paste0(c(lines[1:length(lines)-1], substr(lines[length(lines)], 1, nchar(lines[length(lines)]) - 5), "")),
+             file.path(dir, "brinton_outcomes", "matrixplot.R"))
 }
     else if (length(data[sapply(data, lubridate::is.instant)])>1 &&
              identical(dataclass, c("datetime", "datetime")) &&
@@ -268,7 +277,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
       data.date <- data[sapply(data, lubridate::is.instant)]
       diagram <- rep(diagram, ncol(data.date))
       out = NULL
-      write(paste0("#+ datetime, fig.width=", 2.4*ncol(data.date) ,", fig.height=2.4"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+      write(paste0("#+ datetime, fig.width=", 3*(ncol(data.date)-1) ,", fig.height=", 3*(ncol(data.date)-1) ,""), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
       for (i in seq_along(data.date)[2:ncol(data.date)])
       {
         for (j in seq_along(data.date)[c(1:i-1)]) {eval(parse(text=paste0("dti", letters[j], " <- paste0('dt', ", i, ", '", letters[j],"')")))}
@@ -329,17 +338,18 @@ if (length(data[sapply(data, is.numeric)])>1 &&
                                              }")))
             eval(parse(text=paste0("assign('blank', blank(data, colnames(pp[i])), envir=my_env)
                                              ")))
-            # eval(parse(text=paste0("assign(dti", letters[i], ",
-            #                                  blank(data, colnames(pp[i])), envir=my_env)
-            #                                  ")))
             }
 
           line <- eval(parse(
-            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" dti", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.date)-1, ")')")))
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+            text=paste0("paste0( ", paste0(" dti", letters[1:i-1], collapse = ", ' + ', "), ", '  + ", paste0(rep("plot_spacer()", ncol(data.date) - i), collapse = " + "), "', ' + ')")))
+            # text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" dti", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.date)-1, ")')")))
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
         date.plot(data.date)
       }
+      lines <- readLines(file.path(dir, "brinton_outcomes", "matrixplot.R"))
+      writeLines(paste0(c(lines[1:length(lines)-1], substr(lines[length(lines)], 1, nchar(lines[length(lines)]) - 5), "")),
+                 file.path(dir, "brinton_outcomes", "matrixplot.R"))
     }
     else if (length(data[sapply(data, is.numeric)])>0 &&
              length(data[sapply(data, lubridate::is.instant)])>0 &&
@@ -353,7 +363,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
       out = NULL
       for (i in seq_along(data.num))
       {
-        write(paste0("#+ fig.width=", 2.4*ncol(data.date) ,", fig.height=2.4"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
+        write(paste0("#+ fig.width=", 3*ncol(data.date) ,", fig.height= 2.4"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         for (j in seq_along(data.date)) {eval(parse(text=paste0("dni", letters[j], " <- paste0('dn', ", i, ", '", letters[j],"')")))}
         datenum.plot <- function(pp)
         {
@@ -403,9 +413,10 @@ if (length(data[sapply(data, is.numeric)])>1 &&
                                              }")))}
 
           line <- eval(parse(
-            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" dni", letters[1:ncol(data.date)], collapse = ",', ',"), ",', ncol=", ncol(data.date), ")')")))
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
-          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+            text=paste0("paste0( ", paste0(" dni", letters[1:ncol(data.date)], collapse = ", ' + ', "), ", '  + patchwork::plot_layout(ncol = ", ncol(data.date), ")')")))
+            # text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" dni", letters[1:ncol(data.date)], collapse = ",', ',"), ",', ncol=", ncol(data.date), ")')")))
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
+          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
         datenum.plot(cbind(data.num, data.date))
       }
@@ -426,7 +437,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
     for (j in seq_along(data.num)) {eval(parse(text=paste0("fni", letters[j], " <- paste0('fn', ", i, ", '", letters[j],"')")))}
     facnum.plot <- function(pp)
     {
-      long <- round(length(unique(pp[sapply(pp, is.factor)][[i]]))/6 + 0.6, 1)
+      long <- round(length(unique(pp[sapply(pp, is.factor)][[i]]))/4 + 0.6, 1)
       for (j in seq_along(data.num)) {eval(parse(text=paste0("
                                              if (diagram[", j, "] == 'path graph') {
                                              assign(fni", letters[j], ",
@@ -458,10 +469,11 @@ if (length(data[sapply(data, is.numeric)])>1 &&
                                              }")))}
 
       line <- eval(parse(
-        text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" fni", letters[1:ncol(data.num)], collapse = ",', ',"), ",', ncol=", ncol(data.num), ")')")))
+        text=paste0("paste0( ", paste0(" fni", letters[1:ncol(data.num)], collapse = ", ' + ', "), ", ' + patchwork::plot_layout(ncol = ", ncol(data.num), ")')")))
+        # text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" fni", letters[1:ncol(data.num)], collapse = ",', ',"), ",', ncol=", ncol(data.num), ")')")))
       write(paste0("#+ fig.width=", 2.4*ncol(data.num) ,", fig.height=", long), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
-      write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
-      write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+      write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
+      write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
     }
     facnum.plot(cbind(data.num, data.fac))
   }
@@ -512,10 +524,9 @@ if (length(data[sapply(data, is.numeric)])>1 &&
                                              }")))}
 
           line <- eval(parse(
-            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" fni", letters[1:ncol(data.num)], collapse = ",', ',"), ",', ncol=", ncol(data.num), ")')")))
-          # write(paste0("#+ fig.width=", 2.4*ncol(data.num) ,", fig.height=", long), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
-          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+            text=paste0("paste0( ", paste0(" fni", letters[1:ncol(data.num)], collapse = ", ' + ', "), ", ' + patchwork::plot_layout(ncol = ", ncol(data.num), ")')")))
+          write(paste0(line, " + patchwork::plot_layout(guides = 'collect') & theme(legend.position = 'bottom', legend.key.size = unit(0.5,'line'), legend.title = element_blank())"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
+          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
         facnum.plot(cbind(data.num, data.fac))
       }
@@ -536,7 +547,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
       for (j in seq_along(data.num)) {eval(parse(text=paste0("oni", letters[j], " <- paste0('on', ", i, ", '", letters[j],"')")))}
       ordnum.plot <- function(pp)
       {
-        long <- round(length(unique(pp[sapply(pp, is.ordered)][[i]]))/6 + 0.6, 1)
+        long <- round(length(unique(pp[sapply(pp, is.ordered)][[i]]))/4 + 0.6, 1)
         for (j in seq_along(data.num)) {eval(parse(text=paste0("
                                              if (diagram[", j, "] == 'path graph') {
                                              assign(oni", letters[j], ",
@@ -568,10 +579,11 @@ if (length(data[sapply(data, is.numeric)])>1 &&
                                              }")))}
 
         line <- eval(parse(
-          text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" oni", letters[1:ncol(data.num)], collapse = ",', ',"), ",', ncol=", ncol(data.num), ")')")))
+          # text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" oni", letters[1:ncol(data.num)], collapse = ",', ',"), ",', ncol=", ncol(data.num), ")')")))
+        text=paste0("paste0( ", paste0(" oni", letters[1:ncol(data.num)], collapse = ", ' + ', "), ", ' + patchwork::plot_layout(ncol = ", ncol(data.num), ")')")))
         write(paste0("#+ fig.width=", 2.4*ncol(data.num) ,", fig.height=", long), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
-        write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
-        write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+        write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
+        write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
       }
       ordnum.plot(cbind(data.num, data.ord))
     }
@@ -615,7 +627,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
                                              pp_density2(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_size = 0.5, 'line', 'bw'), envir=my_env)
                                              } else if (diagram[", j, "] == 'color density plot') {
                                              assign(oni", letters[j], ",
-                                             pp_density2(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_size = 0.5, 'line', 'color'), envir=my_env)
+                                             pp_density2(data, colnames(pp[sapply(pp, is.numeric)][j]), colnames(pp[sapply(pp, is.factor)][i]), pp_size = 0.5, 'line', 'viridis'), envir=my_env)
                                              } else if (diagram[", j, "] == 'bw filled density plot') {
                                              assign(oni", letters[j], ",
                                              pp_density2(data, colnames(pp[sapply(pp, is.factor)][i]), colnames(pp[sapply(pp, is.numeric)][j]), pp_size = 0.5, 'area', 'bw'), envir=my_env)
@@ -625,10 +637,12 @@ if (length(data[sapply(data, is.numeric)])>1 &&
                                              }")))}
 
           line <- eval(parse(
-            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" oni", letters[1:ncol(data.num)], collapse = ",', ',"), ",', ncol=", ncol(data.num), ")')")))
+            text=paste0("paste0( ", paste0(" oni", letters[1:ncol(data.num)], collapse = ", ' + ', "), ", ' + patchwork::plot_layout(ncol = ", ncol(data.num), ")')")))
+            # text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" oni", letters[1:ncol(data.num)], collapse = ",', ',"), ",', ncol=", ncol(data.num), ")')")))
           # write(paste0("#+ fig.width=", 2.4*ncol(data.num) ,", fig.height=", long), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
-          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          # write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
+          write(paste0(line, " + patchwork::plot_layout(guides = 'collect') & theme(legend.position = 'bottom', legend.key.size = unit(0.5,'line'), legend.title = element_blank())"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
+          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
         ordnum.plot(cbind(data.num, data.ord))
       }
@@ -666,11 +680,16 @@ if (length(data[sapply(data, is.numeric)])>1 &&
           }
 
         line <- eval(parse(
+          # text=paste0("paste0( ", paste0(" ooi", letters[1:i-1], collapse = ", ' + ', "), ", '", paste0(rep(" + plot_spacer()", ncol(data.ord) - i), collapse = ""), "')")))
+          # write(paste(line, " + plot_layout(widths = unit(rep(5,", ncol(data.ord), "), c(rep('cm',", ncol(data.ord) -1,"), 'null')))"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
           text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ooi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.ord)-1, ")')")))
-        write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
       }
       ord.plot(data.ord)
     }
+    # lines <- readLines(file.path(dir, "brinton_outcomes", "matrixplot.R"))
+    # writeLines(paste0(c(lines[1:length(lines)-1], substr(lines[length(lines)], 1, nchar(lines[length(lines)])), "")),
+    #            file.path(dir, "brinton_outcomes", "matrixplot.R"))
     }
     else if (length(data[sapply(data, is.ordered)])>1 &&
              identical(dataclass, c("ordered", "ordered")) &&
@@ -707,7 +726,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
 
           line <- eval(parse(
             text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ooi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.ord)-1, ")')")))
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
         ord.plot(data.ord)
       }
@@ -764,7 +783,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
 
           line <- eval(parse(
             text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ooi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.ord)-1, ")')")))
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
         ord.plot(data.ord)
       }
@@ -794,10 +813,11 @@ if (length(data[sapply(data, is.numeric)])>1 &&
             eval(parse(text=paste0("assign('blank', blank(data, colnames(pp[i])), envir=my_env)
                                              ")))
           }
-
           line <- eval(parse(
-            text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ffi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.fac)-1, ")')")))
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          # text=paste0("paste0( ", paste0(" ffi", letters[1:i-1], collapse = ", ' + ', "), ", '", paste0(rep(" + plot_spacer()", ncol(data.fac) - i), collapse = ""), "')")))
+          # write(paste(line, " + plot_layout(widths = c(rep(1,", ncol(data.fac) -1, ")))"), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
+          text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ffi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.fac)-1, ")')")))
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
         fac.plot(data.fac)
       }
@@ -831,7 +851,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
 
           line <- eval(parse(
             text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ffi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.fac)-1, ")')")))
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
         fac.plot(data.fac)
       }
@@ -889,7 +909,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
 
           line <- eval(parse(
             text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ffi", letters[1:i-1], collapse = ",', ',"), ",', ncol=", ncol(data.fac)-1, ")')")))
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
         fac.plot(data.fac)
       }
@@ -910,7 +930,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
         GAheight <- length(unique(data.fac[,(i)]))/5+0.5
         write(paste0("#+ fig.width=", 4*ncol(data.ord) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
         for (j in seq_along(data.ord)) {eval(parse(text=paste0("ofi", letters[j], " <- paste0('of', ", i, ", '", letters[j],"')")))}
-        facnum.plot <- function(pp)
+        facord.plot <- function(pp)
         {
           long <- round(length(unique(pp[sapply(pp, is.factor)][[i]]))/6 + 0.6, 1)
           for (j in seq_along(data.ord)) {eval(parse(text=paste0("
@@ -930,10 +950,10 @@ if (length(data[sapply(data, is.numeric)])>1 &&
 
           line <- eval(parse(
             text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ofi", letters[1:ncol(data.ord)], collapse = ",', ',"), ",', ncol=", ncol(data.ord), ")')")))
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
-          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
+          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
-        facnum.plot(cbind(data.ord, data.fac))
+        facord.plot(cbind(data.ord, data.fac))
       }
     }
     else if (length(data[sapply(data, is.ordered)])>0 &&
@@ -952,7 +972,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
         GAheight <- length(unique(data.ord[,(i)]))/5+0.5
         write(paste0("#+ fig.width=", 4*ncol(data.fac) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
         for (j in seq_along(data.fac)) {eval(parse(text=paste0("ofi", letters[j], " <- paste0('of', ", i, ", '", letters[j],"')")))}
-        facnum.plot <- function(pp)
+        facord.plot <- function(pp)
         {
           long <- round(length(unique(pp[sapply(pp, is.factor)][[i]]))/6 + 0.6, 1)
           for (j in seq_along(data.fac)) {eval(parse(text=paste0("
@@ -966,10 +986,10 @@ if (length(data[sapply(data, is.numeric)])>1 &&
 
           line <- eval(parse(
             text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ofi", letters[1:ncol(data.fac)], collapse = ",', ',"), ",', ncol=", ncol(data.fac), ")')")))
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
-          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
+          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
-        facnum.plot(cbind(data.ord, data.fac))
+        facord.plot(cbind(data.ord, data.fac))
       }
     }
     else if (length(data[sapply(data, is.ordered)])>0 &&
@@ -988,7 +1008,7 @@ if (length(data[sapply(data, is.numeric)])>1 &&
         GAheight <- length(unique(data.fac[,(i)]))/5+1.5
         write(paste0("#+ fig.width=", 4*ncol(data.ord) ,", fig.height=", GAheight), file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE) # gridExtra
         for (j in seq_along(data.ord)) {eval(parse(text=paste0("ofi", letters[j], " <- paste0('of', ", i, ", '", letters[j],"')")))}
-        facnum.plot <- function(pp)
+        facord.plot <- function(pp)
         {
           long <- round(length(unique(pp[sapply(pp, is.factor)][[i]]))/6 + 0.6, 1)
           for (j in seq_along(data.ord)) {eval(parse(text=paste0("
@@ -1026,10 +1046,10 @@ if (length(data[sapply(data, is.numeric)])>1 &&
 
           line <- eval(parse(
             text=paste0("paste0('gridExtra::grid.arrange(' ,", paste0(" ofi", letters[1:ncol(data.ord)], collapse = ",', ',"), ",', ncol=", ncol(data.ord), ")')")))
-          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
-          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)  # gridExtra
+          write(line, file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
+          write("#' <br>", file.path(dir, "brinton_outcomes", "matrixplot.R"), append=TRUE)
         }
-        facnum.plot(cbind(data.ord, data.fac))
+        facord.plot(cbind(data.ord, data.fac))
       }
     }
 

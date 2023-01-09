@@ -1,8 +1,8 @@
-#' Returns a ggplot object of a specific graphic explicitly called by name.
+#' Returns a ggplot object of a specific graphic explicitly called by name
+#' from the ones included in the \href{https://sciencegraph.github.io/brinton/articles/}{specimens}
 #'
-#' In order to present the graphic, the user must define a dataset, at
-#' least one variable whitin this dataset and a compatible type of graphic.
-#' Future work will include graphics that can combine up to three variables.
+#' @seealso Specimens of graphics for \href{https://sciencegraph.github.io/brinton/articles/specimen.html}{univariate}
+#' and \href{https://sciencegraph.github.io/brinton/articles/specimen2.html}{bivariate} data.
 #'
 #' @param data Data.frame. Default dataset to use for plot. If not already a
 #' data.frame, it should be first coerced to by [as.data.frame()].
@@ -47,16 +47,32 @@ plotup <- function(data,
 
 # check class -------------------------------------------------------------
 
-
+  # if (length(data[sapply(data, is.list)]) > 0) {
+  #   data <- data[sapply(data, is.list) == FALSE]}
+  #
+  #   if(tibble::is_tibble(data) == TRUE) {
+  #   # stop(warning_tibble)
+  #   data <- as.data.frame(data)
+  # }
     if(is.data.frame(data) == FALSE) {
     stop("This function only works with a data.frame input!\n",
          "You have provided an object of class ", class(data))
   }
+  # if(tibble::is_tibble(data) == TRUE) {
+  #   stop(warning_tibble)
+  #   # data <- as.data.frame(data)
+  #   # envir=my_env
+  # }
   if(tibble::is_tibble(data) == TRUE) {
-    stop(warning_tibble)
-    # data <- as.data.frame(data)
-    # envir=my_env
+    # stop(warning_tibble)
+    data <- as.data.frame(data)
   }
+  if(sum(as.vector(sapply(data, is.list) == TRUE)) > 0) {
+    stop(paste0("
+  The plotup() function can not deal with tibbles nor with data frames with list
+  type variables. In order to run the plotup function, please coherce the tibble
+  to a data frame and remove any list type variable by doing something like:
+  newdataset <- as.data.frame(dataset[sapply(dataset, is.list) == F])"))}
 
 # trans vars --------------------------------------------------------------
 
@@ -436,6 +452,10 @@ plotup <- function(data,
   theme(panel.grid = element_line(colour = NA),
   \x20\x20axis.ticks = element_line(color = 'black'),
   \x20\x20legend.position='none')\n"
+  theme_basic_zbottom <- "theme_minimal() +
+  theme(panel.grid = element_line(colour = NA),
+  \x20\x20axis.ticks = element_line(color = 'black'),
+  \x20\x20legend.position='bottom')\n"
   theme_basic_yz <- "theme_minimal() +
   theme(panel.grid = element_line(colour = NA),
   \x20\x20axis.text.y = element_text(color = NA),
@@ -456,10 +476,19 @@ plotup <- function(data,
   ii <- cbind(ix, iy)
   return(dens$z[ii])
 }\n"
+  p_scale_value_l   <- scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2))
+  p_scale_value_l_p <- scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2), labels = scales::label_percent())
+  p_scale_value_a   <- scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2))
+  p_scale_value_a_p <- scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2), labels = scales::label_percent())
+
+
   scale_bw_l        <- "scale_color_gradientn(colours = colorRampPalette(c('#E5E5E5', '#000000'))(2))"
   scale_bw_l_p      <- "scale_color_gradientn(colours = colorRampPalette(c('#E5E5E5', '#000000'))(2), labels = scales::label_percent())"
   scale_color_l     <- "scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3))"
   scale_value_l     <- "scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2))"
+  p_scale_value_a   <- "scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2))"
+  p_scale_value_l_p <- "scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2), labels = scales::label_percent())"
+  p_scale_value_a_p <- "scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(11, 'RdYlGn')))(3), labels = scales::label_percent())"
   scale_value_sym   <- "scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(11, 'RdYlGn')))(3), limits = c(-abs(max(df[,3])), abs(max(df[,3]))))"
   scale_value_sym_l <- "scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(11, 'RdYlGn')))(3), limits = c(-abs(max(df[,3])), abs(max(df[,3]))))"
   scale_seq_l       <- "viridis::scale_color_viridis(direction = -1)"
@@ -468,7 +497,6 @@ plotup <- function(data,
   scale_color_a     <- "scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'Spectral')))(3))"
   scale_value_a     <- "scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2))"
   scale_seq_a       <- "scale_color_gradientn(colours = colorRampPalette(RColorBrewer::brewer.pal(3, 'YlOrBr'))(3))"
-  p_scale_value_a_p <- "scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(11, 'RdYlGn')))(3), labels = scales::label_percent())"
   scl_gray_disc_l   <- "scale_color_grey(start = 0.8, end = 0.2)"
   scl_gray_disc_a   <- "scale_fill_grey(start = 0.8, end = 0.2)"
   scl_color_disc_l  <- "scale_color_brewer(type = 'qual', palette = 'Set1')"
@@ -476,17 +504,11 @@ plotup <- function(data,
   scl_viridis_a     <- "viridis::scale_fill_viridis(discrete=TRUE, direction = -1)"
   scl_viridis_ad    <- "viridis::scale_fill_viridis(direction = -1)"
   scl_viridis_l     <- "viridis::scale_color_viridis(discrete=TRUE, direction = -1)"
-  p_legend          <- "guides(fill=guide_legend(title=as.character({as.character(substitute(vars1))}), keyheight = unit(0.4, 'cm'),
-                                        title.theme = element_text(size = 9, colour = 'gray20'),
-                                        reverse = TRUE))"
-  p_legendt          <- "guides(fill=guide_legend(title=as.character({as.character(substitute(vars2))}), keyheight = unit(0.4, 'cm'),
-                                        title.theme = element_text(size = 9, colour = 'gray20'),
-                                        reverse = TRUE))"
   p_labs_fill       <- "labs(x =  names(df)[1], y = names(df)[2], fill = names(df)[3])"
   p_labs_color      <- "labs(x =  names(df)[1], y = names(df)[2], color = names(df)[3])"
   p_guides          <- "guides(fill = guide_colorbar(barwidth = unit(2, 'mm'), title.theme = element_text(size = 9, colour = 'gray30')),
                       color = guide_colorbar(barwidth = unit(2, 'mm'), title.theme = element_text(size = 9, colour = 'gray30')),
-                      size = FALSE)"
+                      size = 'none')"
   getdens1          <- "add_density_1D <- function(a, b) {
   a$b <- unlist(a[, b])
   if (length(unique(na.omit(a$b))) == 1) {
@@ -3100,7 +3122,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_gray_disc_l} +
       \x20\x20{scl_gray_disc_a} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3116,7 +3138,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_viridis_l} +
       \x20\x20{scl_viridis_a} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3132,7 +3154,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_color_disc_l} +
       \x20\x20{scl_color_disc_a} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3149,7 +3171,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_gray_disc_l} +
       \x20\x20{scl_gray_disc_a} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3166,7 +3188,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_viridis_l} +
       \x20\x20{scl_viridis_a} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3183,7 +3205,7 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_color_disc_l} +
       \x20\x20{scl_color_disc_a} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3212,7 +3234,7 @@ pp_3uniaxial <- function(data,
       \x20\x20geom_density(size=0.5) +
       \x20\x20{scl_gray_disc_l} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3227,7 +3249,7 @@ pp_3uniaxial <- function(data,
       \x20\x20geom_density(size=0.5) +
       \x20\x20{scl_viridis_l} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3242,7 +3264,7 @@ pp_3uniaxial <- function(data,
       \x20\x20geom_density(size=0.5) +
       \x20\x20{scl_color_disc_l} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3257,7 +3279,7 @@ pp_3uniaxial <- function(data,
       \x20\x20geom_density(size=0.5, alpha = 0.7, color = 'black') +
       \x20\x20{scl_gray_disc_a} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3286,7 +3308,7 @@ pp_3uniaxial <- function(data,
       \x20\x20geom_density(size=0.5, alpha = 0.3, color = 'white') +
       \x20\x20{scl_viridis_a} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3301,7 +3323,7 @@ pp_3uniaxial <- function(data,
       \x20\x20geom_density(size=0.5, alpha = 0.3, color = 'white') +
       \x20\x20{scl_color_disc_a} +
       \x20\x20labs(subtitle = '{as.character(substitute(vars2))}') +
-      \x20\x20{theme_basic_z}"
+      \x20\x20{theme_basic_zbottom}"
     )
   }
   else if (length(vars) == 2 &
@@ -3504,7 +3526,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_gray_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3526,7 +3551,10 @@ pp_3uniaxial <- function(data,
       ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_gray_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3547,7 +3575,10 @@ pp_3uniaxial <- function(data,
       ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_gray_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3563,7 +3594,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_viridis_a} +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3585,7 +3619,10 @@ pp_3uniaxial <- function(data,
       ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_viridis_a} +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3606,7 +3643,10 @@ pp_3uniaxial <- function(data,
       ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_viridis_a} +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3621,7 +3661,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3636,7 +3679,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3652,7 +3698,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3675,7 +3724,10 @@ pp_3uniaxial <- function(data,
       ggplot(data_aux, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3698,7 +3750,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data_aux))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3719,7 +3774,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data_aux))}, aes(x={as.character(substitute(vars2))}, fill={as.character(substitute(vars1))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3740,7 +3798,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data_aux))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3758,7 +3819,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_gray_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3776,7 +3840,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_viridis_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3800,7 +3867,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_viridis_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3823,7 +3893,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_viridis_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3841,7 +3914,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_viridis_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3858,7 +3934,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_color_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3875,7 +3954,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_color_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3891,7 +3973,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'fill') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3917,7 +4002,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_color_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3942,7 +4030,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_color_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3965,7 +4056,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_color_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legend} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars1)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -3988,7 +4082,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_color_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -4003,7 +4100,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_gray_disc_a} +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -4018,7 +4118,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_viridis_a} +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -4034,7 +4137,10 @@ pp_3uniaxial <- function(data,
       ggplot({deparse(substitute(data))}, aes(x={as.character(substitute(vars1))}, fill={as.character(substitute(vars2))})) +
       \x20\x20geom_bar(key_glyph = draw_key_dotplot, position = 'stack') +
       \x20\x20{scl_color_disc_a} +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -4051,7 +4157,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_gray_disc_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -4068,7 +4177,10 @@ pp_3uniaxial <- function(data,
       \x20\x20{scl_viridis_a} +
       \x20\x20scale_y_continuous(breaks = c(0, 0.5, 1), labels = c('0%', '50%', '100%')) +
       \x20\x20labs(y='percentage') +
-      \x20\x20{p_legendt} +
+      \x20\x20guides(fill=guide_legend(title='{substitute(vars2)}',
+      \x20\x20\x20\x20keyheight = unit(0.4, 'cm'),
+      \x20\x20\x20\x20title.theme = element_text(size = 9, colour = 'gray20'),
+      \x20\x20\x20\x20reverse = TRUE)) +
       \x20\x20coord_flip() +
       \x20\x20{theme_basic_stack}"
     )
@@ -5270,7 +5382,7 @@ pp_3uniaxial <- function(data,
       "
       ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
       \x20\x20geom_point() +
-      \x20\x20p_scale_value_l_p +
+      \x20\x20{p_scale_value_l_p} +
       \x20\x20{p_labs_color} +
       \x20\x20{p_guides} +
       \x20\x20{theme_basic_grid}"
@@ -5299,7 +5411,7 @@ pp_3uniaxial <- function(data,
       "
       ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
       \x20\x20geom_point() +
-      \x20\x20p_scale_value_l_p +
+      \x20\x20{p_scale_value_l_p} +
       \x20\x20{p_labs_color} +
       \x20\x20{p_guides} +
       \x20\x20{theme_basic_grid}"
@@ -5326,7 +5438,7 @@ pp_3uniaxial <- function(data,
       "
       ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
       \x20\x20geom_point() +
-      \x20\x20p_scale_value_l_p +
+      \x20\x20{p_scale_value_l_p} +
       \x20\x20{p_labs_color} +
       \x20\x20{p_guides} +
       \x20\x20{theme_basic_grid}"
@@ -5352,7 +5464,7 @@ pp_3uniaxial <- function(data,
       "
       ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
       \x20\x20geom_point() +
-      \x20\x20p_scale_value_l_p +
+      \x20\x20{p_scale_value_l_p} +
       \x20\x20{p_labs_color} +
       \x20\x20{p_guides} +
       \x20\x20{theme_basic_grid}"
@@ -5379,7 +5491,7 @@ pp_3uniaxial <- function(data,
       "
       ggplot(df, aes_string(x=df[,1], y=df[,2], color=df[,3], size=df[,3])) +
       \x20\x20geom_point() +
-      \x20\x20p_scale_value_l_p +
+      \x20\x20{p_scale_value_l_p} +
       \x20\x20{p_labs_color} +
       \x20\x20{p_guides} +
       \x20\x20{theme_basic_grid}"

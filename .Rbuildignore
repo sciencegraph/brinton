@@ -8,5 +8,7 @@
 ^docs$
 ^doc$
 ^tests$
-pkgdown*
-vignettes/specimen2.Rmd
+^oldies$
+^vignettes/specimen.Rmd$
+^vignettes/specimen2.Rmd$
+^pkgdown$

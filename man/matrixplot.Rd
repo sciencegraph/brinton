@@ -2,7 +2,8 @@
 % Please edit documentation in R/80_matrixplot.R
 \name{matrixplot}
 \alias{matrixplot}
-\title{Displays a matrix of a particular graphic for bivariate data in a html file.}
+\title{Displays a matrixplot of a particular type of graphic from those included in
+the \href{https://sciencegraph.github.io/brinton/articles/specimen2.html}{specimen} for bivariate data in a html file.}
 \usage{
 matrixplot(data, dataclass = NULL, diagram = NULL, dir = tempdir())
 }
@@ -34,7 +35,7 @@ grouped by the type of data, then, the variables matching the classes specified
 in the dataclass parameter, are represented in each row and/or column of the matrix.
 }
 \description{
-A matrixplot is a grid of a particular graphic showing bivariate relationships
+A matrixplot is a grid of a particular type of graphic showing bivariate relationships
 between all pairs of variables of a certain(s) type(s) in a multivariate data set.
 }
 \examples{
@@ -42,4 +43,7 @@ if (interactive()) {
 matrixplot(iris, dataclass = c("numeric","numeric"),
 diagram="bw contour plot with data points")
 }
+}
+\seealso{
+Specimen for \href{https://sciencegraph.github.io/brinton/articles/specimen2.html}{bivariate} data.
 }

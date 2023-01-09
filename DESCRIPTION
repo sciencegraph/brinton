@@ -1,20 +1,22 @@
 Package: brinton
 Type: Package
-Version: 0.2.6
+Version: 0.2.7
 Title: A Graphical EDA Tool
 Description: An automated graphical exploratory data analysis (EDA) tool that introduces: 
-  a.) wideplot() graphics for exploring the structure of a dataset through a grid of variables 
+  a.) wideplot graphics for exploring the structure of a dataset through a grid of variables 
       and graphic types. 
-  b.) longplot() graphics, which present the entire catalog of available graphics for representing 
+  b.) longplot graphics, which present the entire catalog of available graphics for representing 
       a particular variable using a grid of graphic types and variations on these types.
-  c.) plotup() function, which presents a particular graphic for a specific variable of a dataset. 
+  c.) plotup function, which presents a particular graphic for a specific variable of a dataset. 
       The plotup() function also makes it possible to obtain the code used to generate the graphic, 
       meaning that the user can adjust its properties as needed.
+  d.) matrixplot graphics that is a grid of a particular graphic showing bivariate relationships
+      between all pairs of variables of a certain(s) type(s) in a multivariate data set.
 Authors@R: c(person(given = "Pere", family = "Millán-Martínez", email="info@sciencegraph.org", role = c("aut", "cre")), person(given = "Ramon", family = "Oller Piqué", email="ramon.oller@uvic.cat", role = "ctb"))
 License: GPL-3
 Encoding: UTF-8
 LazyData: false
-Imports: ggplot2, gridExtra, rmarkdown, glue, pander, lubridate, tibble, sm, RColorBrewer, forcats, GGally
+Imports: ggplot2, gridExtra, rmarkdown, glue, pander, lubridate, tibble, sm, RColorBrewer, forcats, GGally, patchwork, scales
 Suggests: knitr, MASS, hexbin, testthat (>= 2.1.0) 
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1

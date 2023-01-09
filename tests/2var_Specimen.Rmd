@@ -512,7 +512,7 @@ knitr::include_graphics('../vignettes/figures/num-ord_09-1.png')
 cat("numeric~ordered = c('box plot', 'freq. reordered box plot', 'alphab. reordered box plot')")
 ```
 
-```{r num-ord_10, fig.width=12, fig.height=2.4}
+```{r num-ord_10, fig.width=16, fig.height=2.4}
 gridExtra::grid.arrange(brinton::plotup(esoph, c("agegp", "ncontrols"), 'blank'),
                         brinton::plotup(esoph, c("agegp", "ncontrols"), 'bw stacked histogram'),
                         brinton::plotup(esoph, c("agegp", "ncontrols"), 'color stacked histogram'),
@@ -522,7 +522,7 @@ knitr::include_graphics('../vignettes/figures/num-ord_10-1.png')
 cat("numeric~ordered = c('blank', 'bw stacked histogram', 'color stacked histogram')")
 ```
 
-```{r num-ord_11, fig.width=12, fig.height=2.4, warning=FALSE, message=FALSE}
+```{r num-ord_11, fig.width=16, fig.height=2.4, warning=FALSE, message=FALSE}
 gridExtra::grid.arrange(brinton::plotup(esoph, c("agegp", "ncontrols"), 'blank'),
                         brinton::plotup(esoph, c("agegp", "ncontrols"), 'bw 100% stacked histogram'),
                         brinton::plotup(esoph, c("agegp", "ncontrols"), 'color 100% stacked histogram'),
@@ -532,7 +532,7 @@ knitr::include_graphics('../vignettes/figures/num-ord_11-1.png')
 cat("numeric~ordered = c('blank', 'bw 100% stacked histogram', 'color 100% stacked histogram')")
 ```
 
-```{r num-ord_12, fig.width=12, fig.height=2.4}
+```{r num-ord_12, fig.width=16, fig.height=2.4}
 gridExtra::grid.arrange(brinton::plotup(esoph, c("agegp", "ncontrols"), 'density plot'),
                         brinton::plotup(esoph, c("agegp", "ncontrols"), 'bw density plot'),
                         brinton::plotup(esoph, c("agegp", "ncontrols"), 'color density plot'),
@@ -542,7 +542,7 @@ knitr::include_graphics('../vignettes/figures/num-ord_12-1.png')
 cat("numeric~ordered = c('density plot', 'blank', 'color density plot')")
 ```
 
-```{r num-ord_13, fig.width=12, fig.height=2.4}
+```{r num-ord_13, fig.width=16, fig.height=2.4}
 gridExtra::grid.arrange(brinton::plotup(esoph, c("agegp", "ncontrols"), 'blank'),
                         brinton::plotup(esoph, c("agegp", "ncontrols"), 'bw filled density plot'),
                         brinton::plotup(esoph, c("agegp", "ncontrols"), 'color filled density plot'),
@@ -644,7 +644,7 @@ knitr::include_graphics('../vignettes/figures/fac-num_09-1.png')
 cat("numeric~factor = c('box plot', 'freq. reordered box plot', 'alphab. reordered box plot')")
 ```
 
-```{r fac-num_10, fig.width=12, fig.height=2.4}
+```{r fac-num_10, fig.width=16, fig.height=2.4}
 gridExtra::grid.arrange(brinton::plotup(iris, c('Species', 'Petal.Width'), 'blank'),
                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'bw stacked histogram'),
                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'color stacked histogram'),
@@ -654,7 +654,7 @@ knitr::include_graphics('../vignettes/figures/fac-num_10-1.png')
 cat("numeric~factor = c('blank', 'bw stacked histogram', 'color stacked histogram')")
 ```
 
-```{r fac-num_11, fig.width=12, fig.height=2.4}
+```{r fac-num_11, fig.width=16, fig.height=2.4}
 gridExtra::grid.arrange(brinton::plotup(iris, c('Species', 'Petal.Width'), 'blank'),
                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'bw 100% stacked histogram'),
                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'color 100% stacked histogram'),
@@ -664,7 +664,7 @@ knitr::include_graphics('../vignettes/figures/fac-num_11-1.png')
 cat("numeric~factor = c('blank', 'bw 100% stacked histogram', 'color 100% stacked histogram')")
 ```
 
-```{r fac-num_12, fig.width=12, fig.height=2.4}
+```{r fac-num_12, fig.width=16, fig.height=2.4}
 gridExtra::grid.arrange(brinton::plotup(iris, c('Species', 'Petal.Width'), 'density plot'),
                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'blank'),
                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'color density plot'),
@@ -674,7 +674,7 @@ knitr::include_graphics('../vignettes/figures/fac-num_12-1.png')
 cat("numeric~factor = c('density plot', 'blank', 'color density plot')")
 ```
 
-```{r fac-num_13, fig.width=12, fig.height=2.4}
+```{r fac-num_13, fig.width=16, fig.height=2.4}
 gridExtra::grid.arrange(brinton::plotup(iris, c('Species', 'Petal.Width'), 'blank'),
                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'filled density plot'),
                         brinton::plotup(iris, c('Species', 'Petal.Width'), 'color filled density plot'),

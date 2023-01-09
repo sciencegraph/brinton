@@ -1023,27 +1023,28 @@ pp_density2 <- function(pp_df,
   pp_df$pp_var1 <- unlist(pp_df[, pp_var1])
   pp_df$pp_var2 <- unlist(pp_df[, pp_var2])
 
-  p_labs  <- labs(x=names(pp_df[pp_var1]), subtitle = names(pp_df[pp_var2]))
+  p_labs    <- labs(x=names(pp_df[pp_var1]), subtitle = names(pp_df[pp_var2]))
+  p_labs_f  <- labs(x=names(pp_df[pp_var2]), subtitle = names(pp_df[pp_var1]))
   p_plot_b <- ggplot(pp_df, aes_string(x=pp_var1, group = pp_var2), environment = environment()) + p_labs + pp_theme()
   p_plot_c <- ggplot(pp_df, aes_string(x=pp_var1, color = pp_var2), environment = environment()) + p_labs + pp_theme()
-  p_plot_f <- ggplot(pp_df, aes_string(x=pp_var2, fill = pp_var1), environment = environment()) + p_labs + pp_theme()
+  p_plot_f <- ggplot(pp_df, aes_string(x=pp_var2,  fill = pp_var1), environment = environment()) + p_labs_f + pp_theme()
   p_plot_g <- ggplot(pp_df, aes_string(x=pp_var1, color = pp_var2), environment = environment()) + p_labs + pp_theme()
   if (pp_aes == "line" & pp_color == "black") {
     p_plot_b + geom_density(size=pp_size, color = "black")
   } else if (pp_aes == "line" & pp_color == "bw") {
-    p_plot_g + geom_density(size=1*pp_size) + scl_gray_disc_l + amb.z
+    p_plot_g + geom_density(size=1*pp_size) + scl_gray_disc_l #+ amb.z
   } else if (pp_aes == "line" & pp_color == "viridis") {
-    p_plot_g + geom_density(size=0.5*pp_size) + scl_viridis_l + amb.z
+    p_plot_g + geom_density(size=0.5*pp_size) + scl_viridis_l #+ amb.z
   } else if (pp_aes == "area" & pp_color == "bw") {
-    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.7, color = "black") + scl_gray_disc_a + amb.z
+    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.7, color = "black") + scl_gray_disc_a #+ amb.z
   } else if (pp_aes == "line" & pp_color == "color") {
     p_plot_c + geom_density(size=pp_size, alpha = 0.5) + scl_col_disc_l + amb.z
   } else if (pp_aes == "area" & pp_color == "bw") {
-    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.5, color = "white") + scl_gray_disc_a + amb.z
+    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.5, color = "white") + scl_gray_disc_a #+ amb.z
   } else if (pp_aes == "area" & pp_color == "color") {
-    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.5, color = "white") + scl_col_disc_a + amb.z
+    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.5, color = "white") + scl_col_disc_a #+ amb.z
   } else if (pp_aes == "area" & pp_color == "viridis") {
-    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.5, color = "white") + scl_viridis_a + amb.z
+    p_plot_f + geom_density(size=0.5*pp_size, alpha = 0.5, color = "white") + scl_viridis_a #+ amb.z
   } else {stop(warning_general)}
 }
 
@@ -1152,7 +1153,7 @@ pp_contingency <- function(pp_df,
   p_labs    <- labs(x =  names(df)[1], y = names(df)[2])
   p_guides  <- guides(fill = guide_colorbar(barwidth = unit(2, "mm"), title.theme = element_text(size = 9, colour = "gray30")),
                       color = guide_colorbar(barwidth = unit(2, "mm"), title.theme = element_text(size = 9, colour = "gray30")),
-                      size = FALSE)
+                      size = "none")
   # guides(fill=guide_legend(title=as.character(pp_var2), keyheight = unit(0.4, "cm"),
   #                          title.theme = element_text(size = 9, colour = "gray20"),
   #                          reverse = TRUE))

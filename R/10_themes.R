@@ -1,5 +1,6 @@
 #' @import ggplot2
 #' @import glue
+#' @import patchwork
 #' @importFrom gridExtra grid.arrange
 #' @importFrom rmarkdown render
 #' @importFrom RColorBrewer brewer.pal
@@ -11,6 +12,7 @@
 #' @importFrom lubridate is.instant
 #' @importFrom pander openFileInOS
 #' @importFrom utils head
+#' @importFrom grDevices colorRampPalette
 utils::globalVariables(c("..level..", "..count..", "pp_dens", "reshape", "pp_id", "head"))
 
 pp_theme <- function(base_size = 11,
@@ -91,11 +93,11 @@ p_scale_seq_l   <- scale_color_gradientn(colours = scl_col_seq(2))
 p_scale_seq_a   <- scale_fill_gradientn(colours = scl_col_seq(2))
 
 # continuous color palettes for values
-p_scale_value_l <- scale_color_gradientn(colours = scl_col_value(3))
-p_scale_value_l_p <- scale_color_gradientn(colours = scl_col_value(3), labels = scales::label_percent())
-p_scale_value_a <- scale_fill_gradientn(colours = scl_col_value(3))
-p_scale_value_a_p <- scale_fill_gradientn(colours = scl_col_value(3), labels = scales::label_percent())
-
+p_scale_value_l <- scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2))
+p_scale_value_l_p <- scale_color_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2), labels = scales::label_percent())
+p_scale_value_a <- scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2))
+p_scale_value_a_p <- scale_fill_gradientn(colours = colorRampPalette(rev(RColorBrewer::brewer.pal(4, 'BrBG')))(2), labels = scales::label_percent())
+# p_scale_value_a <- scale_fill_gradientn(colours = scl_col_value(3))
 # p_scale_limits_l <- scale_color_gradientn(colours = scl_col_value(3), limits = c(-abs(max(df[,1])), abs(max(df[,2]))))
 # p_scale_limits_a <- scale_fill_gradientn(colours = scl_col_value(3), limits = c(-abs(max(df[,1])), abs(max(df[,2]))))
 

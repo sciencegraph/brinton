@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,18 +40,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brinton</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.7</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/brinton.html">Get started</a>
 </li>
@@ -74,7 +70,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/sciencegraph/brinton/">
+  <a href="https://github.com/sciencegraph/brinton/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -89,13 +85,13 @@
 
       
 
-      </header><script src="specimen_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>1 input variable specimen</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/sciencegraph/brinton/blob/master/vignettes/specimen.Rmd"><code>vignettes/specimen.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/sciencegraph/brinton/blob/HEAD/vignettes/specimen.Rmd" class="external-link"><code>vignettes/specimen.Rmd</code></a></small>
       <div class="hidden name"><code>specimen.Rmd</code></div>
 
     </div>
@@ -154,145 +150,145 @@
 up to now, are being considered by the brinton’s
 <code><a href="../reference/wideplot.html">wideplot()</a></code>, <code><a href="../reference/longplot.html">longplot()</a></code> and
 <code><a href="../reference/plotup.html">plotup()</a></code> functions.</p>
-<div id="logical" class="section level1">
-<h1 class="hasAnchor">
-<a href="#logical" class="anchor"></a>Logical</h1>
+<div class="section level2">
+<h2 id="logical">Logical<a class="anchor" aria-label="anchor" href="#logical"></a>
+</h2>
 <p><img src="figures/logical_01-1.png" width="1152"></p>
-<pre><code>lgc = c('line graph', 'point graph', 'point-to-point graph')</code></pre>
+<pre><code><span><span class="va">lgc</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'line graph'</span>, <span class="st">'point graph'</span>, <span class="st">'point-to-point graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/logical_02-1.png" width="1152"></p>
-<pre><code>lgc = c('tile plot', 'linerange graph')</code></pre>
+<pre><code><span><span class="va">lgc</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'tile plot'</span>, <span class="st">'linerange graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/logical_03-1.png" width="1152"></p>
-<pre><code>lgc = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')</code></pre>
+<pre><code><span><span class="va">lgc</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'binned heatmap'</span>, <span class="st">'bw binned heatmap'</span>, <span class="st">'color binned heatmap'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/logical_04-1.png" width="1152"></p>
-<pre><code>lgc = c('bar graph', 'bw bar graph', 'color bar graph')</code></pre>
+<pre><code><span><span class="va">lgc</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'bar graph'</span>, <span class="st">'bw bar graph'</span>, <span class="st">'color bar graph'</span><span class="op">)</span></span></code></pre>
 </div>
-<div id="ordered-factor" class="section level1">
-<h1 class="hasAnchor">
-<a href="#ordered-factor" class="anchor"></a>Ordered factor</h1>
+<div class="section level2">
+<h2 id="ordered-factor">Ordered factor<a class="anchor" aria-label="anchor" href="#ordered-factor"></a>
+</h2>
 <p><img src="figures/ordered_01-1.png" width="1152"></p>
-<pre><code>ord = c('line graph', 'point graph', 'point-to-point graph')</code></pre>
+<pre><code><span><span class="va">ord</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'line graph'</span>, <span class="st">'point graph'</span>, <span class="st">'point-to-point graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/ordered_02-1.png" width="1152"></p>
-<pre><code>ord = c('tile plot', 'linerange graph')</code></pre>
+<pre><code><span><span class="va">ord</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'tile plot'</span>, <span class="st">'linerange graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/ordered_03-1.png" width="1152"></p>
-<pre><code>lgc = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')</code></pre>
+<pre><code><span><span class="va">lgc</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'binned heatmap'</span>, <span class="st">'bw binned heatmap'</span>, <span class="st">'color binned heatmap'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/ordered_04-1.png" width="1152"></p>
-<pre><code>ord = c('bar graph', 'bw bar graph', 'color bar graph')</code></pre>
+<pre><code><span><span class="va">ord</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'bar graph'</span>, <span class="st">'bw bar graph'</span>, <span class="st">'color bar graph'</span><span class="op">)</span></span></code></pre>
 </div>
-<div id="factor" class="section level1">
-<h1 class="hasAnchor">
-<a href="#factor" class="anchor"></a>Factor</h1>
+<div class="section level2">
+<h2 id="factor">Factor<a class="anchor" aria-label="anchor" href="#factor"></a>
+</h2>
 <p><img src="figures/factor_01-1.png" width="1152"></p>
-<pre><code>fac = c('line graph', 'freq. reordered line graph', 'alphab. reordered line graph')</code></pre>
+<pre><code><span><span class="va">fac</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'line graph'</span>, <span class="st">'freq. reordered line graph'</span>, <span class="st">'alphab. reordered line graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/factor_02-1.png" width="1152"></p>
-<pre><code>fac = c('point-to-point graph', 'freq. reordered point-to-point graph', 'alphab. reordered point-to-point graph')</code></pre>
+<pre><code><span><span class="va">fac</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'point-to-point graph'</span>, <span class="st">'freq. reordered point-to-point graph'</span>, <span class="st">'alphab. reordered point-to-point graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/factor_03-1.png" width="1152"></p>
-<pre><code>fac = c('linerange graph', 'freq. reordered linerange graph', 'alphab. reordered linerange graph')</code></pre>
+<pre><code><span><span class="va">fac</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'linerange graph'</span>, <span class="st">'freq. reordered linerange graph'</span>, <span class="st">'alphab. reordered linerange graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/factor_04-1.png" width="1152"></p>
-<pre><code>fac = c('point graph', 'freq. reordered point graph', 'alphab. reordered point graph')</code></pre>
+<pre><code><span><span class="va">fac</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'point graph'</span>, <span class="st">'freq. reordered point graph'</span>, <span class="st">'alphab. reordered point graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/factor_05-1.png" width="1152"></p>
-<pre><code>fac = c('tile plot', 'freq. reordered tile plot', 'alphab. reordered tile plot')</code></pre>
+<pre><code><span><span class="va">fac</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'tile plot'</span>, <span class="st">'freq. reordered tile plot'</span>, <span class="st">'alphab. reordered tile plot'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/factor_06-1.png" width="1152"></p>
-<pre><code>fac = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')</code></pre>
+<pre><code><span><span class="va">fac</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'binned heatmap'</span>, <span class="st">'bw binned heatmap'</span>, <span class="st">'color binned heatmap'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/factor_07-1.png" width="1152"></p>
-<pre><code>fac = c('freq. reordered binned heatmap', 
-    'bw freq. reordered binned heatmap', 
-    'color freq. reordered binned heatmap')</code></pre>
+<pre><code><span><span class="va">fac</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'freq. reordered binned heatmap'</span>, </span>
+<span>    <span class="st">'bw freq. reordered binned heatmap'</span>, </span>
+<span>    <span class="st">'color freq. reordered binned heatmap'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/factor_08-1.png" width="1152"></p>
-<pre><code>fac = c('alphab. reordered binned heatmap', 
-    'bw alphab. reordered binned heatmap', 
-    'color alphab. reordered binned heatmap')</code></pre>
+<pre><code><span><span class="va">fac</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'alphab. reordered binned heatmap'</span>, </span>
+<span>    <span class="st">'bw alphab. reordered binned heatmap'</span>, </span>
+<span>    <span class="st">'color alphab. reordered binned heatmap'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/factor_09-1.png" width="1152"></p>
-<pre><code>fac = c('bar graph', 'bw bar graph', 'color bar graph')</code></pre>
+<pre><code><span><span class="va">fac</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'bar graph'</span>, <span class="st">'bw bar graph'</span>, <span class="st">'color bar graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/factor_10-1.png" width="1152"></p>
-<pre><code>fac = c('freq. reordered bar graph', 'bw freq. reordered bar graph', 'color freq. reordered bar graph')</code></pre>
+<pre><code><span><span class="va">fac</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'freq. reordered bar graph'</span>, <span class="st">'bw freq. reordered bar graph'</span>, <span class="st">'color freq. reordered bar graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/factor_11-1.png" width="1152"></p>
-<pre><code>fac = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')</code></pre>
+<pre><code><span><span class="va">fac</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'alphab. reordered bar graph'</span>, <span class="st">'bw alphab. reordered bar graph'</span>, <span class="st">'color alphab. reordered bar graph'</span><span class="op">)</span></span></code></pre>
 </div>
-<div id="character" class="section level1">
-<h1 class="hasAnchor">
-<a href="#character" class="anchor"></a>Character</h1>
+<div class="section level2">
+<h2 id="character">Character<a class="anchor" aria-label="anchor" href="#character"></a>
+</h2>
 <p><img src="figures/character_01-1.png" width="1152"></p>
-<pre><code>cha = c('line graph', 'freq. reordered line graph', 'alphab. reordered line graph')</code></pre>
+<pre><code><span><span class="va">cha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'line graph'</span>, <span class="st">'freq. reordered line graph'</span>, <span class="st">'alphab. reordered line graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/character_02-1.png" width="1152"></p>
-<pre><code>cha = c('point-to-point graph', 'freq. reordered point-to-point graph', 'alphab. reordered point-to-point graph')</code></pre>
+<pre><code><span><span class="va">cha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'point-to-point graph'</span>, <span class="st">'freq. reordered point-to-point graph'</span>, <span class="st">'alphab. reordered point-to-point graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/character_03-1.png" width="1152"></p>
-<pre><code>cha = c('linerange graph', 'freq. reordered linerange graph', 'alphab. reordered linerange graph')</code></pre>
+<pre><code><span><span class="va">cha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'linerange graph'</span>, <span class="st">'freq. reordered linerange graph'</span>, <span class="st">'alphab. reordered linerange graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/character_04-1.png" width="1152"></p>
-<pre><code>cha = c('point graph', 'freq. reordered point graph', 'alphab. reordered point graph')</code></pre>
+<pre><code><span><span class="va">cha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'point graph'</span>, <span class="st">'freq. reordered point graph'</span>, <span class="st">'alphab. reordered point graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/character_05-1.png" width="1152"></p>
-<pre><code>cha = c('tile plot', 'freq. reordered tile plot', 'alphab. reordered tile plot')</code></pre>
+<pre><code><span><span class="va">cha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'tile plot'</span>, <span class="st">'freq. reordered tile plot'</span>, <span class="st">'alphab. reordered tile plot'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/character_06-1.png" width="1152"></p>
-<pre><code>cha = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')</code></pre>
+<pre><code><span><span class="va">cha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'binned heatmap'</span>, <span class="st">'bw binned heatmap'</span>, <span class="st">'color binned heatmap'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/character_07-1.png" width="1152"></p>
-<pre><code>cha = c('freq. reordered binned heatmap', 
-    'bw freq. reordered binned heatmap', 
-    'color freq. reordered binned heatmap')</code></pre>
+<pre><code><span><span class="va">cha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'freq. reordered binned heatmap'</span>, </span>
+<span>    <span class="st">'bw freq. reordered binned heatmap'</span>, </span>
+<span>    <span class="st">'color freq. reordered binned heatmap'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/character_08-1.png" width="1152"></p>
-<pre><code>cha = c('alphab. reordered binned heatmap', 
-    'bw alphab. reordered binned heatmap', 
-    'color alphab. reordered binned heatmap')</code></pre>
+<pre><code><span><span class="va">cha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'alphab. reordered binned heatmap'</span>, </span>
+<span>    <span class="st">'bw alphab. reordered binned heatmap'</span>, </span>
+<span>    <span class="st">'color alphab. reordered binned heatmap'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/character_09-1.png" width="1152"></p>
-<pre><code>cha = c('bar graph', 'bw bar graph', 'color bar graph')</code></pre>
+<pre><code><span><span class="va">cha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'bar graph'</span>, <span class="st">'bw bar graph'</span>, <span class="st">'color bar graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/character_10-1.png" width="1152"></p>
-<pre><code>cha = c('freq. reordered bar graph', 'bw freq. reordered bar graph', 'color freq. reordered bar graph')</code></pre>
+<pre><code><span><span class="va">cha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'freq. reordered bar graph'</span>, <span class="st">'bw freq. reordered bar graph'</span>, <span class="st">'color freq. reordered bar graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/character_11-1.png" width="1152"></p>
-<pre><code>cha = c('alphab. reordered bar graph', 'bw alphab. reordered bar graph', 'color alphab. reordered bar graph')</code></pre>
+<pre><code><span><span class="va">cha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'alphab. reordered bar graph'</span>, <span class="st">'bw alphab. reordered bar graph'</span>, <span class="st">'color alphab. reordered bar graph'</span><span class="op">)</span></span></code></pre>
 </div>
-<div id="datetime" class="section level1">
-<h1 class="hasAnchor">
-<a href="#datetime" class="anchor"></a>Datetime</h1>
+<div class="section level2">
+<h2 id="datetime">Datetime<a class="anchor" aria-label="anchor" href="#datetime"></a>
+</h2>
 <p><img src="figures/datetime_01-1.png" width="1152"></p>
-<pre><code>dtt = c('line graph', 'stepped line graph')</code></pre>
+<pre><code><span><span class="va">dtt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'line graph'</span>, <span class="st">'stepped line graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/datetime_02-1.png" width="1152"></p>
-<pre><code>dtt = c('point-to-point graph', 'stepped point-to-point graph')</code></pre>
+<pre><code><span><span class="va">dtt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'point-to-point graph'</span>, <span class="st">'stepped point-to-point graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/datetime_05-1.png" width="1152"></p>
-<pre><code>dtt = c('point graph')</code></pre>
+<pre><code><span><span class="va">dtt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'point graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/datetime_03-1.png" width="1152"></p>
-<pre><code>dtt = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')</code></pre>
+<pre><code><span><span class="va">dtt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'binned heatmap'</span>, <span class="st">'bw binned heatmap'</span>, <span class="st">'color binned heatmap'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/datetime_04-1.png" width="1152"></p>
-<pre><code>dtt = c('bw heatmap', 'color heatmap')</code></pre>
+<pre><code><span><span class="va">dtt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'bw heatmap'</span>, <span class="st">'color heatmap'</span><span class="op">)</span></span></code></pre>
 </div>
-<div id="numeric" class="section level1">
-<h1 class="hasAnchor">
-<a href="#numeric" class="anchor"></a>Numeric</h1>
+<div class="section level2">
+<h2 id="numeric">Numeric<a class="anchor" aria-label="anchor" href="#numeric"></a>
+</h2>
 <p><img src="figures/numeric_01-1.png" width="1152"></p>
-<pre><code>num = c('area graph')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'area graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_17-1.png" width="1152"></p>
-<pre><code>num = c('stepped area graph', 'bw stepped area graph', 'color stepped area graph')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'stepped area graph'</span>, <span class="st">'bw stepped area graph'</span>, <span class="st">'color stepped area graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_18-1.png" width="1152"></p>
-<pre><code>num = c('seq. stripe graph', 'bw seq. stripe graph', 'color seq. stripe graph')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'seq. stripe graph'</span>, <span class="st">'bw seq. stripe graph'</span>, <span class="st">'color seq. stripe graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_02-1.png" width="1152"></p>
-<pre><code>num = c('line graph', 'stepped line graph')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'line graph'</span>, <span class="st">'stepped line graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_16-1.png" width="1152"></p>
-<pre><code>num = c('point-to-point graph', 'stepped point-to-point graph')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'point-to-point graph'</span>, <span class="st">'stepped point-to-point graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_03-1.png" width="1152"></p>
-<pre><code>num = c('point graph', 'bw point graph', 'color point graph')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'point graph'</span>, <span class="st">'bw point graph'</span>, <span class="st">'color point graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_04-1.png" width="1152"></p>
-<pre><code>num = c('binned point graph', 'bw binned point graph', 'color binned point graph')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'binned point graph'</span>, <span class="st">'bw binned point graph'</span>, <span class="st">'color binned point graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_05-1.png" width="1152"></p>
-<pre><code>num = c('point graph with trend line', 'bw point graph with trend line', 'color point graph with trend line')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'point graph with trend line'</span>, <span class="st">'bw point graph with trend line'</span>, <span class="st">'color point graph with trend line'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_06-1.png" width="1152"></p>
-<pre><code>num = c('binned heatmap', 'bw binned heatmap', 'color binned heatmap')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'binned heatmap'</span>, <span class="st">'bw binned heatmap'</span>, <span class="st">'color binned heatmap'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_15-1.png" width="1152"></p>
-<pre><code>num = c('bw heatmap', 'color heatmap')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'bw heatmap'</span>, <span class="st">'color heatmap'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_07-1.png" width="1152"></p>
-<pre><code>num = c('stripe graph', 'bw stripe graph', 'color stripe graph')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'stripe graph'</span>, <span class="st">'bw stripe graph'</span>, <span class="st">'color stripe graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_08-1.png" width="1152"></p>
-<pre><code>num = c('binned stripe graph', 'binned stripe graph', 'binned stripe graph')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'binned stripe graph'</span>, <span class="st">'binned stripe graph'</span>, <span class="st">'binned stripe graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_09-1.png" width="1152"></p>
-<pre><code>num = c('bar graph', 'bw bar graph', 'color bar graph')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'bar graph'</span>, <span class="st">'bw bar graph'</span>, <span class="st">'color bar graph'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_10-1.png" width="1152"></p>
-<pre><code>num = c('histogram', 'bw histogram', 'color histogram')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'histogram'</span>, <span class="st">'bw histogram'</span>, <span class="st">'color histogram'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_11-1.png" width="1152"></p>
-<pre><code>num = c('freq. polygon')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'freq. polygon'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_12-1.png" width="1152"></p>
-<pre><code>num = c('density plot', 'filled density plot')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'density plot'</span>, <span class="st">'filled density plot'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_13-1.png" width="1152"></p>
-<pre><code>num = c('violin plot', 'filled violin plot')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'violin plot'</span>, <span class="st">'filled violin plot'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_14-1.png" width="1152"></p>
-<pre><code>num = c('box plot', '3 uniaxial', 'qq plot')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'box plot'</span>, <span class="st">'3 uniaxial'</span>, <span class="st">'qq plot'</span><span class="op">)</span></span></code></pre>
 <p><img src="figures/numeric_19-1.png" width="1152"></p>
-<pre><code>num = c('ecdf plot', 'point ecdf plot', 'stepped ecdf plot')</code></pre>
+<pre><code><span><span class="va">num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ecdf plot'</span>, <span class="st">'point ecdf plot'</span>, <span class="st">'stepped ecdf plot'</span><span class="op">)</span></span></code></pre>
 </div>
   </div>
 
@@ -307,11 +303,13 @@ up to now, are being considered by the brinton’s
 
 
       <footer><div class="copyright">
-  <p>Developed by Pere Millán-Martínez.</p>
+  <p></p>
+<p>Developed by Pere Millán-Martínez.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -319,6 +317,8 @@ up to now, are being considered by the brinton’s
 
   
 
+
+  
 
   </body>
 </html>
